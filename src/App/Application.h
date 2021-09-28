@@ -5,13 +5,13 @@
 #include "autmpch.h"
 
 #include "Core/Window.h"
-#include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/IndexBuffer.h"
 #include "Renderer/VertexBufferLayout.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/OrthographicCamera.h"
+#include "Renderer/Texture2D.h"
 #include "Core/Event/MouseEvents.h"
 #include "Core/Event/KeyEvents.h"
 
@@ -34,6 +34,9 @@ private:
 
     std::unique_ptr<Window> m_window;
     std::unique_ptr<Shader> m_shader;
+    std::unique_ptr<Shader> m_textureShader;
+    std::unique_ptr<Texture2D> m_texture;
+    std::unique_ptr<Texture2D> m_whiteTexture;
     std::unique_ptr<OrthographicCameraController> m_cameraController;
 
     std::shared_ptr<VertexArray> m_quadVA;

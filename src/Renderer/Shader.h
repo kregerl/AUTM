@@ -18,7 +18,7 @@ public:
 
     ~Shader() = default;
 
-    void use() const;
+    void bind() const;
 
     virtual void setBool(const std::string &name, bool value) const;
 

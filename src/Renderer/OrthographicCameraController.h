@@ -23,6 +23,8 @@ public:
 
     const OrthographicCamera getCamera() const { return m_camera; }
 
+    const glm::vec3 &getPosition() const { return m_position; }
+
     float getZoom() const { return m_zoom; }
 
     void setZoom(float zoom) { m_zoom = zoom; }

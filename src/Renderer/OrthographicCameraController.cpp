@@ -60,7 +60,7 @@ void OrthographicCameraController::onEvent(Event &event) {
 void OrthographicCameraController::onMouseScrolledEvent(MouseScrolledEvent &event) {
     m_zoom -= event.getMouseOffsetY() * 0.25f;
 //    For some weird effects, remove the limiter below to flip the camera after moving through the world space
-    m_zoom = std::max(m_zoom, 0.25f);
+    m_zoom = std::max(m_zoom, 0.1f);
     m_camera.setProjectionMatrix(-m_aspectRatio * m_zoom, m_aspectRatio * m_zoom, -m_zoom, m_zoom);
 
 }

@@ -19,6 +19,11 @@ public:
 
     static EventType getStaticEventType() { return EventType::None; }
 
+    friend std::ostream &operator<<(std::ostream &os, const Event &event) {
+        os << event.getName();
+        return os;
+    }
+
 public:
 };
 

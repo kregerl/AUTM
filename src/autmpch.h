@@ -5,6 +5,7 @@
 #include <string>
 
 #include <utility>
+#include <cassert>
 #include <memory>
 #include <functional>
 

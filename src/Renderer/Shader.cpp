@@ -74,7 +74,7 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath, const char *geo
     checkCompileErrors(id, "PROGRAM");
 }
 
-void Shader::use() const {
+void Shader::bind() const {
     glUseProgram(id);
 }
 
