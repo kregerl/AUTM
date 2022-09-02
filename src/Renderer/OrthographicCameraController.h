@@ -5,6 +5,7 @@
 
 #include "OrthographicCamera.h"
 #include "Core/Event/MouseEvents.h"
+#include <Core/Event/WindowEvents.h>
 
 /**
  * Controller class for the orthographic camera that allows it to move, rotate and zoom
@@ -17,17 +18,26 @@ public:
 
     void onUpdate(double deltaTime);
 
-    void onEvent(Event &event);
+    void onEvent(Event& event);
 
-    void onMouseScrolledEvent(MouseScrolledEvent &event);
+    void onMouseScrolled(MouseScrolledEvent& event);
+
+    void onWindowResized(WindowResizedEvent &event);
 
     const OrthographicCamera getCamera() const { return m_camera; }
 
-    const glm::vec3 &getPosition() const { return m_position; }
+    const glm::vec3& getPosition() const { return m_position; }
 
     float getZoom() const { return m_zoom; }
 
+    // The camera size in coordinate space
+    glm::vec2 getCameraSize() const { return {-m_aspectRatio * m_zoom, m_aspectRatio * m_zoom}; }
+
     void setZoom(float zoom) { m_zoom = zoom; }
+
+    inline void disableInputs() { m_enableInputs = false; }
+
+    inline void enableInputs() { m_enableInputs = true; }
 
 private:
     float m_zoom = 1.0f;
@@ -39,6 +49,7 @@ private:
     OrthographicCamera m_camera;
     float m_rotation;
     float m_aspectRatio;
+    bool m_enableInputs;
 };
 
 

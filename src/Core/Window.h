@@ -4,9 +4,9 @@
 #include "autmpch.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <spdlog/spdlog.h>
 
 #include "Input.h"
-
 
 
 struct WindowProperties {
@@ -36,6 +36,8 @@ public:
 
     void setEventCallback(eventCallbackFunction callback);
 
+    glm::vec2 getResolution() const {return {m_windowData.width, m_windowData.height};}
+
     int getWidth() const { return m_windowData.width; }
 
     int getHeight() const { return m_windowData.height; }
@@ -48,10 +50,6 @@ public:
 
 
 private:
-    static void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-        glViewport(0, 0, width, height);
-    }
-
     void processInput();
 
 private:

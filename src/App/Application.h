@@ -21,6 +21,8 @@ public:
 
     void onEvent(Event &event);
 
+    void onMouseButtonPressed(MouseButtonPressedEvent &event);
+
     void run();
 
     const std::unique_ptr<Window> &getWindow() const { return m_window; }
@@ -33,14 +35,9 @@ private:
     static Application *s_instance;
 
     std::unique_ptr<Window> m_window;
-    std::unique_ptr<Shader> m_shader;
-    std::unique_ptr<Shader> m_textureShader;
-    std::unique_ptr<Texture2D> m_texture;
-    std::unique_ptr<Texture2D> m_whiteTexture;
     std::unique_ptr<OrthographicCameraController> m_cameraController;
 
-    std::shared_ptr<VertexArray> m_quadVA;
-    std::shared_ptr<VertexArray> m_lineVA;
+    glm::vec3 m_center;
 };
 
 

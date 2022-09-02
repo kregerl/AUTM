@@ -2,6 +2,7 @@
 #define AUTM_INDEXBUFFER_H
 
 #include <glad/glad.h>
+#include <cstddef>
 
 #include "Buffer.h"
 

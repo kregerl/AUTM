@@ -6,7 +6,7 @@
 #define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
 
 enum class EventType {
-    None = 0, MouseButtonPressed = 1, MouseButtonReleased = 2, MouseMoved = 3, MouseScrolled = 4, KeyPressed = 5, KeyReleased = 6
+    None = 0, MouseButtonPressed = 1, MouseButtonReleased = 2, MouseMoved = 3, MouseScrolled = 4, KeyPressed = 5, KeyReleased = 6, WindowResizedEvent
 };
 
 class Event {

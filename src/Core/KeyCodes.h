@@ -127,4 +127,9 @@
 #define KEY_RIGHT_SUPER        347
 #define KEY_MENU               348
 
+/* Mouse Button */
+
+#define L_MOUSE_BUTTON 0
+#define R_MOUSE_BUTTON 1
+#define M_MOUSE_BUTTON 2
 #endif

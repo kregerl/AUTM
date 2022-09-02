@@ -51,13 +51,19 @@ public:
 
 class MouseScrolledEvent : public Event {
 public:
-    explicit MouseScrolledEvent(double xOffset, double yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
+    MouseScrolledEvent(double xOffset, double yOffset, double xPos, double yPos) : m_xOffset(xOffset),
+                                                                                   m_yOffset(yOffset), m_xPos(xPos),
+                                                                                   m_yPos(yPos) {}
+
+    MouseScrolledEvent(double xOffset, double yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
 
     glm::vec2 getMouseOffset() const { return {m_xOffset, m_yOffset}; }
 
     double getMouseOffsetX() const { return m_xOffset; }
 
     double getMouseOffsetY() const { return m_yOffset; }
+
+    glm::vec2 getMousePos() const { return {m_xPos, m_yPos}; }
 
     virtual EventType getEventType() const override { return getStaticEventType(); }
 
@@ -66,7 +72,7 @@ public:
     static EventType getStaticEventType() { return EventType::MouseScrolled; }
 
 private:
-    double m_xOffset, m_yOffset;
+    double m_xOffset, m_yOffset, m_xPos, m_yPos;
 
 };
 

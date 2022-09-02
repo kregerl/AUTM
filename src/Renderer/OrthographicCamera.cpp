@@ -1,9 +1,12 @@
 #include "OrthographicCamera.h"
 
 #include <gtc/matrix_transform.hpp>
+#include <spdlog/spdlog.h>
 
 OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top) : m_projectionMatrix(
         glm::ortho(left, right, bottom, top, -1.0f, 1.0f)) {
+    // TODO: Debug starting points of ortho
+    spdlog::info("Left: {} Right: {} Bottom: {} Top: {}", left, right, bottom, top);
     m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
 }
 
@@ -28,4 +31,5 @@ void OrthographicCamera::updateViewMatrix() {
     m_viewMatrix = glm::inverse(cameraTransform);
     m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
 }
+
 

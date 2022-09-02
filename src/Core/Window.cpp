@@ -1,6 +1,6 @@
 #include "Window.h"
 
-Window::Window(const WindowProperties &properties) : m_windowData(properties) {
+Window::Window(const WindowProperties& properties) : m_windowData(properties) {
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -17,10 +17,23 @@ Window::Window(const WindowProperties &properties) : m_windowData(properties) {
     }
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, &m_windowData);
-    glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
 
-    glfwSetKeyCallback(m_window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
-        WindowData &windowData = *(WindowData *) glfwGetWindowUserPointer(window);
+    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    });
+
+    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+        WindowData &windowData = *(WindowData*) glfwGetWindowUserPointer(window);
+        windowData.width = width;
+        windowData.height = height;
+
+        WindowResizedEvent event(width, height);
+        windowData.callback(event);
+    });
+
+
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
         switch (action) {
             case GLFW_PRESS: {
                 KeyPressedEvent event(key, mods);
@@ -37,13 +50,12 @@ Window::Window(const WindowProperties &properties) : m_windowData(properties) {
                 windowData.callback(event);
                 break;
             }
-            default:
-                break;
+            default:break;
         }
     });
 
-    glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, int button, int action, int mods) {
-        WindowData &windowData = *(WindowData *) glfwGetWindowUserPointer(window);
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
+        WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
         switch (action) {
@@ -57,14 +69,15 @@ Window::Window(const WindowProperties &properties) : m_windowData(properties) {
                 windowData.callback(event);
                 break;
             }
-            default:
-                break;
+            default:break;
         }
     });
 
-    glfwSetScrollCallback(m_window, [](GLFWwindow *window, double xoffset, double yoffset) {
-        WindowData &windowData = *(WindowData *) glfwGetWindowUserPointer(window);
-        MouseScrolledEvent event(xoffset, yoffset);
+    glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset) {
+        double xPos, yPos;
+        glfwGetCursorPos(window, &xPos, &yPos);
+        WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
+        MouseScrolledEvent event(xoffset, yoffset, xPos, yPos);
         windowData.callback(event);
     });
 
@@ -75,7 +88,7 @@ Window::Window(const WindowProperties &properties) : m_windowData(properties) {
     }
 
 #ifdef DEBUG
-    std::cout << "Width: " << m_windowData.width << " " <<  "Height: " << m_windowData.height << std::endl;
+    std::cout << "Width: " << m_windowData.width << " " << "Height: " << m_windowData.height << std::endl;
     std::cout << "Opengl Version: " << glGetString(GL_VERSION) << std::endl;
 #endif
 }
