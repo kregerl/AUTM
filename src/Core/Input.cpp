@@ -1,10 +1,11 @@
-#include <spdlog/spdlog.h>
 #include "Input.h"
 #include "KeyCodes.h"
+#include "Log.h"
 
 #ifdef DEBUG
 // Change this number to 0 to prevent keys from being printed
 #if 0
+#include "Log.h"
 #define DEBUG_KEYS
 #endif
 #endif
@@ -18,7 +19,7 @@ void Input::onKeyPressedEvent(KeyPressedEvent& event) {
     int keyCode = event.getKeyCode();
     s_pressed[keyCode] = true;
 #ifdef DEBUG_KEYS
-    std::cout << "Pressed: " << keyCode << std::endl;
+    AUTM_CORE_DEBUG("Pressed: {}", keyCode);
 #endif
 }
 
@@ -26,7 +27,7 @@ void Input::onKeyReleasedEvent(KeyReleasedEvent& event) {
     int keyCode = event.getKeyCode();
     s_pressed[keyCode] = false;
 #ifdef DEBUG_KEYS
-    std::cout << "Released: " << keyCode << std::endl;
+    AUTM_CORE_DEBUG("Released: {}", keyCode);
 #endif
 }
 
@@ -48,19 +49,14 @@ void Input::onMouseScrolledEvent(MouseScrolledEvent& event) {
     }
     float amount = static_cast<float>((event.getMouseOffsetY() * scrollAmount));
     float min = std::min(scroll + amount, 2.0f);
-//    spdlog::info("Scroll: {}", scroll);
-//    spdlog::info("Amount: {} ", amount);
-//    spdlog::info("Min: {}", min);
-//    spdlog::info("Max: {}", std::max(0.000001f, min));
 
-
-//    scroll = std::max(0.000001f, std::min(scroll + static_cast<float>((event.getMouseOffsetY() * scrollAmount)), 2.0f));
     scroll += scroll * 0.5 * event.getMouseOffsetY();
+    AUTM_CORE_DEBUG("Scroll: {}", 1 / scroll);
 }
 
 void Input::onMouseButtonPressedEvent(MouseButtonPressedEvent& event) {
     if (event.getMouseButton() == L_MOUSE_BUTTON) {
-       mousePos = event.getMousePos();
+        mousePos = event.getMousePos();
     }
 }
 

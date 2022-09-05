@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Log.h"
 
 Window::Window(const WindowProperties& properties) : m_windowData(properties) {
 
@@ -12,7 +13,7 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
                                 m_windowData.isFullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
 
     if (m_window == nullptr) {
-        std::cout << "ERROR: Cant open null util." << std::endl;
+        AUTM_CORE_FATAL("Cannot open a null window.");
         glfwTerminate();
     }
     glfwMakeContextCurrent(m_window);
@@ -23,7 +24,7 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
     });
 
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
-        WindowData &windowData = *(WindowData*) glfwGetWindowUserPointer(window);
+        WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
         windowData.width = width;
         windowData.height = height;
 
@@ -83,13 +84,13 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
 
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        std::cout << "ERROR: Failed to load GLAD" << std::endl;
+        AUTM_CORE_FATAL("Failed to load GLAD.");
         glfwTerminate();
     }
 
 #ifdef DEBUG
-    std::cout << "Width: " << m_windowData.width << " " << "Height: " << m_windowData.height << std::endl;
-    std::cout << "Opengl Version: " << glGetString(GL_VERSION) << std::endl;
+    AUTM_CORE_DEBUG("Width: {}, Height:{}", m_windowData.width, m_windowData.height);
+    AUTM_CORE_DEBUG("OpenGL Version: {}", glGetString(GL_VERSION));
 #endif
 }
 

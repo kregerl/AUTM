@@ -14,11 +14,6 @@ struct Texture2DFormats {
     int channels;
     GLenum internalFormat;
     GLenum dataFormat;
-
-    friend std::ostream &operator<<(std::ostream &os, const Texture2DFormats &formats) {
-        os << "Channels: " << formats.channels << "\n" << "Internal Format: " << formats.internalFormat << '\n' << "Data Format: " << formats.dataFormat;
-        return os;
-    }
 };
 
 class Texture2D {

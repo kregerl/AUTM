@@ -1,3 +1,4 @@
+#include <Core/Log.h>
 #include "ComputeShader.h"
 
 ComputeShader::ComputeShader(const char *computePath) {
@@ -13,7 +14,7 @@ ComputeShader::ComputeShader(const char *computePath) {
         computeShader = cshStream.str();
     }
     catch (std::ifstream::failure &e) {
-        std::cout << "Couldn't read compute shader file.\n";
+        AUTM_CORE_ERROR("Couldn't read compute shader at {}", computePath);
     }
     const char *cshCode = computeShader.c_str();
 

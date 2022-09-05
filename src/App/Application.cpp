@@ -2,12 +2,13 @@
 
 #include "Renderer/RenderSystem.h"
 #include "Renderer/Renderer2D.h"
-#include <spdlog/spdlog.h>
 #include <Core/KeyCodes.h>
+#include <Core/Log.h>
 
 Application* Application::s_instance = nullptr;
 
 Application::Application() {
+    AUTM_CORE_INFO("Application created HERE");
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());
     m_cameraController = std::make_unique<OrthographicCameraController>(
@@ -23,7 +24,7 @@ Application::Application() {
 void Application::onEvent(Event& event) {
     // Send events to camera controller
 #ifdef DEBUG
-//    std::cout << event << std::endl;
+    AUTM_DEBUG("{}", event);
 #endif
     m_cameraController->onEvent(event);
 
@@ -49,6 +50,7 @@ void Application::onMouseButtonPressed(MouseButtonPressedEvent& event) {
 
 void Application::run() {
 
+    AUTM_CORE_INFO("Run HERE");
     while (!m_window->shouldClose()) {
         m_window->onUpdate();
         m_window->pollEvents();

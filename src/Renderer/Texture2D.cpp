@@ -1,3 +1,4 @@
+#include <Core/Log.h>
 #include "Texture2D.h"
 
 Texture2D::Texture2D(int width, int height) : m_width(width), m_height(height), m_formats({4, GL_RGBA8, GL_RGBA}) {
@@ -11,13 +12,15 @@ Texture2D::Texture2D(int width, int height) : m_width(width), m_height(height), 
     glTextureParameteri(m_rendererId, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-Texture2D::Texture2D(const std::string &path) : m_path(path) {
+Texture2D::Texture2D(const std::string& path) : m_path(path) {
     int imageChannels;
-    unsigned char *data = stbi_load(m_path.c_str(), &m_width, &m_height, &imageChannels, 0);
+    unsigned char* data = stbi_load(m_path.c_str(), &m_width, &m_height, &imageChannels, 0);
     m_formats = determineChannels(imageChannels);
     if (data) {
 #ifdef DEBUG
-        std::cout << m_formats << std::endl;
+        AUTM_CORE_DEBUG("Channels: {}", m_formats.channels);
+        AUTM_CORE_DEBUG("Internal Format: {}", m_formats.internalFormat);
+        AUTM_CORE_DEBUG("Data Format: {}", m_formats.dataFormat);
 #endif
         glCreateTextures(GL_TEXTURE_2D, 1, &m_rendererId);
         glTextureStorage2D(m_rendererId, 1, m_formats.internalFormat, m_width, m_height);
@@ -36,6 +39,8 @@ Texture2D::Texture2D(const std::string &path) : m_path(path) {
 }
 
 Texture2D::~Texture2D() {
+    // TODO: Fix crashes here since the OpenGL context is destroyed before the texture can be.
+    // This is caused by static variables lasting until the end of the programs lifetime, after the OpenGL Context is gone.
     glDeleteTextures(1, &m_rendererId);
 }
 
@@ -46,7 +51,7 @@ void Texture2D::bind(int slot) {
 void Texture2D::unbind() {
 }
 
-void Texture2D::setData(uint32_t size, void *data) {
+void Texture2D::setData(uint32_t size, void* data) {
     int channels = m_formats.channels;
 //    assert(size = channels * m_width * m_height);
     glTextureSubImage2D(m_rendererId, 0, 0, 0, m_width, m_height, m_formats.dataFormat, GL_UNSIGNED_BYTE, data);
