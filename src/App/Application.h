@@ -19,20 +19,20 @@ class Application {
 public:
     Application();
 
-    void onEvent(Event &event);
+    void onEvent(Event& event);
 
-    void onMouseButtonPressed(MouseButtonPressedEvent &event);
+    void onMouseButtonPressed(MouseButtonPressedEvent& event);
 
     void run();
 
-    const std::unique_ptr<Window> &getWindow() const { return m_window; }
+    const std::unique_ptr<Window>& getWindow() const { return m_window; }
 
-    static Application *getInstance() { return s_instance; }
+    static Application* getInstance() { return s_instance; }
 
-    static Application *createInstance() { return new Application(); }
+    static Application* createInstance() { return new Application(); }
 
 private:
-    static Application *s_instance;
+    static Application* s_instance;
 
     std::unique_ptr<Window> m_window;
     std::unique_ptr<OrthographicCameraController> m_cameraController;

@@ -5,9 +5,7 @@
 
 OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top) : m_projectionMatrix(
         glm::ortho(left, right, bottom, top, -1.0f, 1.0f)) {
-    // TODO: Debug starting points of ortho
-    AUTM_CORE_DEBUG("Left: {} Right: {} Bottom: {} Top: {}", left, right, top, bottom);
-    AUTM_CORE_DEBUG("Hello WOrld!");
+    AUTM_CORE_DEBUG("Orthographic Projection Matrix:: Left: {} Right: {} Bottom: {} Top: {}", left, right, top, bottom);
     m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
 }
 

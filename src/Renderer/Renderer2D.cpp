@@ -17,27 +17,28 @@ struct RendererData {
     std::shared_ptr<Texture2D> whiteTexture;
 };
 
-
-static RendererData s_data;
+// This has to be heap allocated because static fields last until the end of the program's lifetime,
+// meaning the texture's destructor will be called after the OpenGL context is already destroyed.
+static RendererData* s_data = new RendererData();
 
 // TODO: Switch this to a batched renderer instead
 void Renderer2D::init() {
-    s_data.arrowTexture = std::make_shared<Texture2D>(
+    s_data->arrowTexture = std::make_shared<Texture2D>(
             R"(/home/loucas/CLionProjects/AUTM/assets/images/play32xwhite.png)");
 
-    s_data.whiteTexture = std::make_shared<Texture2D>(1, 1);
+    s_data->whiteTexture = std::make_shared<Texture2D>(1, 1);
     int white = 0xFFFFFFFF;
-    s_data.whiteTexture->setData(sizeof(int), &white);
+    s_data->whiteTexture->setData(sizeof(int), &white);
 
-    s_data.textureShader = std::make_shared<Shader>(
+    s_data->textureShader = std::make_shared<Shader>(
             R"(/home/loucas/CLionProjects/AUTM/assets/shaders/TextureVertex.glsl)",
             R"(/home/loucas/CLionProjects/AUTM/assets/shaders/TextureFragment.glsl)");
 
-    s_data.flatColorShader = std::make_shared<Shader>(
+    s_data->flatColorShader = std::make_shared<Shader>(
             R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FlatColorVertex.glsl)",
             R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FlatColorFragment.glsl)");
 
-    s_data.fractalShader = std::make_shared<Shader>(
+    s_data->fractalShader = std::make_shared<Shader>(
             R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FractalVertex.glsl)",
             R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FractalFragment.glsl)");
 
@@ -54,11 +55,10 @@ void Renderer2D::init() {
 }
 
 void Renderer2D::shutdown() {
-
 }
 
 void Renderer2D::begin(OrthographicCamera camera) {
-    s_data.viewProjectionMatrix = camera.getViewProjectionMatrix();
+    s_data->viewProjectionMatrix = camera.getViewProjectionMatrix();
 }
 
 void Renderer2D::end() {
@@ -72,15 +72,15 @@ void Renderer2D::drawQuad(glm::vec3 position, glm::vec2 size, float rotation) {
     modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
     modelMatrix = glm::scale(modelMatrix, {size.x, size.y, 1.0f});
 
-    s_data.quadVertexArray->bind();
-    s_data.textureShader->bind();
-    s_data.textureShader->setMat4("u_viewProjectionMatrix", s_data.viewProjectionMatrix);
-    s_data.textureShader->setMat4("u_modelMatrix", modelMatrix);
+    s_data->quadVertexArray->bind();
+    s_data->textureShader->bind();
+    s_data->textureShader->setMat4("u_viewProjectionMatrix", s_data->viewProjectionMatrix);
+    s_data->textureShader->setMat4("u_modelMatrix", modelMatrix);
 
-    s_data.whiteTexture->bind();
+    s_data->whiteTexture->bind();
 
-    RenderSystem::draw(s_data.quadVertexArray);
-    s_data.quadVertexArray->unbind();
+    RenderSystem::draw(s_data->quadVertexArray);
+    s_data->quadVertexArray->unbind();
 }
 
 void Renderer2D::drawFractalQuad(glm::vec2 size, glm::vec3 center, glm::vec2 resolution, float iterations) {
@@ -89,16 +89,16 @@ void Renderer2D::drawFractalQuad(glm::vec2 size, glm::vec3 center, glm::vec2 res
     modelMatrix = glm::rotate(modelMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     modelMatrix = glm::scale(modelMatrix, {size.x, size.y, 1.0f});
 
-    s_data.fullscreenQuadVertexArray->bind();
-    s_data.fractalShader->bind();
-    s_data.fractalShader->setMat4("u_viewProjectionMatrix", s_data.viewProjectionMatrix);
-    s_data.fractalShader->setMat4("u_modelMatrix", modelMatrix);
-    s_data.fractalShader->setVec3("u_center", center);
-    s_data.fractalShader->setVec2("u_resolution", resolution);
-    s_data.fractalShader->setFloat("u_iterations", iterations);
+    s_data->fullscreenQuadVertexArray->bind();
+    s_data->fractalShader->bind();
+    s_data->fractalShader->setMat4("u_viewProjectionMatrix", s_data->viewProjectionMatrix);
+    s_data->fractalShader->setMat4("u_modelMatrix", modelMatrix);
+    s_data->fractalShader->setVec3("u_center", center);
+    s_data->fractalShader->setVec2("u_resolution", resolution);
+    s_data->fractalShader->setFloat("u_iterations", iterations);
 
-    RenderSystem::draw(s_data.fullscreenQuadVertexArray);
-    s_data.fullscreenQuadVertexArray->unbind();
+    RenderSystem::draw(s_data->fullscreenQuadVertexArray);
+    s_data->fullscreenQuadVertexArray->unbind();
 
 }
 
@@ -108,13 +108,13 @@ void Renderer2D::drawLine(glm::vec3 position, glm::vec2 size, float rotation, fl
     modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
     modelMatrix = glm::scale(modelMatrix, {size.x, size.y, 1.0f});
 
-    s_data.lineVertexArray->bind();
-    s_data.flatColorShader->bind();
-    s_data.flatColorShader->setMat4("u_viewProjectionMatrix", s_data.viewProjectionMatrix);
-    s_data.flatColorShader->setMat4("u_modelMatrix", modelMatrix);
+    s_data->lineVertexArray->bind();
+    s_data->flatColorShader->bind();
+    s_data->flatColorShader->setMat4("u_viewProjectionMatrix", s_data->viewProjectionMatrix);
+    s_data->flatColorShader->setMat4("u_modelMatrix", modelMatrix);
 
     glLineWidth(lineWidth);
-    RenderSystem::draw(s_data.lineVertexArray, GL_LINES);
+    RenderSystem::draw(s_data->lineVertexArray, GL_LINES);
 }
 
 void Renderer2D::initQuad() {
@@ -133,8 +133,8 @@ void Renderer2D::initQuad() {
     };
 
 
-    s_data.quadVertexArray = std::make_shared<VertexArray>();
-    s_data.quadVertexArray->bind();
+    s_data->quadVertexArray = std::make_shared<VertexArray>();
+    s_data->quadVertexArray->bind();
     std::shared_ptr<VertexBuffer> quadVertexBuffer = std::make_shared<VertexBuffer>(quadVertices,
                                                                                     sizeof(quadVertices));
     quadVertexBuffer->setLayout({
@@ -144,11 +144,11 @@ void Renderer2D::initQuad() {
                                         {ShaderDataType::Float, "a_tilingFactor", false}
                                 });
 
-    s_data.quadVertexArray->addVertexBuffer(quadVertexBuffer);
+    s_data->quadVertexArray->addVertexBuffer(quadVertexBuffer);
     std::shared_ptr<IndexBuffer> quadIndexBuffer = std::make_shared<IndexBuffer>(quadIndices,
                                                                                  sizeof(quadIndices) /
                                                                                  sizeof(unsigned int));
-    s_data.quadVertexArray->setIndexBuffer(quadIndexBuffer);
+    s_data->quadVertexArray->setIndexBuffer(quadIndexBuffer);
 
 
 }
@@ -163,9 +163,9 @@ void Renderer2D::initLine() {
     unsigned int lineIndices[2] = {
             0, 1
     };
-    s_data.lineVertexArray = std::make_shared<VertexArray>();
+    s_data->lineVertexArray = std::make_shared<VertexArray>();
 
-    s_data.lineVertexArray->bind();
+    s_data->lineVertexArray->bind();
     std::shared_ptr<VertexBuffer> lineVertexBuffer = std::make_shared<VertexBuffer>(lineVertices,
                                                                                     sizeof(lineVertices));
     lineVertexBuffer->setLayout({
@@ -173,14 +173,14 @@ void Renderer2D::initLine() {
                                         {ShaderDataType::Vec3f, "a_color", false},
                                 });
 
-    s_data.lineVertexArray->addVertexBuffer(lineVertexBuffer);
+    s_data->lineVertexArray->addVertexBuffer(lineVertexBuffer);
 
     std::shared_ptr<IndexBuffer> lineIndexBuffer = std::make_shared<IndexBuffer>(lineIndices,
                                                                                  sizeof(lineIndices) /
                                                                                  sizeof(unsigned int));
-    s_data.lineVertexArray->setIndexBuffer(lineIndexBuffer);
+    s_data->lineVertexArray->setIndexBuffer(lineIndexBuffer);
 
-    s_data.lineVertexArray->unbind();
+    s_data->lineVertexArray->unbind();
 
 }
 
@@ -199,19 +199,19 @@ void Renderer2D::initFullscreenQuad() {
     };
 
 
-    s_data.fullscreenQuadVertexArray = std::make_shared<VertexArray>();
-    s_data.fullscreenQuadVertexArray->bind();
+    s_data->fullscreenQuadVertexArray = std::make_shared<VertexArray>();
+    s_data->fullscreenQuadVertexArray->bind();
     std::shared_ptr<VertexBuffer> vertexBuffer = std::make_shared<VertexBuffer>(quadVertices,
                                                                                 sizeof(quadVertices));
     vertexBuffer->setLayout({
                                     {ShaderDataType::Vec3f, "a_pos", false},
                             });
 
-    s_data.fullscreenQuadVertexArray->addVertexBuffer(vertexBuffer);
+    s_data->fullscreenQuadVertexArray->addVertexBuffer(vertexBuffer);
     std::shared_ptr<IndexBuffer> quadIndexBuffer = std::make_shared<IndexBuffer>(quadIndices,
                                                                                  sizeof(quadIndices) /
                                                                                  sizeof(unsigned int));
-    s_data.fullscreenQuadVertexArray->setIndexBuffer(quadIndexBuffer);
+    s_data->fullscreenQuadVertexArray->setIndexBuffer(quadIndexBuffer);
 
 }
 

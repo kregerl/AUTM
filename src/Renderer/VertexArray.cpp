@@ -60,5 +60,7 @@ GLenum VertexArray::getOpenglType(ShaderDataType type) {
             return GL_FLOAT;
         case ShaderDataType::Mat4:
             return GL_FLOAT;
+        default:
+            return GL_NONE;
     }
 }

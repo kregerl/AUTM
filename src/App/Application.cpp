@@ -8,7 +8,6 @@
 Application* Application::s_instance = nullptr;
 
 Application::Application() {
-    AUTM_CORE_INFO("Application created HERE");
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());
     m_cameraController = std::make_unique<OrthographicCameraController>(
@@ -16,7 +15,7 @@ Application::Application() {
 
     m_window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
 
-    m_cameraController->disableInputs();
+//    m_cameraController->disableInputs();
     Renderer2D::init();
 }
 
@@ -50,7 +49,7 @@ void Application::onMouseButtonPressed(MouseButtonPressedEvent& event) {
 
 void Application::run() {
 
-    AUTM_CORE_INFO("Run HERE");
+    AUTM_CORE_DEBUG("Before Run loop");
     while (!m_window->shouldClose()) {
         m_window->onUpdate();
         m_window->pollEvents();
@@ -59,17 +58,19 @@ void Application::run() {
 
         m_cameraController->onUpdate(m_window->getDeltaTime());
 
+        RenderSystem::clearColor(0.0f, 1.0f, 0.0f, 1.0f);
         Renderer2D::begin(m_cameraController->getCamera());
-        RenderSystem::clearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         float zoom = Input::getScroll();
         m_center.z = zoom;
         glm::vec2 size = m_cameraController->getCameraSize();
         glm::vec2 resolution = m_window->getResolution();
 
-        Renderer2D::drawFractalQuad(size, m_center, resolution, 1000);
-        Renderer2D::end();
+        Renderer2D::drawFractalQuad(size, m_center, resolution, 100);
+        AUTM_CORE_DEBUG(glGetError());
 
+//        Renderer2D::drawQuad({0.0, 0.0, 0.0}, {20, 20}, 45);
+        Renderer2D::end();
     }
 
     m_window->close();

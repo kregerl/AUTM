@@ -2,8 +2,7 @@
 #define AUTM_WINDOW_H
 
 #include "autmpch.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <Renderer/OpenGLContext.h>
 
 #include "Input.h"
 
@@ -13,17 +12,22 @@ struct WindowProperties {
     const std::string title;
     bool isFullscreen;
 
-    WindowProperties(int width = 1280, int height = 720, const std::string &title = "Title",
-                     bool isFullscreen = false) : width(width), height(height), title(title),
-                                                  isFullscreen(isFullscreen) {}
+    WindowProperties(int width = 1280,
+                     int height = 720,
+                     const std::string& title = "Title",
+                     bool isFullscreen = false)
+            : width(width),
+              height(height),
+              title(title),
+              isFullscreen(isFullscreen) {}
 };
 
 
 class Window {
 public:
-    using eventCallbackFunction = std::function<void(Event &)>;
+    using eventCallbackFunction = std::function<void(Event&)>;
 
-    Window(const WindowProperties &properties);
+    Window(const WindowProperties& properties);
 
     ~Window() = default;
 
@@ -35,7 +39,7 @@ public:
 
     void setEventCallback(eventCallbackFunction callback);
 
-    glm::vec2 getResolution() const {return {m_windowData.width, m_windowData.height};}
+    glm::vec2 getResolution() const { return {m_windowData.width, m_windowData.height}; }
 
     int getWidth() const { return m_windowData.width; }
 
@@ -45,29 +49,28 @@ public:
 
     double getDeltaTime() const { return m_deltaTime; }
 
-    GLFWwindow *getOpenglWindow() const { return m_window; }
+    GLFWwindow* getOpenglWindow() const { return m_window; }
 
 
 private:
     void processInput();
 
 private:
-    GLFWwindow *m_window;
+    GLFWwindow* m_window;
     double m_deltaTime = 0.0f, m_prevFrame = 0.0f;
-
+    OpenGLContext* m_context;
     struct WindowData {
         int width, height;
         const std::string title;
         bool isFullscreen;
         eventCallbackFunction callback;
 
-        explicit WindowData(const WindowProperties &properties) : width(properties.width), height(properties.height),
+        explicit WindowData(const WindowProperties& properties) : width(properties.width), height(properties.height),
                                                                   title(properties.title),
                                                                   isFullscreen(properties.isFullscreen) {}
     };
 
     WindowData m_windowData;
-
 
 };
 

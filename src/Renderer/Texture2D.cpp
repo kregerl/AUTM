@@ -39,8 +39,6 @@ Texture2D::Texture2D(const std::string& path) : m_path(path) {
 }
 
 Texture2D::~Texture2D() {
-    // TODO: Fix crashes here since the OpenGL context is destroyed before the texture can be.
-    // This is caused by static variables lasting until the end of the programs lifetime, after the OpenGL Context is gone.
     glDeleteTextures(1, &m_rendererId);
 }
 

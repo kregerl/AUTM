@@ -3,6 +3,7 @@
 
 Window::Window(const WindowProperties& properties) : m_windowData(properties) {
 
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -16,7 +17,10 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
         AUTM_CORE_FATAL("Cannot open a null window.");
         glfwTerminate();
     }
-    glfwMakeContextCurrent(m_window);
+
+    m_context = new OpenGLContext(m_window);
+    m_context->init();
+
     glfwSetWindowUserPointer(m_window, &m_windowData);
 
     glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
@@ -83,11 +87,6 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
     });
 
 
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        AUTM_CORE_FATAL("Failed to load GLAD.");
-        glfwTerminate();
-    }
-
 #ifdef DEBUG
     AUTM_CORE_DEBUG("Width: {}, Height:{}", m_windowData.width, m_windowData.height);
     AUTM_CORE_DEBUG("OpenGL Version: {}", glGetString(GL_VERSION));
@@ -114,7 +113,7 @@ void Window::processInput() {
 }
 
 void Window::pollEvents() {
-    glfwSwapBuffers(m_window);
+    m_context->swapBuffers();
     glfwPollEvents();
 }
 

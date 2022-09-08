@@ -38,6 +38,8 @@ static unsigned int ShaderDataTypeSize(ShaderDataType type) {
             return 4 * 3 * 3;
         case ShaderDataType::Mat4:
             return 4 * 4 * 4;
+        default:
+            return -1;
     }
 }
 
@@ -52,7 +54,7 @@ struct VertexBufferElement {
     VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false)
             : name(std::move(name)), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized) {}
 
-    inline GLenum getNormalized() const { normalized ? GL_TRUE : GL_FALSE; }
+    inline GLenum getNormalized() const { return normalized ? GL_TRUE : GL_FALSE; }
 
     unsigned int getElementCount() const {
         switch (type) {
@@ -80,6 +82,8 @@ struct VertexBufferElement {
                 return 3 * 3;
             case ShaderDataType::Mat4:
                 return 4 * 4;
+            default:
+                return -1;
         }
     }
 };
