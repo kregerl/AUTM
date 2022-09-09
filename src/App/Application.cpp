@@ -1,7 +1,7 @@
 #include "Application.h"
 
-#include "Renderer/RenderSystem.h"
-#include "Renderer/Renderer2D.h"
+#include <Renderer/RenderSystem.h>
+#include <Renderer/Renderer2D.h>
 #include <Core/KeyCodes.h>
 #include <Core/Log.h>
 
@@ -32,6 +32,13 @@ void Application::onEvent(Event& event) {
     dispatcher.dispatchEvent<KeyReleasedEvent>(Input::onKeyReleasedEvent);
     dispatcher.dispatchEvent<MouseScrolledEvent>(Input::onMouseScrolledEvent);
     dispatcher.dispatchEvent<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(Application::onMouseButtonPressed));
+
+    for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
+        (*--it)->onEvent(event);
+//        if (event.isHandled()) {
+//            break;
+//        }
+    }
 }
 
 void Application::onMouseButtonPressed(MouseButtonPressedEvent& event) {
@@ -60,6 +67,10 @@ void Application::run() {
 
         RenderSystem::clearColor(0.0f, 1.0f, 0.0f, 1.0f);
         Renderer2D::begin(m_cameraController->getCamera());
+
+        for (Layer* layer : m_layerStack) {
+            layer->onUpdate();
+        }
 
         float zoom = Input::getScroll();
         m_center.z = zoom;
