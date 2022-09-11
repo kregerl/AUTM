@@ -12,4 +12,4 @@
 
 [submodule "vendor/imgui"]
 	path = vendor/imgui
-	url = https://github.com/ocornut/imgui
+	url = https://github.com/kregerl/imgui

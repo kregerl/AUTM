@@ -76,7 +76,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 }
 
 void Shader::bind() const {
-    AUTM_CORE_DEBUG("Binding shader");
     glUseProgram(id);
 }
 

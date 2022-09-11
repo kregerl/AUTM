@@ -7,6 +7,7 @@
 
 Application* Application::s_instance = nullptr;
 
+// TODO: Make an ImGui github repo with the CMakeLists.txt file so it can be cloned as its own submodule
 Application::Application() {
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());
@@ -22,8 +23,10 @@ Application::Application() {
 
 void Application::onEvent(Event& event) {
     // Send events to camera controller
+#if 0
 #ifdef DEBUG
     AUTM_DEBUG("{}", event);
+#endif
 #endif
     m_cameraController->onEvent(event);
 
@@ -56,7 +59,6 @@ void Application::onMouseButtonPressed(MouseButtonPressedEvent& event) {
 
 void Application::run() {
 
-    AUTM_CORE_DEBUG("Before Run loop");
     while (!m_window->shouldClose()) {
         m_window->onUpdate();
         m_window->pollEvents();
@@ -77,8 +79,8 @@ void Application::run() {
         glm::vec2 size = m_cameraController->getCameraSize();
         glm::vec2 resolution = m_window->getResolution();
 
-        Renderer2D::drawFractalQuad(size, m_center, resolution, 100);
-        AUTM_CORE_DEBUG(glGetError());
+
+        Renderer2D::drawFractalQuad(size, m_center, resolution, 1000);
 
 //        Renderer2D::drawQuad({0.0, 0.0, 0.0}, {20, 20}, 45);
         Renderer2D::end();
