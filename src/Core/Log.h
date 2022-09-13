@@ -26,6 +26,7 @@ private:
 #define AUTM_CORE_FATAL(...) SPDLOG_LOGGER_CRITICAL(::Log::getCoreLogger(), __VA_ARGS__)
 #define CORE_DBGVAR(x) AUTM_CORE_DEBUG(#x " = {}", (x))
 
+
 #define AUTM_INFO(...) SPDLOG_LOGGER_INFO(::Log::getClientLogger(), __VA_ARGS__)
 #define AUTM_WARN(...) SPDLOG_LOGGER_WARN(::Log::getClientLogger(), __VA_ARGS__)
 #define AUTM_ERROR(...) SPDLOG_LOGGER_ERROR(::Log::getClientLogger(), __VA_ARGS__)

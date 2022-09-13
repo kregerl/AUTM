@@ -1,19 +1,19 @@
 #ifndef AUTM_APPLICATION_H
 #define AUTM_APPLICATION_H
 
-#include <Renderer/OrthographicCameraController.h>
 #include "autmpch.h"
-
-#include "Core/Window.h"
-#include "Renderer/Shader.h"
-#include "Renderer/VertexBuffer.h"
-#include "Renderer/IndexBuffer.h"
-#include "Renderer/VertexBufferLayout.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/OrthographicCamera.h"
-#include "Renderer/Texture2D.h"
-#include "Core/Event/MouseEvents.h"
-#include "Core/Event/KeyEvents.h"
+#include <Renderer/OrthographicCameraController.h>
+#include <Core/LayerStack.h>
+#include <Core/Window.h>
+#include <Renderer/Shader.h>
+#include <Renderer/VertexBuffer.h>
+#include <Renderer/IndexBuffer.h>
+#include <Renderer/VertexBufferLayout.h>
+#include <Renderer/VertexArray.h>
+#include <Renderer/OrthographicCamera.h>
+#include <Renderer/Texture2D.h>
+#include <Core/Event/MouseEvents.h>
+#include <Core/Event/KeyEvents.h>
 
 class Application {
 public:
@@ -37,6 +37,7 @@ private:
     std::unique_ptr<Window> m_window;
     std::unique_ptr<OrthographicCameraController> m_cameraController;
 
+    LayerStack m_layerStack;
     glm::vec3 m_center;
 };
 
