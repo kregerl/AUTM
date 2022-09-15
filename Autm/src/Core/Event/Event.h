@@ -13,7 +13,8 @@ enum class EventType {
     MouseScrolled = 4,
     KeyPressed = 5,
     KeyReleased = 6,
-    WindowResizedEvent
+    WindowResized,
+    WindowClosed
 };
 
 enum class EventResult {
@@ -30,10 +31,7 @@ public:
 
     virtual std::string getName() const = 0;
 
-    // TODO: Implement EventResults
-//    void setResult(EventResult eventResult) { m_eventResult = eventResult; }
-
-//    EventResult getResult() const { return m_eventResult; }
+    EventResult getEventResult() const { return m_eventResult; }
 
     static EventType getStaticEventType() { return EventType::None; }
 
@@ -43,21 +41,19 @@ public:
     }
 
 private:
-//    EventResult m_eventResult;
+    EventResult m_eventResult = EventResult::Pass;
+    friend class EventDispatcher;
 };
 
 
 class EventDispatcher {
 public:
-    EventDispatcher(Event& event) : m_event(event) {}
+    explicit EventDispatcher(Event& event) : m_event(event) {}
 
     template<typename T, typename F>
     bool dispatchEvent(const F& callback) {
         if (m_event.getEventType() == T::getStaticEventType()) {
-            // TODO: Set event's "ActionResult" to the result of the callback.
-//            m_event.setResult(callback(static_cast<T&>(m_event)));
-            callback(static_cast<T&>(m_event));
-//            m_event.setResult(EventResult::Consume);
+            m_event.m_eventResult = callback(static_cast<T&>(m_event));
             return true;
         }
         return false;

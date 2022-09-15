@@ -3,7 +3,6 @@
 
 Window::Window(const WindowProperties& properties) : m_windowData(properties) {
 
-
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -27,6 +26,7 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
         glViewport(0, 0, width, height);
     });
 
+    // WindowResizedEvent
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
         WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
         windowData.width = width;
@@ -36,7 +36,15 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
         windowData.callback(event);
     });
 
+    // WindowClosedEvent
+    glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window) {
+        WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
+        WindowClosedEvent event;
+        windowData.callback(event);
+    });
 
+
+    // KeyPressedEvent / KeyReleasedEvent
     glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
         switch (action) {
@@ -59,18 +67,19 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
         }
     });
 
+    // MouseButtonPressedEvent / MouseButtonReleaseEvent
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
         WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
         switch (action) {
             case GLFW_PRESS: {
-                MouseButtonPressedEvent event(button, mods, xPos, yPos);
+                MouseButtonPressedEvent event(button, mods, (float) xPos, (float) yPos);
                 windowData.callback(event);
                 break;
             }
             case GLFW_RELEASE: {
-                MouseButtonReleasedEvent event(button, mods, xPos, yPos);
+                MouseButtonReleasedEvent event(button, mods, (float) xPos, (float) yPos);
                 windowData.callback(event);
                 break;
             }
@@ -78,11 +87,19 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
         }
     });
 
+    // MouseScrolledEvent
     glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset) {
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
         WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
-        MouseScrolledEvent event(xoffset, yoffset, xPos, yPos);
+        MouseScrolledEvent event((float) xoffset, (float) yoffset, (float) xPos, (float) yPos);
+        windowData.callback(event);
+    });
+
+    // MouseMovedEvent
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y) {
+        WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
+        MouseMovedEvent event((float) x, (float) y);
         windowData.callback(event);
     });
 

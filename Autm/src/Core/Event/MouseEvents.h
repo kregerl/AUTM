@@ -6,32 +6,31 @@
 
 class MouseButtonEvent : public Event {
 public:
-    explicit MouseButtonEvent(int mouseButton, int mods, double xPos, double yPos) : m_mouseButton(mouseButton),
-                                                                                     m_mods(mods), m_xPos(xPos),
-                                                                                     m_yPos(yPos) {}
+    explicit MouseButtonEvent(int mouseButton, int mods, float xPos, float yPos) : m_mouseButton(mouseButton),
+                                                                                   m_mods(mods), m_xPos(xPos),
+                                                                                   m_yPos(yPos) {}
 
     inline int getMouseButton() const { return m_mouseButton; }
 
     inline glm::vec2 getMousePos() const { return {m_xPos, m_yPos}; }
 
-    inline double getMouseX() const { return m_xPos; }
+    inline float getMouseX() const { return m_xPos; }
 
-    inline double getMouseY() const { return m_yPos; }
+    inline float getMouseY() const { return m_yPos; }
 
 protected:
     int m_mouseButton, m_mods;
-    double m_xPos, m_yPos;
+    float m_xPos, m_yPos;
 };
-
 
 class MouseButtonPressedEvent : public MouseButtonEvent {
 public:
-    explicit MouseButtonPressedEvent(int mouseButton, int mods, double xPos, double yPos) : MouseButtonEvent(
+    explicit MouseButtonPressedEvent(int mouseButton, int mods, float xPos, float yPos) : MouseButtonEvent(
             mouseButton, mods, xPos, yPos) {}
 
     virtual EventType getEventType() const override { return getStaticEventType(); };
 
-    virtual std::string getName() const { return "MouseButtonPressedEvent"; }
+    virtual std::string getName() const { return "MouseButtonPressed"; }
 
     static EventType getStaticEventType() { return EventType::MouseButtonPressed; }
 };
@@ -39,41 +38,61 @@ public:
 
 class MouseButtonReleasedEvent : public MouseButtonEvent {
 public:
-    explicit MouseButtonReleasedEvent(int mouseButton, int mods, double xPos, double yPos) : MouseButtonEvent(
+    explicit MouseButtonReleasedEvent(int mouseButton, int mods, float xPos, float yPos) : MouseButtonEvent(
             mouseButton, mods, xPos, yPos) {}
 
     virtual EventType getEventType() const override { return getStaticEventType(); };
 
-    virtual std::string getName() const { return "MouseButtonReleasedEvent"; }
+    virtual std::string getName() const { return "MouseButtonReleased"; }
 
     static EventType getStaticEventType() { return EventType::MouseButtonReleased; }
 };
 
 class MouseScrolledEvent : public Event {
 public:
-    MouseScrolledEvent(double xOffset, double yOffset, double xPos, double yPos) : m_xOffset(xOffset),
-                                                                                   m_yOffset(yOffset), m_xPos(xPos),
-                                                                                   m_yPos(yPos) {}
+    MouseScrolledEvent(float xOffset, float yOffset, float xPos, float yPos) : m_xOffset(xOffset),
+                                                                               m_yOffset(yOffset), m_xPos(xPos),
+                                                                               m_yPos(yPos) {}
 
-    MouseScrolledEvent(double xOffset, double yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
+    MouseScrolledEvent(float xOffset, float yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
 
     glm::vec2 getMouseOffset() const { return {m_xOffset, m_yOffset}; }
 
-    double getMouseOffsetX() const { return m_xOffset; }
+    float getMouseOffsetX() const { return m_xOffset; }
 
-    double getMouseOffsetY() const { return m_yOffset; }
+    float getMouseOffsetY() const { return m_yOffset; }
 
     glm::vec2 getMousePos() const { return {m_xPos, m_yPos}; }
 
     virtual EventType getEventType() const override { return getStaticEventType(); }
 
-    virtual std::string getName() const { return "MouseScrolledEvent"; }
+    virtual std::string getName() const { return "MouseScrolled"; }
 
     static EventType getStaticEventType() { return EventType::MouseScrolled; }
 
 private:
-    double m_xOffset, m_yOffset, m_xPos, m_yPos;
+    float m_xOffset, m_yOffset, m_xPos, m_yPos;
 
+};
+
+class MouseMovedEvent : public Event {
+public:
+    MouseMovedEvent(float x, float y) : m_xPos(x), m_yPos(y) {}
+
+    ~MouseMovedEvent() override = default;
+
+    EventType getEventType() const override { return getStaticEventType(); }
+
+    std::string getName() const override { return "MouseMoved"; }
+
+    static EventType getStaticEventType() { return EventType::MouseMoved; }
+
+    float getX() const { return m_xPos; }
+
+    float getY() const { return m_yPos; }
+
+private:
+    float m_xPos, m_yPos;
 };
 
 #endif
