@@ -21,7 +21,7 @@ public:
     Texture2D(int width, int height);
 
     // TODO: Replace const std::string& with std::string_view
-    Texture2D(const std::string &path);
+    Texture2D(std::string_view path);
 
     ~Texture2D();
 
@@ -41,7 +41,6 @@ private:
     Texture2DFormats determineChannels(int channels);
 
 private:
-    std::string m_path;
     int m_width, m_height;
     Texture2DFormats m_formats;
     GLuint m_rendererId;

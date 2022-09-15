@@ -7,7 +7,6 @@
 
 Application* Application::s_instance = nullptr;
 
-// TODO: Make an ImGui github repo with the CMakeLists.txt file so it can be cloned as its own submodule
 Application::Application() {
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());

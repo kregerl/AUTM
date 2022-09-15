@@ -12,9 +12,9 @@ Texture2D::Texture2D(int width, int height) : m_width(width), m_height(height), 
     glTextureParameteri(m_rendererId, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-Texture2D::Texture2D(const std::string& path) : m_path(path) {
+Texture2D::Texture2D(std::string_view path) {
     int imageChannels;
-    unsigned char* data = stbi_load(m_path.c_str(), &m_width, &m_height, &imageChannels, 0);
+    unsigned char* data = stbi_load(path.data(), &m_width, &m_height, &imageChannels, 0);
     m_formats = determineChannels(imageChannels);
     if (data) {
 #ifdef DEBUG
