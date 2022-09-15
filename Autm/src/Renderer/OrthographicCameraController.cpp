@@ -1,3 +1,4 @@
+#include <Core/Log.h>
 #include "OrthographicCameraController.h"
 #include "Core/Input.h"
 #include "Core/KeyCodes.h"
@@ -56,17 +57,19 @@ void OrthographicCameraController::onEvent(Event& event) {
     dispatcher.dispatchEvent<WindowResizedEvent>(BIND_EVENT_FUNCTION(OrthographicCameraController::onWindowResized));
 }
 
-void OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& event) {
+EventResult OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& event) {
     if (m_enableInputs) {
         m_zoom -= event.getMouseOffsetY() * 0.25f;
         m_zoom = std::max(m_zoom, 0.1f);
         m_camera.setProjectionMatrix(-m_aspectRatio * m_zoom, m_aspectRatio * m_zoom, -m_zoom, m_zoom);
     }
+    return EventResult::Consume;
 }
 
-void OrthographicCameraController::onWindowResized(WindowResizedEvent& event) {
+EventResult OrthographicCameraController::onWindowResized(WindowResizedEvent& event) {
     m_aspectRatio = (float) event.getWidth() / (float) event.getHeight();
     m_camera.setProjectionMatrix(-m_aspectRatio * m_zoom, m_aspectRatio * m_zoom, -m_zoom, m_zoom);
+    return EventResult::Consume;
 }
 
 

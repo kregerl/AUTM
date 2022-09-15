@@ -14,7 +14,7 @@ public:
 
     virtual void onShutdown() {}
 
-    virtual void onUpdate() {}
+    virtual void onUpdate(float ts) {}
 
     virtual void onEvent(Event& event) {}
 

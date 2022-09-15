@@ -15,13 +15,18 @@
 #include <Core/Event/MouseEvents.h>
 #include <Core/Event/KeyEvents.h>
 
+
 class Application {
 public:
     Application();
 
+    ~Application();
+
     void onEvent(Event& event);
 
-    void onMouseButtonPressed(MouseButtonPressedEvent& event);
+    void pushLayer(Layer* layer);
+
+    void pushOverlay(Layer* layer);
 
     void run();
 
@@ -31,15 +36,16 @@ public:
 
     static Application* createInstance() { return new Application(); }
 
-private:
+protected:
     static Application* s_instance;
 
     std::unique_ptr<Window> m_window;
-    std::unique_ptr<OrthographicCameraController> m_cameraController;
+//    std::unique_ptr<OrthographicCameraController> m_cameraController;
 
     LayerStack m_layerStack;
-    glm::vec3 m_center;
+//    glm::vec3 m_center;
 };
 
+Application* createApplication();
 
 #endif

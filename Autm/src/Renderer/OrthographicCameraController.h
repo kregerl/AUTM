@@ -20,9 +20,9 @@ public:
 
     void onEvent(Event& event);
 
-    void onMouseScrolled(MouseScrolledEvent& event);
+    EventResult onMouseScrolled(MouseScrolledEvent& event);
 
-    void onWindowResized(WindowResizedEvent &event);
+    EventResult onWindowResized(WindowResizedEvent &event);
 
     const OrthographicCamera getCamera() const { return m_camera; }
 
@@ -47,9 +47,9 @@ private:
     glm::vec3 m_position = {0, 0, 0};
 
     OrthographicCamera m_camera;
-    float m_rotation;
+    float m_rotation = 0.0f;
     float m_aspectRatio;
-    bool m_enableInputs;
+    bool m_enableInputs = true;
 };
 
 

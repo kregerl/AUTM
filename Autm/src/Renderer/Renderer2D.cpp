@@ -3,6 +3,7 @@
 #include "Texture2D.h"
 
 #include <ext/matrix_transform.hpp>
+#include <Core/Log.h>
 
 
 struct RendererData {
