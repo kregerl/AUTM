@@ -9,12 +9,12 @@
 
 struct WindowProperties {
     int width, height;
-    const std::string title;
+    std::string_view title;
     bool isFullscreen;
 
     WindowProperties(int width = 1280,
                      int height = 720,
-                     const std::string& title = "Title",
+                     std::string_view title = "Title",
                      bool isFullscreen = false)
             : width(width),
               height(height),
@@ -61,7 +61,7 @@ private:
     OpenGLContext* m_context;
     struct WindowData {
         int width, height;
-        const std::string title;
+        std::string_view title;
         bool isFullscreen;
         eventCallbackFunction callback;
 
