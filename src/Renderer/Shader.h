@@ -13,8 +13,8 @@ class Shader {
 public:
     Shader();
 
-    Shader(const char *vertexPath, const char *fragmentPath,
-           const char *geometryPath = nullptr);
+    Shader(std::string_view vertexPath, std::string_view fragmentPath,
+           std::string_view geometryPath = nullptr);
 
     virtual ~Shader();
 

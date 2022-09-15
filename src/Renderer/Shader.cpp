@@ -4,15 +4,15 @@
 
 Shader::Shader() : m_programId(0) {}
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath) {
+Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath, std::string_view geometryPath) {
     std::string vertexShader, fragmentShader;
     std::ifstream vertexShaderFile, fragmentShaderFile;
 
     vertexShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fragmentShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
-        vertexShaderFile.open(vertexPath);
-        fragmentShaderFile.open(fragmentPath);
+        vertexShaderFile.open(vertexPath.data());
+        fragmentShaderFile.open(fragmentPath.data());
         std::stringstream vertexStream, fragmentStream;
         vertexStream << vertexShaderFile.rdbuf();
         fragmentStream << fragmentShaderFile.rdbuf();
@@ -47,13 +47,13 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 
-    if (geometryPath) {
+    if (!geometryPath.empty()) {
         std::string geometryCode;
         std::ifstream gshFile;
 
         gshFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try {
-            gshFile.open(geometryPath);
+            gshFile.open(geometryPath.data());
             std::stringstream gshStream;
             gshStream << gshFile.rdbuf();
             gshFile.close();

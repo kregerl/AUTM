@@ -1,13 +1,13 @@
 #include <Core/Log.h>
 #include "ComputeShader.h"
 
-ComputeShader::ComputeShader(const char *computePath) {
+ComputeShader::ComputeShader(std::string_view computePath) {
     std::string computeShader;
     std::ifstream computeShaderFile;
 
     computeShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
-        computeShaderFile.open(computePath);
+        computeShaderFile.open(computePath.data());
         std::stringstream cshStream;
         cshStream << computeShaderFile.rdbuf();
         computeShaderFile.close();
