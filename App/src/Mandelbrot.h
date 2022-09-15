@@ -1,8 +1,9 @@
 #ifndef AUTM_MANDELBROT_H
 #define AUTM_MANDELBROT_H
 
-#include <Renderer/OrthographicCameraController.h>
 #include <Core/Layer.h>
+#include <Event/MouseEvents.h>
+#include <Renderer/OrthographicCamera.h>
 
 class Mandelbrot : public Layer {
 

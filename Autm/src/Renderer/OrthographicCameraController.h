@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 
 #include "OrthographicCamera.h"
-#include "Core/Event/MouseEvents.h"
-#include <Core/Event/WindowEvents.h>
+#include "Event/MouseEvents.h"
+#include "Event/WindowEvents.h"
 
 /**
  * Controller class for the orthographic camera that allows it to move, rotate and zoom

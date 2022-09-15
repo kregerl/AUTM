@@ -5,8 +5,6 @@
 Shader::Shader() : m_programId(0) {}
 
 Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath, std::string_view geometryPath) {
-    AUTM_CORE_DEBUG(vertexPath);
-    AUTM_CORE_DEBUG(fragmentPath);
     std::string vertexShader, fragmentShader;
     std::ifstream vertexShaderFile, fragmentShaderFile;
 
