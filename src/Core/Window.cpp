@@ -10,7 +10,7 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    m_window = glfwCreateWindow(m_windowData.width, m_windowData.height, m_windowData.title.c_str(),
+    m_window = glfwCreateWindow(m_windowData.width, m_windowData.height, m_windowData.title.data(),
                                 m_windowData.isFullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
 
     if (m_window == nullptr) {

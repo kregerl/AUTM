@@ -20,6 +20,7 @@ class Texture2D {
 public:
     Texture2D(int width, int height);
 
+    // TODO: Replace const std::string& with std::string_view
     Texture2D(const std::string &path);
 
     ~Texture2D();
