@@ -22,12 +22,12 @@ ComputeShader::ComputeShader(const char *computePath) {
     glShaderSource(compute, 1, &cshCode, nullptr);
     glCompileShader(compute);
     checkCompileErrors(compute, "COMPUTE");
-    id = glCreateProgram();
-    glAttachShader(id, compute);
+    m_programId = glCreateProgram();
+    glAttachShader(m_programId, compute);
     glDeleteShader(compute);
 
-    glLinkProgram(id);
-    checkCompileErrors(id, "PROGRAM");
+    glLinkProgram(m_programId);
+    checkCompileErrors(m_programId, "PROGRAM");
 }
 
 void ComputeShader::dispatch(unsigned int groupsX, unsigned int groupsY, unsigned int groupsZ) {

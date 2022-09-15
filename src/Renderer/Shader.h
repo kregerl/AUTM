@@ -16,7 +16,7 @@ public:
     Shader(const char *vertexPath, const char *fragmentPath,
            const char *geometryPath = nullptr);
 
-    ~Shader() = default;
+    virtual ~Shader();
 
     void bind() const;
 
@@ -48,9 +48,7 @@ protected:
     static void checkCompileErrors(unsigned int shaderProgram, std::string type);
 
 protected:
-    GLuint id;
-
-
+    GLuint m_programId;
 };
 
 
