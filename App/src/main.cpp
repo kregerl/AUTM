@@ -1,5 +1,5 @@
 #include <Core/Log.h>
-#include "App/Application.h"
+#include <App/Application.h>
 
 int main() {
     Log::init();

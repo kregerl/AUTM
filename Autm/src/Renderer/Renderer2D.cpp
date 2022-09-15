@@ -24,23 +24,24 @@ static RendererData* s_data = new RendererData();
 // TODO: Switch this to a batched renderer instead
 void Renderer2D::init() {
     s_data->arrowTexture = std::make_shared<Texture2D>(
-            R"(/home/loucas/CLionProjects/AUTM/assets/images/play32xwhite.png)");
+            R"(/home/loucas/CLionProjects/Autm/assets/images/play32xwhite.png)");
 
     s_data->whiteTexture = std::make_shared<Texture2D>(1, 1);
     int white = 0xFFFFFFFF;
     s_data->whiteTexture->setData(sizeof(int), &white);
 
+    // TODO: Try to use non Raw strings with std::string_view again.
     s_data->textureShader = std::make_shared<Shader>(
-            R"(/home/loucas/CLionProjects/AUTM/assets/shaders/TextureVertex.glsl)",
-            R"(/home/loucas/CLionProjects/AUTM/assets/shaders/TextureFragment.glsl)");
+            "/home/loucas/CLionProjects/Autm/assets/shaders/TextureVertex.glsl",
+            "/home/loucas/CLionProjects/Autm/assets/shaders/TextureFragment.glsl");
 
     s_data->flatColorShader = std::make_shared<Shader>(
-            R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FlatColorVertex.glsl)",
-            R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FlatColorFragment.glsl)");
+            "/home/loucas/CLionProjects/Autm/assets/shaders/FlatColorVertex.glsl",
+            "/home/loucas/CLionProjects/Autm/assets/shaders/FlatColorFragment.glsl");
 
     s_data->fractalShader = std::make_shared<Shader>(
-            R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FractalVertex.glsl)",
-            R"(/home/loucas/CLionProjects/AUTM/assets/shaders/FractalFragment.glsl)");
+            "/home/loucas/CLionProjects/Autm/assets/shaders/FractalVertex.glsl",
+            "/home/loucas/CLionProjects/Autm/assets/shaders/FractalFragment.glsl");
 
 //  --------------------------
 //  ---------- Quad ----------

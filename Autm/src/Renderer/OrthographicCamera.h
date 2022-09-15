@@ -1,7 +1,7 @@
 #ifndef AUTM_ORTHOGRAPHICCAMERA_H
 #define AUTM_ORTHOGRAPHICCAMERA_H
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 
 /**

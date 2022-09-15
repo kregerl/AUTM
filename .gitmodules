@@ -1,15 +1,15 @@
-[submodule "vendor/glfw"]
-	path = vendor/glfw
+[submodule "Autm/vendor/glfw"]
+	path = Autm/vendor/glfw
 	url = https://github.com/glfw/glfw
 
-[submodule "vendor/glm"]
-    path = vendor/glm
+[submodule "Autm/vendor/glm"]
+	path = Autm/vendor/glm
     url = https://github.com/g-truc/glm
 
-[submodule "vendor/spdlog"]
-	path = vendor/spdlog
+[submodule "Autm/vendor/spdlog"]
+	path = Autm/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 
-[submodule "vendor/imgui"]
-	path = vendor/imgui
+[submodule "Autm/vendor/imgui"]
+	path = Autm/vendor/imgui
 	url = https://github.com/kregerl/imgui

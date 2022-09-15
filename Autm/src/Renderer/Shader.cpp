@@ -5,6 +5,8 @@
 Shader::Shader() : m_programId(0) {}
 
 Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath, std::string_view geometryPath) {
+    AUTM_CORE_DEBUG(vertexPath);
+    AUTM_CORE_DEBUG(fragmentPath);
     std::string vertexShader, fragmentShader;
     std::ifstream vertexShaderFile, fragmentShaderFile;
 
@@ -59,7 +61,7 @@ Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath, std::
             gshFile.close();
             geometryCode = gshStream.str();
         }
-        catch (std::ifstream::failure e) {
+        catch (std::ifstream::failure& e) {
             AUTM_CORE_ERROR("Couldn't read geometry shader at {}", geometryPath);
         }
         const char* gshCode = geometryCode.c_str();
@@ -79,6 +81,7 @@ Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath, std::
 Shader::~Shader() {
     glDeleteProgram(m_programId);
 }
+
 void Shader::bind() const {
     glUseProgram(m_programId);
 }
@@ -131,7 +134,7 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat) const {
     glUniformMatrix4fv(glGetUniformLocation(m_programId, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void Shader::checkCompileErrors(unsigned int shader, std::string type) {
+void Shader::checkCompileErrors(unsigned int shader, const std::string& type) {
     GLint success;
     GLchar infoLog[1024];
     if (type != "PROGRAM") {
