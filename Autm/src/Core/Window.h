@@ -29,7 +29,7 @@ public:
 
     Window(const WindowProperties& properties);
 
-    ~Window() = default;
+    ~Window();
 
     void onUpdate();
 

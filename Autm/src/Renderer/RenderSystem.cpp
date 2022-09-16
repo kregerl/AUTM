@@ -20,7 +20,7 @@ void RenderSystem::clear(int mask) {
  * @param mode
  * @param count
  */
-void RenderSystem::draw(std::shared_ptr<VertexArray> &vertexArray, GLenum mode, int count) {
+void RenderSystem::draw(const std::shared_ptr<VertexArray> &vertexArray, GLenum mode, int count) {
     int indexCount = count == 0 ? vertexArray->getIndexBuffer()->getCount() : count;
     glDrawElements(mode, indexCount, GL_UNSIGNED_INT, nullptr);
 }

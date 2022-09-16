@@ -23,7 +23,7 @@ public:
 
     void setIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer);
 
-    std::shared_ptr<IndexBuffer> &getIndexBuffer() { return m_indexBuffer; }
+    const std::shared_ptr<IndexBuffer> &getIndexBuffer() { return m_indexBuffer; }
 
 private:
     std::vector<std::shared_ptr<VertexBuffer>> m_vertexBuffers;

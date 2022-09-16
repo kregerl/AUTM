@@ -11,6 +11,7 @@ Application::Application() {
     m_window = std::make_unique<Window>(WindowProperties());
     m_window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
 
+    glEnable(GL_DEBUG_OUTPUT);
     Renderer2D::init();
 }
 
@@ -33,19 +34,6 @@ void Application::onEvent(Event& event) {
     }
 }
 
-//EventResult Application::onMouseButtonPressed(MouseButtonPressedEvent& event) {
-//    if (event.getMouseButton() == L_MOUSE_BUTTON) {
-//        auto pos = event.getMousePos();
-//        glm::vec2 resolution = m_window->getResolution();
-//        float zoom = Input::getScroll();
-//        m_center = {
-//                m_center.x + (pos.x - (0.5 * resolution.x)) * (4 / resolution.x) * (16 / (9 * zoom)),
-//                m_center.y - (pos.y - (0.5 * resolution.y)) * (4 / resolution.y) * (1 / zoom),
-//                zoom
-//        };
-//    }
-//}
-
 void Application::run() {
 
     while (!m_window->shouldClose()) {
@@ -58,29 +46,6 @@ void Application::run() {
             layer->onUpdate(m_window->getDeltaTime());
         }
 
-
-
-//        m_cameraController->onUpdate(m_window->getDeltaTime());
-//        RenderSystem::clearColor(0.0f, 1.0f, 0.0f, 1.0f);
-//        Renderer2D::begin(m_cameraController->getCamera());
-//
-//        Renderer2D::drawQuad(glm::vec3(0.0f), glm::vec2(0.5f), 0.0f);
-//
-//        Renderer2D::end();
-//
-//        RenderSystem::clearColor(0.0f, 1.0f, 0.0f, 1.0f);
-//        Renderer2D::begin(m_cameraController->getCamera());
-
-
-//        float zoom = Input::getScroll();
-//        m_center.z = zoom;
-//        glm::vec2 size = m_cameraController->getCameraSize();
-//        glm::vec2 resolution = m_window->getResolution();
-
-
-//        Renderer2D::drawFractalQuad(size, m_center, resolution, 1000);
-
-//        Renderer2D::end();
     }
 
     m_window->close();

@@ -18,16 +18,15 @@ public:
 
     static void end();
 
-    static void drawQuad(glm::vec3 position, glm::vec2 size, float rotation);
+    static void submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
+                       const glm::mat4& modelMatrix);
 
-    static void drawFractalQuad(glm::vec2 size, glm::vec3 center, glm::vec2 resolution, float iterations);
+    static void drawQuad(glm::vec3 position, glm::vec2 size, float rotation);
 
     static void drawLine(glm::vec3 position, glm::vec2 size, float rotation, float lineWidth);
 
 private:
     static void initQuad();
-
-    static void initFullscreenQuad();
 
     static void initLine();
 };

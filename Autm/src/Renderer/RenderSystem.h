@@ -14,7 +14,7 @@ public:
 
     static void clear(int mask);
 
-    static void draw(std::shared_ptr<VertexArray> &vertexArray, GLenum mode = GL_TRIANGLES, int count = 0);
+    static void draw(const std::shared_ptr<VertexArray> &vertexArray, GLenum mode = GL_TRIANGLES, int count = 0);
 };
 
 

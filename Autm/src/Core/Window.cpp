@@ -138,4 +138,9 @@ void Window::setEventCallback(eventCallbackFunction callback) {
     m_windowData.callback = callback;
 }
 
+Window::~Window() {
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
+}
+
 
