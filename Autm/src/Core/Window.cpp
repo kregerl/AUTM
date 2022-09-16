@@ -119,11 +119,6 @@ void Window::onUpdate() {
     processInput();
 }
 
-void Window::close() {
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
-}
-
 void Window::processInput() {
     if (Input::isKeyPressed(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(m_window, true);

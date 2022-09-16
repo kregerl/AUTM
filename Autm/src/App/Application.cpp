@@ -45,10 +45,7 @@ void Application::run() {
         for (Layer* layer : m_layerStack) {
             layer->onUpdate(m_window->getDeltaTime());
         }
-
     }
-
-    m_window->close();
 }
 
 void Application::pushLayer(Layer* layer) {

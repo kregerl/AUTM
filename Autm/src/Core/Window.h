@@ -33,8 +33,6 @@ public:
 
     void onUpdate();
 
-    void close();
-
     void pollEvents();
 
     void setEventCallback(eventCallbackFunction callback);
