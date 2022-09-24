@@ -9,7 +9,7 @@ Application* Application::s_instance = nullptr;
 Application::Application() {
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());
-    m_window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
+    m_window->setEventCallback(AUTM_BIND_EVENT(Application::onEvent));
 
     glEnable(GL_DEBUG_OUTPUT);
     Renderer2D::init();

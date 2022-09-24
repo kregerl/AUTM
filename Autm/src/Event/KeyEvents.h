@@ -11,6 +11,10 @@ public:
 
     inline int getMods() const { return m_mods; }
 
+    int getCategory() const override {
+        return EventCategoryKeyboard | EventCategoryInput;
+    }
+
 protected:
     int m_keyCode, m_mods;
 };

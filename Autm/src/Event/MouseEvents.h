@@ -18,10 +18,15 @@ public:
 
     inline float getMouseY() const { return m_yPos; }
 
+    int getCategory() const override {
+        return EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton;
+    }
+
 protected:
     int m_mouseButton, m_mods;
     float m_xPos, m_yPos;
 };
+
 
 class MouseButtonPressedEvent : public MouseButtonEvent {
 public:
@@ -68,6 +73,10 @@ public:
 
     virtual std::string getName() const { return "MouseScrolled"; }
 
+    int getCategory() const override {
+        return EventCategoryMouse | EventCategoryInput;
+    }
+
     static EventType getStaticEventType() { return EventType::MouseScrolled; }
 
 private:
@@ -79,17 +88,19 @@ class MouseMovedEvent : public Event {
 public:
     MouseMovedEvent(float x, float y) : m_xPos(x), m_yPos(y) {}
 
-    ~MouseMovedEvent() override = default;
+    float getX() const { return m_xPos; }
+
+    float getY() const { return m_yPos; }
 
     EventType getEventType() const override { return getStaticEventType(); }
 
     std::string getName() const override { return "MouseMoved"; }
 
+    int getCategory() const override {
+        return EventCategoryMouse | EventCategoryInput;
+    }
+
     static EventType getStaticEventType() { return EventType::MouseMoved; }
-
-    float getX() const { return m_xPos; }
-
-    float getY() const { return m_yPos; }
 
 private:
     float m_xPos, m_yPos;

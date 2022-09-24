@@ -3,7 +3,7 @@
 
 #include "autmpch.h"
 
-#define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
+#define AUTM_BIND_EVENT(x) std::bind(&x, this, std::placeholders::_1)
 
 enum class EventType {
     None = 0,
@@ -15,6 +15,16 @@ enum class EventType {
     KeyReleased = 6,
     WindowResized,
     WindowClosed
+};
+
+enum EventCategory {
+    None = 0,
+    EventCategoryApplication = 0x01,
+    EventCategoryInput = 0x02,
+    EventCategoryKeyboard = 0x04,
+    EventCategoryMouse = 0x08,
+    EventCategoryMouseButton = 0x10,
+
 };
 
 enum class EventResult {
@@ -33,6 +43,12 @@ public:
 
     EventResult getEventResult() const { return m_eventResult; }
 
+    void setEventResult(EventResult result) { m_eventResult = result; }
+
+    virtual int getCategory() const { return EventCategory::None; };
+
+    bool isInCategory(EventCategory category) { return getCategory() & category; }
+
     static EventType getStaticEventType() { return EventType::None; }
 
     friend std::ostream& operator<<(std::ostream& os, const Event& event) {
@@ -42,6 +58,7 @@ public:
 
 private:
     EventResult m_eventResult = EventResult::Pass;
+
     friend class EventDispatcher;
 };
 
