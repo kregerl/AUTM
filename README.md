@@ -83,7 +83,7 @@ void Mandelbrot::onUpdate(float ts) {
 
 void Mandelbrot::onEvent(Event& event) {
     // EventDispatcher dispatcher(event);
-    // dispatcher.dispatchEvent<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(Mandelbrot::onMouseButtonPressed));
+    // dispatcher.dispatchEvent<MouseButtonPressedEvent>(AUTM_BIND_EVENT(Mandelbrot::onMouseButtonPressed));
 }
 ```
 For more information please see the Examples(Doesn't exist yet) directory
