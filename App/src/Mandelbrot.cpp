@@ -48,7 +48,7 @@ void Mandelbrot::onUpdate(float ts) {
     RenderSystem::clearColor(0.0f, 0.0f, 0.0f, 1.0f);
     Renderer2D::begin(m_camera);
 
-    glm::vec2 resolution = Application::getInstance()->getWindow()->getResolution();
+    glm::vec2 resolution = Application::getInstance()->getWindow().getResolution();
 
     glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), {resolution.x, resolution.y, 1.0f});
 
@@ -65,14 +65,14 @@ void Mandelbrot::onUpdate(float ts) {
 
 void Mandelbrot::onEvent(Event& event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatchEvent<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(Mandelbrot::onMouseButtonPressed));
-    dispatcher.dispatchEvent<MouseScrolledEvent>(BIND_EVENT_FUNCTION(Mandelbrot::onMouseScroll));
+    dispatcher.dispatchEvent<MouseButtonPressedEvent>(AUTM_BIND_EVENT(Mandelbrot::onMouseButtonPressed));
+    dispatcher.dispatchEvent<MouseScrolledEvent>(AUTM_BIND_EVENT(Mandelbrot::onMouseScroll));
 }
 
 EventResult Mandelbrot::onMouseButtonPressed(MouseButtonPressedEvent& event) {
     if (event.getMouseButton() == L_MOUSE_BUTTON) {
         auto pos = event.getMousePos();
-        glm::vec2 resolution = Application::getInstance()->getWindow()->getResolution();
+        glm::vec2 resolution = Application::getInstance()->getWindow().getResolution();
 //        float zoom = Input::getScroll();
         m_center = {
                 m_center.x + (pos.x - (0.5 * resolution.x)) * (4 / resolution.x) * (16 / (9 * m_zoom)),

@@ -30,7 +30,7 @@ public:
 
     void run();
 
-    const std::unique_ptr<Window>& getWindow() const { return m_window; }
+    inline Window& getWindow() const { return *m_window; }
 
     static Application* getInstance() { return s_instance; }
 
