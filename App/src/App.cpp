@@ -1,11 +1,13 @@
 #include <Core/EntryPoint.h>
 #include "Mandelbrot.h"
 #include "DemoLayer.h"
+#include "RayMarching.h"
 
 class App: public Application {
 public:
     App() {
-        pushLayer(new Mandelbrot());
+//        pushLayer(new Mandelbrot());
+        pushLayer(new RayMarching());
         pushOverlay(new DemoLayer());
     }
 
