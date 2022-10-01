@@ -2,6 +2,7 @@
 #include <Renderer/Renderer2D.h>
 #include <App/Application.h>
 #include <glm/ext/matrix_transform.hpp>
+#include <Core/Log.h>
 #include "RayMarching.h"
 
 RayMarching::RayMarching() : Layer("Ray Marching"), m_camera(-1.7777778, 1.7777778, 1, -1) {
@@ -49,6 +50,7 @@ void RayMarching::onUpdate(float ts) {
     m_fsQuadVA->bind();
     m_shader->bind();
     m_shader->setVec2("u_resolution", resolution);
+    m_shader->setFloat("u_time", ts);
 
     Renderer2D::submit(m_shader, m_fsQuadVA, modelMatrix);
 
