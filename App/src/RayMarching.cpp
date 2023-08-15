@@ -39,7 +39,7 @@ void RayMarching::on_init() {
 void RayMarching::on_shutdown() {
 }
 
-void RayMarching::onUpdate(float ts) {
+void RayMarching::on_update(float ts) {
     RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
     Renderer2D::begin(m_camera);
 

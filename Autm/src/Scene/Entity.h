@@ -11,24 +11,24 @@ public:
     Entity(const Entity&) = default;
 
     template<typename T, typename... Args>
-    T& addComponent(Args&&... args) {
+    T& add_component(Args&&... args) {
         // TODO: Asserts
         return m_scene->m_registry.emplace<T>(m_entity_handle, std::forward<Args>(args)...);
     }
 
     template<typename T>
-    T& getComponent() {
+    T& get_component() {
         // TODO: Asserts
         return m_scene->m_registry.get<T>(m_entity_handle);
     }
 
     template<typename T>
-    bool hasComponent() {
+    bool has_component() {
         return m_scene->m_registry.all_of<T>(m_entity_handle);
     }
 
     template<typename T>
-    void removeComponent() {
+    void remove_component() {
         m_scene->m_registry.remove<T>(m_entity_handle);
     }
 

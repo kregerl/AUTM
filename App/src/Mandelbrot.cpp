@@ -43,7 +43,7 @@ void Mandelbrot::on_init() {
 void Mandelbrot::on_shutdown() {
 }
 
-void Mandelbrot::onUpdate(float ts) {
+void Mandelbrot::on_update(float ts) {
 
     RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
     Renderer2D::begin(m_camera);
