@@ -1,4 +1,6 @@
 
+#include <cstdint>
+
 #include <vector>
 #include <array>
 #include <unordered_map>

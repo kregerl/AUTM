@@ -4,11 +4,11 @@
 #include "Core/Log.h"
 #include "App/Application.h"
 
-extern Application* createApplication();
+extern Application* create_application();
 
 int main(int argc, char** argv) {
     Log::init();
-    auto app = createApplication();
+    auto app = create_application();
     app->run();
     delete app;
 }

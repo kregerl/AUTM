@@ -5,9 +5,9 @@
 
 class ComputeShader : Shader {
 public:
-    explicit ComputeShader(std::string_view computePath);
+    explicit ComputeShader(std::string_view compute_path);
 
-    static void dispatch(unsigned int groupsX, unsigned int groupsY, unsigned groupsZ);
+    static void dispatch(unsigned int groups_x, unsigned int groups_y, unsigned groups_z);
 
 };
 

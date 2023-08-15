@@ -5,18 +5,18 @@
 
 class KeyEvent : public Event {
 public:
-    explicit KeyEvent(int keyCode, int mods) : m_keyCode(keyCode), m_mods(mods) {}
+    explicit KeyEvent(int keycode, int mods) : m_keycode(keycode), m_mods(mods) {}
 
-    inline int getKeyCode() const { return m_keyCode; }
+    inline int get_keycodes() const { return m_keycode; }
 
-    inline int getMods() const { return m_mods; }
+    inline int get_mods() const { return m_mods; }
 
-    int getCategory() const override {
+    int get_category() const override {
         return EventCategoryKeyboard | EventCategoryInput;
     }
 
 protected:
-    int m_keyCode, m_mods;
+    int m_keycode, m_mods;
 };
 
 
@@ -24,13 +24,13 @@ class KeyPressedEvent : public KeyEvent {
 public:
     explicit KeyPressedEvent(int keyCode, int mods, bool repeat = false) : KeyEvent(keyCode, mods), m_repeat(repeat) {}
 
-    virtual EventType getEventType() const override { return getStaticEventType(); }
+    virtual EventType get_event_type() const override { return get_static_event_type(); }
 
-    virtual std::string getName() const { return "KeyPressedEvent"; }
+    virtual std::string get_name() const { return "KeyPressedEvent"; }
 
-    bool getRepeat() const { return m_repeat; }
+    bool is_repeating() const { return m_repeat; }
 
-    static EventType getStaticEventType() { return EventType::KeyPressed; }
+    static EventType get_static_event_type() { return EventType::KeyPressed; }
 
 private:
     bool m_repeat;
@@ -38,13 +38,13 @@ private:
 
 class KeyReleasedEvent : public KeyEvent {
 public:
-    explicit KeyReleasedEvent(int keyCode, int mods) : KeyEvent(keyCode, mods) {}
+    explicit KeyReleasedEvent(int keycode, int mods) : KeyEvent(keycode, mods) {}
 
-    virtual EventType getEventType() const override { return getStaticEventType(); }
+    virtual EventType get_event_type() const override { return get_static_event_type(); }
 
-    virtual std::string getName() const { return "KeyReleasedEvent"; }
+    virtual std::string get_name() const { return "KeyReleasedEvent"; }
 
-    static EventType getStaticEventType() { return EventType::KeyReleased; }
+    static EventType get_static_event_type() { return EventType::KeyReleased; }
 };
 
 #endif

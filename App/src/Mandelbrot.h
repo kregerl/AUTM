@@ -14,13 +14,13 @@ public:
 
     virtual ~Mandelbrot() = default;
 
-    virtual void onInit() override;
+    virtual void on_init() override;
 
-    virtual void onShutdown() override;
+    virtual void on_shutdown() override;
 
-    virtual void onUpdate(float ts) override;
+    virtual void on_update(float ts) override;
 
-    virtual void onEvent(Event& event) override;
+    virtual void on_event(Event& event) override;
 
     EventResult onMouseButtonPressed(MouseButtonPressedEvent &event);
 

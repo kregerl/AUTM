@@ -37,27 +37,27 @@ class Event {
 public:
     virtual ~Event() = default;
 
-    virtual EventType getEventType() const = 0;
+    virtual EventType get_event_type() const = 0;
 
-    virtual std::string getName() const = 0;
+    virtual std::string get_name() const = 0;
 
-    EventResult getEventResult() const { return m_eventResult; }
+    EventResult get_event_result() const { return m_event_result; }
 
-    void setEventResult(EventResult result) { m_eventResult = result; }
+    void set_event_result(EventResult result) { m_event_result = result; }
 
-    virtual int getCategory() const { return EventCategory::None; };
+    virtual int get_category() const { return EventCategory::None; };
 
-    bool isInCategory(EventCategory category) { return getCategory() & category; }
+    bool is_in_category(EventCategory category) { return get_category() & category; }
 
-    static EventType getStaticEventType() { return EventType::None; }
+    static EventType get_static_event_type() { return EventType::None; }
 
     friend std::ostream& operator<<(std::ostream& os, const Event& event) {
-        os << event.getName();
+        os << event.get_name();
         return os;
     }
 
 private:
-    EventResult m_eventResult = EventResult::Pass;
+    EventResult m_event_result = EventResult::Pass;
 
     friend class EventDispatcher;
 };
@@ -69,8 +69,8 @@ public:
 
     template<typename T, typename F>
     bool dispatchEvent(const F& callback) {
-        if (m_event.getEventType() == T::getStaticEventType()) {
-            m_event.m_eventResult = callback(static_cast<T&>(m_event));
+        if (m_event.get_event_type() == T::get_static_event_type()) {
+            m_event.m_event_result = callback(static_cast<T&>(m_event));
             return true;
         }
         return false;

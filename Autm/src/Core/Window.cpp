@@ -1,7 +1,9 @@
 #include "Window.h"
+
+#include <utility>
 #include "Log.h"
 
-Window::Window(const WindowProperties& properties) : m_windowData(properties) {
+Window::Window(const WindowProperties& properties) : m_window_data(properties) {
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -9,8 +11,8 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    m_window = glfwCreateWindow(m_windowData.width, m_windowData.height, m_windowData.title.data(),
-                                m_windowData.isFullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
+    m_window = glfwCreateWindow(m_window_data.width, m_window_data.height, m_window_data.title.data(),
+                                m_window_data.is_fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
 
     if (m_window == nullptr) {
         AUTM_CORE_FATAL("Cannot open a null window.");
@@ -20,7 +22,7 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
     m_context = new OpenGLContext(m_window);
     m_context->init();
 
-    glfwSetWindowUserPointer(m_window, &m_windowData);
+    glfwSetWindowUserPointer(m_window, &m_window_data);
 
     glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
@@ -105,7 +107,7 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
 
 
 #ifdef DEBUG
-    AUTM_CORE_DEBUG("Width: {}, Height:{}", m_windowData.width, m_windowData.height);
+    AUTM_CORE_DEBUG("Width: {}, Height:{}", m_window_data.width, m_window_data.height);
     AUTM_CORE_DEBUG("OpenGL Version: {}", glGetString(GL_VERSION));
 #endif
 }
@@ -113,24 +115,24 @@ Window::Window(const WindowProperties& properties) : m_windowData(properties) {
 
 void Window::onUpdate() {
     double currentFrame = glfwGetTime();
-    m_deltaTime = currentFrame - m_prevFrame;
-    m_prevFrame = currentFrame;
+    m_delta_time = currentFrame - m_previous_frame;
+    m_previous_frame = currentFrame;
 
-    processInput();
+    process_input();
 }
 
-void Window::processInput() {
-    if (Input::isKeyPressed(GLFW_KEY_ESCAPE))
+void Window::process_input() {
+    if (Input::is_key_pressed(GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(m_window, true);
 }
 
-void Window::pollEvents() {
-    m_context->swapBuffers();
+void Window::poll_events() {
+    m_context->swap_buffers();
     glfwPollEvents();
 }
 
-void Window::setEventCallback(eventCallbackFunction callback) {
-    m_windowData.callback = callback;
+void Window::set_event_callback(EventCallbackFunction callback) {
+    m_window_data.callback = std::move(callback);
 }
 
 Window::~Window() {

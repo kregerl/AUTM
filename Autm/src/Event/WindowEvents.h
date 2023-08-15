@@ -5,17 +5,17 @@ class WindowResizedEvent : public Event {
 public:
     WindowResizedEvent(int width, int height) : m_width(width), m_height(height) {}
 
-    virtual EventType getEventType() const override { return getStaticEventType(); };
+    virtual EventType get_event_type() const override { return get_static_event_type(); };
 
-    virtual std::string getName() const { return "WindowResizedEvent"; }
+    virtual std::string get_name() const { return "WindowResizedEvent"; }
 
-    static EventType getStaticEventType() { return EventType::WindowResized; }
+    static EventType get_static_event_type() { return EventType::WindowResized; }
 
-    int getWidth() const { return m_width; }
+    int get_width() const { return m_width; }
 
-    int getHeight() const { return m_height; }
+    int get_height() const { return m_height; }
 
-    glm::vec2 getSize() const { return {m_width, m_height}; }
+    glm::vec2 get_size() const { return {m_width, m_height}; }
 
 protected:
     int m_width, m_height;
@@ -27,11 +27,11 @@ public:
 
     ~WindowClosedEvent() override = default;
 
-    virtual EventType getEventType() const override { return getStaticEventType(); }
+    virtual EventType get_event_type() const override { return get_static_event_type(); }
 
-    virtual std::string getName() const override { return "WindowClosedEvent"; }
+    virtual std::string get_name() const override { return "WindowClosedEvent"; }
 
-    static EventType getStaticEventType() { return EventType::WindowClosed; }
+    static EventType get_static_event_type() { return EventType::WindowClosed; }
 };
 
 #endif //AUTM_WINDOWEVENTS_H

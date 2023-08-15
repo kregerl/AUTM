@@ -11,7 +11,7 @@ ImGuiLayer::ImGuiLayer() : Layer("ImGui") {
 ImGuiLayer::~ImGuiLayer() {
 }
 
-void ImGuiLayer::onInit() {
+void ImGuiLayer::on_init() {
     ImGui::CreateContext();
 
     auto& io = ImGui::GetIO();
@@ -19,29 +19,29 @@ void ImGuiLayer::onInit() {
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
-    ImGui_ImplGlfw_InitForOpenGL(Application::getInstance()->getWindow().getOpenglWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(Application::get_instance()->get_window().get_opengl_window(), true);
     ImGui_ImplOpenGL3_Init("#version 460 core");
 }
 
-void ImGuiLayer::onShutdown() {
+void ImGuiLayer::on_shutdown() {
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui::DestroyContext();
 }
 
-void ImGuiLayer::onEvent(Event& event) {
+void ImGuiLayer::on_event(Event& event) {
     auto& io = ImGui::GetIO();
-    if (event.isInCategory(EventCategoryMouse) & io.WantCaptureMouse ||
-        event.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard) {
-        event.setEventResult(EventResult::Consume);
+    if (event.is_in_category(EventCategoryMouse) & io.WantCaptureMouse ||
+            event.is_in_category(EventCategoryKeyboard) & io.WantCaptureKeyboard) {
+        event.set_event_result(EventResult::Consume);
     }
 }
 
 void ImGuiLayer::begin(float ts) {
     auto& io = ImGui::GetIO();
     io.DeltaTime = ts;
-    Window& window = Application::getInstance()->getWindow();
-    io.DisplaySize = ImVec2((float) window.getWidth(), (float) window.getHeight());
+    Window& window = Application::get_instance()->get_window();
+    io.DisplaySize = ImVec2((float) window.get_width(), (float) window.get_height());
 
     ImGui_ImplGlfw_NewFrame();
     ImGui_ImplOpenGL3_NewFrame();

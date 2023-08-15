@@ -1,40 +1,40 @@
 #include "VertexArray.h"
 
 VertexArray::VertexArray() {
-    glGenVertexArrays(1, &m_rendererId);
+    glGenVertexArrays(1, &m_renderer_id);
 }
 
 void VertexArray::bind() const {
-    glBindVertexArray(m_rendererId);
+    glBindVertexArray(m_renderer_id);
 }
 
 void VertexArray::unbind() const {
     glBindVertexArray(0);
 }
 
-void VertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer> &vertexBuffer) {
-    glBindVertexArray(m_rendererId);
-    vertexBuffer->bind();
+void VertexArray::add_vertex_buffer(const std::shared_ptr<VertexBuffer> &vertex_buffer) {
+    glBindVertexArray(m_renderer_id);
+    vertex_buffer->bind();
 
-    auto layout = vertexBuffer->getLayout();
-    for (int i = 0; i < layout.getElements().size(); i++) {
-        const VertexBufferElement element = layout.getElements()[i];
+    auto layout = vertex_buffer->get_layout();
+    for (int i = 0; i < layout.get_elements().size(); i++) {
+        const VertexBufferElement element = layout.get_elements()[i];
 
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, element.getElementCount(), VertexArray::getOpenglType(element.type),
-                              element.getNormalized(),
-                              layout.getStride(), (void *) element.offset);
+        glVertexAttribPointer(i, element.get_element_count(), VertexArray::get_opengl_type(element.type),
+                              element.get_normalized(),
+                              layout.get_stride(), (void *) element.offset);
     }
-    m_vertexBuffers.push_back(vertexBuffer);
+    m_vertex_buffers.push_back(vertex_buffer);
 }
 
-void VertexArray::setIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer) {
-    glBindVertexArray(m_rendererId);
-    indexBuffer->bind();
-    m_indexBuffer = indexBuffer;
+void VertexArray::set_index_buffer(const std::shared_ptr<IndexBuffer> &index_buffer) {
+    glBindVertexArray(m_renderer_id);
+    index_buffer->bind();
+    m_index_buffer = index_buffer;
 }
 
-GLenum VertexArray::getOpenglType(ShaderDataType type) {
+GLenum VertexArray::get_opengl_type(ShaderDataType type) {
     switch (type) {
         case ShaderDataType::None:
             return GL_NONE;

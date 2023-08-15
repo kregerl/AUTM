@@ -6,6 +6,7 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "OrthographicCameraController.h"
+#include "Texture2D.h"
 
 
 class Renderer2D {
@@ -18,17 +19,32 @@ public:
 
     static void end();
 
+    static void flush();
+
+    static void draw_quad(const glm::mat4& transform, const glm::vec4& color);
+
+    static void draw_quad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
+
+    static void draw_quad(
+            const glm::vec3& position,
+            const glm::vec2& size,
+            const std::shared_ptr<Texture2D>& texture,
+            float tiling_factor = 1.0f,
+            const glm::vec4& color = glm::vec4(1.0f));
+
+    static void draw_quad(
+            const glm::mat4& transform,
+            const std::shared_ptr<Texture2D>& texture,
+            float tiling_factor = 1.0f,
+            const glm::vec4& color = glm::vec4(1.0f));
+
+    static void draw_line(glm::vec3 position, glm::vec2 size, float rotation, float lineWidth);
+
     static void submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
                        const glm::mat4& modelMatrix);
 
-    static void drawQuad(glm::vec3 position, glm::vec2 size, float rotation);
-
-    static void drawLine(glm::vec3 position, glm::vec2 size, float rotation, float lineWidth);
-
 private:
-    static void initQuad();
-
-    static void initLine();
+//    init_quad();
 };
 
 

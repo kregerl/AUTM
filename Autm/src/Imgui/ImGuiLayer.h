@@ -7,13 +7,13 @@ class ImGuiLayer : public Layer {
 public:
     ImGuiLayer();
 
-    ~ImGuiLayer();
+    ~ImGuiLayer() override;
 
-    void onInit() override;
+    void on_init() override;
 
-    void onShutdown() override;
+    void on_shutdown() override;
 
-    void onEvent(Event& event) override;
+    void on_event(Event& event) override;
 
 protected:
     void begin(float ts);

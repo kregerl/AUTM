@@ -11,11 +11,11 @@
 
 class Input {
 public:
-    static bool isKeyPressed(int keyCode);
+    static bool is_key_pressed(int keycode);
 
-    static bool isMouseButtonPressed(int mouseCode);
+    static bool is_mouse_button_pressed(int mouse_code);
 
-    static glm::vec2 getMousePos();
+    static glm::vec2 get_mouse_position();
 };
 
 

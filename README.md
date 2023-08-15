@@ -18,7 +18,7 @@ App.cpp
 class App: public Application {
 public:
     App() {
-        pushLayer(new LayerName());
+        push_layer(new LayerName());
     }
 
     ~App() {
@@ -26,7 +26,7 @@ public:
     }  
 };
 
-Application* createApplication() {
+Application* create_application() {
     return new App();
 }
 ```
@@ -44,13 +44,13 @@ public:
 
     virtual ~LayerName() = default;
 
-    virtual void onInit() override;
+    virtual void on_init() override;
 
-    virtual void onShutdown() override;
+    virtual void on_shutdown() override;
 
     virtual void onUpdate(float ts) override;
 
-    virtual void onEvent(Event& event) override;
+    virtual void on_event(Event& event) override;
 private:
     OrthographicCamera m_camera;
 ```
@@ -65,23 +65,23 @@ private:
 Mandelbrot::Mandelbrot() : Layer("Mandelbrot"), m_camera(-1.7777778, 1.7777778, 1, -1) {
 }
 
-void Mandelbrot::onInit() {
+void Mandelbrot::on_init() {
 }
 
-void Mandelbrot::onShutdown() {
+void Mandelbrot::on_shutdown() {
 }
 
 void Mandelbrot::onUpdate(float ts) {
 
-    RenderSystem::clearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
     Renderer2D::begin(m_camera);
 
-    Renderer2D::drawQuad(glm::vec3(0.0f), glm::vec2(0.5f), 0.0f);
+    Renderer2D::draw_quad(glm::vec3(0.0f), glm::vec2(0.5f), 0.0f);
 
     Renderer2D::end();
 }
 
-void Mandelbrot::onEvent(Event& event) {
+void Mandelbrot::on_event(Event& event) {
     // EventDispatcher dispatcher(event);
     // dispatcher.dispatchEvent<MouseButtonPressedEvent>(AUTM_BIND_EVENT(Mandelbrot::onMouseButtonPressed));
 }

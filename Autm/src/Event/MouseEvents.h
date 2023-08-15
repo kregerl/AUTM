@@ -6,25 +6,25 @@
 
 class MouseButtonEvent : public Event {
 public:
-    explicit MouseButtonEvent(int mouseButton, int mods, float xPos, float yPos) : m_mouseButton(mouseButton),
-                                                                                   m_mods(mods), m_xPos(xPos),
-                                                                                   m_yPos(yPos) {}
+    explicit MouseButtonEvent(int mouse_button, int mods, float x_pos, float y_pos) : m_mouse_button(mouse_button),
+                                                                                      m_mods(mods), m_x_pos(x_pos),
+                                                                                      m_y_pos(y_pos) {}
 
-    inline int getMouseButton() const { return m_mouseButton; }
+    inline int getMouseButton() const { return m_mouse_button; }
 
-    inline glm::vec2 getMousePos() const { return {m_xPos, m_yPos}; }
+    inline glm::vec2 getMousePos() const { return {m_x_pos, m_y_pos}; }
 
-    inline float getMouseX() const { return m_xPos; }
+    inline float getMouseX() const { return m_x_pos; }
 
-    inline float getMouseY() const { return m_yPos; }
+    inline float getMouseY() const { return m_y_pos; }
 
-    int getCategory() const override {
+    int get_category() const override {
         return EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton;
     }
 
 protected:
-    int m_mouseButton, m_mods;
-    float m_xPos, m_yPos;
+    int m_mouse_button, m_mods;
+    float m_x_pos, m_y_pos;
 };
 
 
@@ -33,11 +33,11 @@ public:
     explicit MouseButtonPressedEvent(int mouseButton, int mods, float xPos, float yPos) : MouseButtonEvent(
             mouseButton, mods, xPos, yPos) {}
 
-    virtual EventType getEventType() const override { return getStaticEventType(); };
+    virtual EventType get_event_type() const override { return get_static_event_type(); };
 
-    virtual std::string getName() const { return "MouseButtonPressed"; }
+    virtual std::string get_name() const { return "MouseButtonPressed"; }
 
-    static EventType getStaticEventType() { return EventType::MouseButtonPressed; }
+    static EventType get_static_event_type() { return EventType::MouseButtonPressed; }
 };
 
 
@@ -46,64 +46,64 @@ public:
     explicit MouseButtonReleasedEvent(int mouseButton, int mods, float xPos, float yPos) : MouseButtonEvent(
             mouseButton, mods, xPos, yPos) {}
 
-    virtual EventType getEventType() const override { return getStaticEventType(); };
+    virtual EventType get_event_type() const override { return get_static_event_type(); };
 
-    virtual std::string getName() const { return "MouseButtonReleased"; }
+    virtual std::string get_name() const { return "MouseButtonReleased"; }
 
-    static EventType getStaticEventType() { return EventType::MouseButtonReleased; }
+    static EventType get_static_event_type() { return EventType::MouseButtonReleased; }
 };
 
 class MouseScrolledEvent : public Event {
 public:
-    MouseScrolledEvent(float xOffset, float yOffset, float xPos, float yPos) : m_xOffset(xOffset),
-                                                                               m_yOffset(yOffset), m_xPos(xPos),
-                                                                               m_yPos(yPos) {}
+    MouseScrolledEvent(float x_offset, float y_offset, float x_pos, float y_pos) : m_x_offset(x_offset),
+                                                                                   m_y_offset(y_offset), m_x_pos(x_pos),
+                                                                                   m_y_pos(y_pos) {}
 
-    MouseScrolledEvent(float xOffset, float yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
+    MouseScrolledEvent(float x_offset, float y_offset) : m_x_offset(x_offset), m_y_offset(y_offset) {}
 
-    glm::vec2 getMouseOffset() const { return {m_xOffset, m_yOffset}; }
+    glm::vec2 getMouseOffset() const { return {m_x_offset, m_y_offset}; }
 
-    float getMouseOffsetX() const { return m_xOffset; }
+    float getMouseOffsetX() const { return m_x_offset; }
 
-    float getMouseOffsetY() const { return m_yOffset; }
+    float getMouseOffsetY() const { return m_y_offset; }
 
-    glm::vec2 getMousePos() const { return {m_xPos, m_yPos}; }
+    glm::vec2 getMousePos() const { return {m_x_pos, m_y_pos}; }
 
-    virtual EventType getEventType() const override { return getStaticEventType(); }
+    virtual EventType get_event_type() const override { return get_static_event_type(); }
 
-    virtual std::string getName() const { return "MouseScrolled"; }
+    virtual std::string get_name() const { return "MouseScrolled"; }
 
-    int getCategory() const override {
+    int get_category() const override {
         return EventCategoryMouse | EventCategoryInput;
     }
 
-    static EventType getStaticEventType() { return EventType::MouseScrolled; }
+    static EventType get_static_event_type() { return EventType::MouseScrolled; }
 
 private:
-    float m_xOffset, m_yOffset, m_xPos, m_yPos;
+    float m_x_offset, m_y_offset, m_x_pos, m_y_pos;
 
 };
 
 class MouseMovedEvent : public Event {
 public:
-    MouseMovedEvent(float x, float y) : m_xPos(x), m_yPos(y) {}
+    MouseMovedEvent(float x, float y) : m_x_pos(x), m_y_pos(y) {}
 
-    float getX() const { return m_xPos; }
+    float getX() const { return m_x_pos; }
 
-    float getY() const { return m_yPos; }
+    float getY() const { return m_y_pos; }
 
-    EventType getEventType() const override { return getStaticEventType(); }
+    EventType get_event_type() const override { return get_static_event_type(); }
 
-    std::string getName() const override { return "MouseMoved"; }
+    std::string get_name() const override { return "MouseMoved"; }
 
-    int getCategory() const override {
+    int get_category() const override {
         return EventCategoryMouse | EventCategoryInput;
     }
 
-    static EventType getStaticEventType() { return EventType::MouseMoved; }
+    static EventType get_static_event_type() { return EventType::MouseMoved; }
 
 private:
-    float m_xPos, m_yPos;
+    float m_x_pos, m_y_pos;
 };
 
 #endif

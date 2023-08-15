@@ -9,7 +9,7 @@
 
 class IndexBuffer : Buffer {
 public:
-    IndexBuffer(GLuint *indices, size_t count);
+    IndexBuffer(uint32_t *indices, uint32_t count);
 
     ~IndexBuffer() override;
 
@@ -17,9 +17,9 @@ public:
 
     void unbind() const override;
 
-    int getCount() const {return m_count;}
+    uint32_t getCount() const {return m_count;}
 private:
-    int m_count;
+    uint32_t m_count;
 
 };
 

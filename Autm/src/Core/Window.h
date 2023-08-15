@@ -10,65 +10,68 @@
 struct WindowProperties {
     int width, height;
     std::string_view title;
-    bool isFullscreen;
+    bool is_fullscreen;
 
     WindowProperties(int width = 1280,
                      int height = 720,
                      std::string_view title = "Title",
-                     bool isFullscreen = false)
+                     bool is_fullscreen = false)
             : width(width),
               height(height),
               title(title),
-              isFullscreen(isFullscreen) {}
+              is_fullscreen(is_fullscreen) {}
 };
 
 
 class Window {
 public:
-    using eventCallbackFunction = std::function<void(Event&)>;
+    using EventCallbackFunction = std::function<void(Event&)>;
 
-    Window(const WindowProperties& properties);
+    explicit Window(const WindowProperties& properties);
 
     ~Window();
 
     void onUpdate();
 
-    void pollEvents();
+    void poll_events();
 
-    void setEventCallback(eventCallbackFunction callback);
+    void set_event_callback(EventCallbackFunction callback);
 
-    glm::vec2 getResolution() const { return {m_windowData.width, m_windowData.height}; }
+    glm::vec2 get_resolution() const { return {m_window_data.width, m_window_data.height}; }
 
-    int getWidth() const { return m_windowData.width; }
+    float get_aspect_ratio() const { return (float) m_window_data.width / (float) m_window_data.height; }
 
-    int getHeight() const { return m_windowData.height; }
+    int get_width() const { return m_window_data.width; }
 
-    bool shouldClose() const { return glfwWindowShouldClose(m_window); }
+    int get_height() const { return m_window_data.height; }
 
-    double getDeltaTime() const { return m_deltaTime; }
+    bool should_close() const { return glfwWindowShouldClose(m_window); }
 
-    GLFWwindow* getOpenglWindow() const { return m_window; }
+    double get_delta_time() const { return m_delta_time; }
+
+    GLFWwindow* get_opengl_window() const { return m_window; }
 
 
 private:
-    void processInput();
+    void process_input();
 
 private:
     GLFWwindow* m_window;
-    double m_deltaTime = 0.0f, m_prevFrame = 0.0f;
+    double m_delta_time = 0.0f, m_previous_frame = 0.0f;
     OpenGLContext* m_context;
+
     struct WindowData {
         int width, height;
         std::string_view title;
-        bool isFullscreen;
-        eventCallbackFunction callback;
+        bool is_fullscreen;
+        EventCallbackFunction callback;
 
         explicit WindowData(const WindowProperties& properties) : width(properties.width), height(properties.height),
                                                                   title(properties.title),
-                                                                  isFullscreen(properties.isFullscreen) {}
+                                                                  is_fullscreen(properties.is_fullscreen) {}
     };
 
-    WindowData m_windowData;
+    WindowData m_window_data;
 
 };
 

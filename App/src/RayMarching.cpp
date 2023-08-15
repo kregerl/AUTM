@@ -8,7 +8,7 @@
 RayMarching::RayMarching() : Layer("Ray Marching"), m_camera(-1.7777778, 1.7777778, 1, -1) {
 }
 
-void RayMarching::onInit() {
+void RayMarching::on_init() {
     m_shader.reset(new Shader(
             "/home/loucas/CLionProjects/Autm/assets/shaders/RayMarchVertex.glsl",
             "/home/loucas/CLionProjects/Autm/assets/shaders/RayMarchFragment.glsl"));
@@ -26,37 +26,37 @@ void RayMarching::onInit() {
     m_fsQuadVA = std::make_shared<VertexArray>();
     m_fsQuadVA->bind();
     std::shared_ptr<VertexBuffer> vertexBuffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
-    vertexBuffer->setLayout({
-                                    {ShaderDataType::Vec3f, "a_pos", false},
-                            });
-    m_fsQuadVA->addVertexBuffer(vertexBuffer);
+    vertexBuffer->set_layout({
+                                     {ShaderDataType::Vec3f, "a_pos", false},
+                             });
+    m_fsQuadVA->add_vertex_buffer(vertexBuffer);
     std::shared_ptr<IndexBuffer> indexBuffer = std::make_shared<IndexBuffer>(indices,
                                                                              sizeof(indices) /
                                                                              sizeof(unsigned int));
-    m_fsQuadVA->setIndexBuffer(indexBuffer);
+    m_fsQuadVA->set_index_buffer(indexBuffer);
 }
 
-void RayMarching::onShutdown() {
+void RayMarching::on_shutdown() {
 }
 
 void RayMarching::onUpdate(float ts) {
-    RenderSystem::clearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
     Renderer2D::begin(m_camera);
 
-    glm::vec2 resolution = Application::getInstance()->getWindow().getResolution();
+    glm::vec2 resolution = Application::get_instance()->get_window().get_resolution();
 
     glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), {resolution.x, resolution.y, 1.0f});
 
     m_fsQuadVA->bind();
     m_shader->bind();
-    m_shader->setVec2("u_resolution", resolution);
-    m_shader->setFloat("u_time", ts);
+    m_shader->set_vec2("u_resolution", resolution);
+    m_shader->set_float("u_time", ts);
 
     Renderer2D::submit(m_shader, m_fsQuadVA, modelMatrix);
 
     Renderer2D::end();
 }
 
-void RayMarching::onEvent(Event& event) {
-    Layer::onEvent(event);
+void RayMarching::on_event(Event& event) {
+    Layer::on_event(event);
 }

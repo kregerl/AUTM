@@ -9,7 +9,7 @@ Application* Application::s_instance = nullptr;
 Application::Application() {
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());
-    m_window->setEventCallback(AUTM_BIND_EVENT(Application::onEvent));
+    m_window->set_event_callback(AUTM_BIND_EVENT(Application::on_event));
 
     glEnable(GL_DEBUG_OUTPUT);
     Renderer2D::init();
@@ -19,7 +19,7 @@ Application::~Application() {
     Renderer2D::shutdown();
 }
 
-void Application::onEvent(Event& event) {
+void Application::on_event(Event& event) {
 
     // TODO: Add WindowClosed listener and WindowResized listener
     EventDispatcher dispatcher(event);
@@ -27,33 +27,33 @@ void Application::onEvent(Event& event) {
 //    dispatcher.dispatchEvent<KeyReleasedEvent>(Input::onKeyReleasedEvent);
 //    dispatcher.dispatchEvent<MouseScrolledEvent>(Input::onMouseScrolledEvent);
 //    dispatcher.dispatchEvent<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(Application::onMouseButtonPressed));
-    for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
-        if (event.getEventResult() != EventResult::Pass)
+    for (auto it = m_layerstack.end(); it != m_layerstack.begin();) {
+        if (event.get_event_result() != EventResult::Pass)
             break;
-        (*--it)->onEvent(event);
+        (*--it)->on_event(event);
     }
 }
 
 void Application::run() {
 
-    while (!m_window->shouldClose()) {
+    while (!m_window->should_close()) {
 
         m_window->onUpdate();
-        m_window->pollEvents();
+        m_window->poll_events();
         glEnable(GL_MULTISAMPLE);
 
-        for (Layer* layer : m_layerStack) {
-            layer->onUpdate(m_window->getDeltaTime());
+        for (Layer* layer: m_layerstack) {
+            layer->on_update(m_window->get_delta_time());
         }
     }
 }
 
-void Application::pushLayer(Layer* layer) {
-    m_layerStack.pushLayer(layer);
-    layer->onInit();
+void Application::push_layer(Layer* layer) {
+    m_layerstack.push_layer(layer);
+    layer->on_init();
 }
 
-void Application::pushOverlay(Layer* layer) {
-    m_layerStack.pushOverlay(layer);
-    layer->onInit();
+void Application::push_overlay(Layer* layer) {
+    m_layerstack.push_overlay(layer);
+    layer->on_init();
 }
