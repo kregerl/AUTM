@@ -11,4 +11,3 @@ in vec4 v_color;
 void main() {
     fragColor = texture(u_texture, v_texCoords /** u_tilingFactor*/) * vec4(v_color);
 }
-
