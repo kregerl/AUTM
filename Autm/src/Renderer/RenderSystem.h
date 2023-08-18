@@ -14,9 +14,13 @@ public:
 
     static void clear(int mask);
 
+    static void set_line_width(float line_width);
+
     static void draw(const std::shared_ptr<VertexArray> &vertex_array, GLenum mode = GL_TRIANGLES, uint32_t index_count = 0);
 
     static void draw_indexed(const std::shared_ptr<VertexArray> &vertex_array, uint32_t index_count = 0);
+
+    static void draw_lines(const std::shared_ptr<VertexArray>& vertex_array,  uint32_t vertex_count = 0);
 };
 
 

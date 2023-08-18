@@ -20,14 +20,23 @@ void RenderSystem::clear(int mask) {
  * @param mode
  * @param count
  */
-void RenderSystem::draw(const std::shared_ptr<VertexArray> &vertex_array, GLenum mode, uint32_t index_count) {
+void RenderSystem::draw(const std::shared_ptr<VertexArray>& vertex_array, GLenum mode, uint32_t index_count) {
     uint32_t count = index_count == 0 ? vertex_array->get_index_buffer()->getCount() : index_count;
-    glDrawElements(mode, count, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(mode, (GLsizei) count, GL_UNSIGNED_INT, nullptr);
 }
 
 void RenderSystem::draw_indexed(const std::shared_ptr<VertexArray>& vertex_array, uint32_t index_count) {
     vertex_array->bind();
     uint32_t count = index_count == 0 ? vertex_array->get_index_buffer()->getCount() : index_count;
-    glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, (GLsizei) count, GL_UNSIGNED_INT, nullptr);
+}
+
+void RenderSystem::set_line_width(float line_width) {
+    glLineWidth(line_width);
+}
+
+void RenderSystem::draw_lines(const std::shared_ptr<VertexArray>& vertex_array, uint32_t vertex_count) {
+    vertex_array->bind();
+    glDrawArrays(GL_LINES, 0, (GLsizei) vertex_count);
 }
 

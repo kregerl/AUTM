@@ -7,8 +7,8 @@
 class App: public Application {
 public:
     App() {
-//        pushLayer(new Mandelbrot());
-//        pushLayer(new RayMarching());
+//        push_layer(new Mandelbrot());
+//        push_layer(new RayMarching());
         push_layer(new EntityLayer());
         push_overlay(new DemoLayer());
     }

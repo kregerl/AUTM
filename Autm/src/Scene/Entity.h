@@ -8,10 +8,11 @@
 class Entity {
 public:
     Entity(entt::entity handle, Scene* scene);
+
     Entity(const Entity&) = default;
 
     template<typename T, typename... Args>
-    T& add_component(Args&&... args) {
+    T& add_component(Args&& ... args) {
         // TODO: Asserts
         return m_scene->m_registry.emplace<T>(m_entity_handle, std::forward<Args>(args)...);
     }

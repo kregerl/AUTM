@@ -16,8 +16,10 @@ void EntityLayer::on_update(float ts) {
 
     RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
     Renderer2D::begin(m_camera_controller.get_camera());
-    Renderer2D::draw_quad(glm::vec3(1.0f), glm::vec2(1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    Renderer2D::draw_quad(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
     Renderer2D::draw_quad(glm::vec3(0.0f), glm::vec2(1.0f), m_sand_texture, 10.0f);
+    Renderer2D::draw_rect(glm::vec3(1.0f), glm::vec2(1.0f));
+//    Renderer2D::draw_line(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     Renderer2D::end();
 }
 

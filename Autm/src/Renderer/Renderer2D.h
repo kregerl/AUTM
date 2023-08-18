@@ -19,6 +19,8 @@ public:
 
     static void end();
 
+    static void start_batch();
+
     static void flush();
 
     static void draw_quad(const glm::mat4& transform, const glm::vec4& color);
@@ -38,12 +40,23 @@ public:
             float tiling_factor = 1.0f,
             const glm::vec4& color = glm::vec4(1.0f));
 
-    static void draw_line(glm::vec3 position, glm::vec2 size, float rotation, float lineWidth);
+    static void draw_rect(const glm::mat4& transform, const glm::vec4& color = glm::vec4(1.0f));
+
+    static void draw_rect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1.0f));
+
+    static void draw_line(
+            const glm::vec3& position0,
+            const glm::vec3& position1,
+            const glm::vec4& color = glm::vec4(1.0f));
 
     static void submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
                        const glm::mat4& modelMatrix);
 
 private:
+
+    static void init_quad();
+
+    static void init_line();
 //    init_quad();
 };
 
