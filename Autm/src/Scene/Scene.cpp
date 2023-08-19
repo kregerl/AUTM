@@ -93,7 +93,8 @@ void Scene::begin_physics_runtime() {
             auto& box_collider = entity.get_component<BoxCollider2DComponent>();
 
             b2PolygonShape shape;
-            shape.SetAsBox(box_collider.size.x * transform.scale.x, box_collider.size.y * transform.scale.y);
+            shape.SetAsBox(box_collider.size.x * transform.scale.x, box_collider.size.y * transform.scale.y,
+                           b2Vec2(box_collider.offset.x, box_collider.offset.y), 0.0f);
 
             b2FixtureDef fixture_def;
             fixture_def.shape = &shape;

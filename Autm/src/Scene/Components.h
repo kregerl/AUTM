@@ -100,7 +100,7 @@ struct Rigidbody2DComponent {
 };
 
 struct BoxCollider2DComponent {
-    glm::vec2 offest = glm::vec2(0.0f);
+    glm::vec2 offset = glm::vec2(0.0f);
     glm::vec2 size = glm::vec2(0.5f);
 
     float density = 1.0f;
@@ -113,6 +113,10 @@ struct BoxCollider2DComponent {
     BoxCollider2DComponent() = default;
 
     BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
+};
+
+struct CircleCollider2DComponent {
+
 };
 
 #endif //AUTM_COMPONENTS_H
