@@ -7,6 +7,7 @@
 #include <Renderer/VertexArray.h>
 #include <Renderer/Shader.h>
 #include <Renderer/Texture2D.h>
+#include <Scene/Entity.h>
 
 class EntityLayer : public Layer {
 public:
@@ -26,8 +27,8 @@ private:
     std::unique_ptr<Scene> m_active_scene;
 
     std::shared_ptr<Shader> m_shader;
-    std::shared_ptr<VertexArray> m_quadVA;
     std::shared_ptr<Texture2D> m_sand_texture;
+    Entity m_entity;
 };
 
 #endif //AUTM_ENTITYLAYER_H

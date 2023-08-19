@@ -7,6 +7,8 @@
 
 class Entity {
 public:
+    Entity() = default;
+
     Entity(entt::entity handle, Scene* scene);
 
     Entity(const Entity&) = default;
@@ -34,9 +36,9 @@ public:
     }
 
 private:
-    entt::entity m_entity_handle;
+    entt::entity m_entity_handle = entt::null;
     // Maybe a weak ptr
-    Scene* m_scene;
+    Scene* m_scene = nullptr;
 };
 
 #endif //AUTM_ENTITY_H

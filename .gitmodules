@@ -13,3 +13,7 @@
 [submodule "Autm/vendor/imgui"]
 	path = Autm/vendor/imgui
 	url = https://github.com/kregerl/imgui
+
+[submodule "Autm/vendor/box2d"]
+    path = Autm/vendor/box2d
+    url = https://github.com/erincatto/box2d

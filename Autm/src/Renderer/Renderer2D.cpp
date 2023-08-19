@@ -187,18 +187,16 @@ void Renderer2D::draw_quad(const glm::mat4& transform, const glm::vec4& color) {
 }
 
 void Renderer2D::draw_quad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
-    glm::mat4 transform =
-            glm::translate(glm::mat4(1.0f), position)
-            * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
 
     draw_quad(transform, color);
 }
 
 void Renderer2D::draw_quad(const glm::vec3& position, const glm::vec2& size, const std::shared_ptr<Texture2D>& texture,
                            float tiling_factor, const glm::vec4& color) {
-    glm::mat4 transform =
-            glm::translate(glm::mat4(1.0f), position)
-            * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
 
     draw_quad(transform, texture, tiling_factor, color);
 }
@@ -237,9 +235,8 @@ void Renderer2D::draw_rect(const glm::mat4& transform, const glm::vec4& color) {
 }
 
 void Renderer2D::draw_rect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
-    glm::mat4 transform =
-            glm::translate(glm::mat4(1.0f), position)
-            * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
 
     draw_rect(transform, color);
 }
@@ -256,31 +253,20 @@ void Renderer2D::draw_line(const glm::vec3& position0, const glm::vec3& position
     s_data->line_vertex_count += 2;
 }
 
-void Renderer2D::draw_circle(
-        const glm::vec3& position,
-        const glm::vec2& size,
-        const glm::vec4& color,
-        float tiling_factor,
-        float thickness,
-        float fade) {
-
+void Renderer2D::draw_circle(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
+                             float tiling_factor, float thickness, float fade) {
     draw_circle(position, size, s_data->white_texture, color, tiling_factor, thickness, fade);
 }
 
-void Renderer2D::draw_circle(
-        const glm::vec3& position,
-        const glm::vec2& size,
-        const std::shared_ptr<Texture2D>& texture,
-        const glm::vec4& color,
-        float tiling_factor,
-        float thickness,
-        float fade) {
-    glm::mat4 transform =
-            glm::translate(glm::mat4(1.0f), position)
-            * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+void Renderer2D::draw_circle(const glm::vec3& position, const glm::vec2& size,
+                             const std::shared_ptr<Texture2D>& texture, const glm::vec4& color, float tiling_factor,
+                             float thickness, float fade) {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
 
     draw_circle(transform, texture, color, tiling_factor, thickness, fade);
 }
+
 
 void Renderer2D::draw_circle(
         const glm::mat4& transform,
@@ -309,6 +295,11 @@ void Renderer2D::draw_circle(
         s_data->circle_vertex_buffer_ptr++;
     }
     s_data->circle_index_count += 6;
+}
+
+void Renderer2D::draw_circle(const glm::mat4& transform, const glm::vec4& color, float tiling_factor, float thickness,
+                             float fade) {
+    draw_circle(transform, s_data->white_texture, color, tiling_factor, thickness, fade);
 }
 
 void Renderer2D::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
@@ -405,3 +396,5 @@ void Renderer2D::init_circle(const std::shared_ptr<IndexBuffer>& index_buffer) {
             "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedCircleVertex.glsl",
             "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedCircleFragment.glsl");
 }
+
+

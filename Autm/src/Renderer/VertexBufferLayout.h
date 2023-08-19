@@ -91,7 +91,7 @@ struct VertexBufferElement {
 
 class VertexBufferLayout {
 public:
-    VertexBufferLayout() {}
+    VertexBufferLayout() = default;
     VertexBufferLayout(const std::initializer_list<VertexBufferElement> &elements);
 
     const std::vector<VertexBufferElement> &get_elements() const;
@@ -102,7 +102,7 @@ private:
     void compute_stride_and_offset();
 private:
     std::vector<VertexBufferElement> m_elements;
-    size_t m_stride;
+    size_t m_stride = 0;
 };
 
 
