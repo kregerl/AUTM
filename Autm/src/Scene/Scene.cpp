@@ -104,6 +104,22 @@ void Scene::begin_physics_runtime() {
             fixture_def.restitutionThreshold = box_collider.restitution_threshold;
             body->CreateFixture(&fixture_def);
         }
+
+        if (entity.has_component<CircleCollider2DComponent>()) {
+            auto& circle_collider = entity.get_component<CircleCollider2DComponent>();
+
+            b2CircleShape shape;
+            shape.m_p.Set(circle_collider.offset.x, circle_collider.offset.y);
+            shape.m_radius = circle_collider.radius * transform.scale.x;
+
+            b2FixtureDef fixture_def;
+            fixture_def.shape = &shape;
+            fixture_def.density = circle_collider.density;
+            fixture_def.friction = circle_collider.friction;
+            fixture_def.restitution = circle_collider.restitution;
+            fixture_def.restitutionThreshold = circle_collider.restitution_threshold;
+            body->CreateFixture(&fixture_def);
+        }
     }
 }
 

@@ -116,7 +116,19 @@ struct BoxCollider2DComponent {
 };
 
 struct CircleCollider2DComponent {
+    glm::vec2 offset = glm::vec2(0.0f);
+    float radius = 0.5f;
 
+    float density = 1.0f;
+    float friction = 0.5f;
+    // "Boundiness" of the object
+    float restitution = 0.0f;
+    // The velocity at which the entity stops bouncing
+    float restitution_threshold = 0.5f;
+
+    CircleCollider2DComponent() = default;
+
+    CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 };
 
 #endif //AUTM_COMPONENTS_H

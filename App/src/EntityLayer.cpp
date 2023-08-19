@@ -10,9 +10,9 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
     m_sand_texture = std::make_shared<Texture2D>("/home/loucas/CLionProjects/Autm/assets/images/sand.png");
 
     m_entity = m_active_scene->create_entity();
-    m_entity.add_component<SpriteRendererComponent>(m_sand_texture);
+    m_entity.add_component<CircleRendererComponent>(m_sand_texture);
     m_entity.add_component<Rigidbody2DComponent>(Rigidbody2DComponent::Type::Dynamic);
-    m_entity.add_component<BoxCollider2DComponent>();
+    m_entity.add_component<CircleCollider2DComponent>();
 }
 
 void EntityLayer::on_update(float ts) {
