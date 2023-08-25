@@ -70,13 +70,22 @@ struct CircleRendererComponent {
             : texture(std::move(texture)), color(color) {}
 };
 
-struct CustomShaderRendererComponent {
-    enum PrimitiveType {
-        Quad = 0, Line, Circle
-    };
+struct RectRendererComponent {
+    glm::vec4 color = glm::vec4(1.0f);
 
+    RectRendererComponent() = default;
+
+    RectRendererComponent(const RectRendererComponent&) = default;
+};
+
+// TODO: Actually make this work
+template<typename VertexStruct>
+struct CustomShaderRendererComponent {
     std::shared_ptr<Shader> shader = nullptr;
     VertexBufferLayout vertex_buffer_layout;
+
+    // The vertex_buffer_layout and layout of the struct should match
+    VertexStruct vertex;
 
     CustomShaderRendererComponent() = default;
 
@@ -130,5 +139,31 @@ struct CircleCollider2DComponent {
 
     CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 };
+
+struct RectCollider2DComponent {
+    // https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_collision.html - Chain Shapes
+    // The edge normal depends on the winding order. A counter-clockwise winding order orients the
+    // normal outwards and a clockwise winding order orients the normal inwards.
+    enum class WindingOrder {
+        Inwards = 0, Outwards
+    };
+
+    WindingOrder winding_order = WindingOrder::Inwards;
+    glm::vec2 offset = glm::vec2(0.0f);
+    glm::vec2 size = glm::vec2(0.5f);
+    float radius = 0.5f;
+
+    float density = 1.0f;
+    float friction = 0.5f;
+    // "Boundiness" of the object
+    float restitution = 0.0f;
+    // The velocity at which the entity stops bouncing
+    float restitution_threshold = 0.5f;
+
+    RectCollider2DComponent() = default;
+
+    RectCollider2DComponent(const RectCollider2DComponent&) = default;
+};
+
 
 #endif //AUTM_COMPONENTS_H

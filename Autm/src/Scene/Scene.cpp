@@ -68,6 +68,16 @@ void Scene::on_update(float ts) {
             }
         }
     }
+
+    // Render rects
+    {
+        auto rect_group = m_registry.view<TransformComponent, RectRendererComponent>();
+        for (auto entity: rect_group) {
+            auto[transform, rect] = rect_group.get<TransformComponent, RectRendererComponent>(entity);
+
+            Renderer2D::draw_rect(transform.get_transform(), rect.color);
+        }
+    }
 }
 
 void Scene::begin_physics_runtime() {
@@ -118,6 +128,36 @@ void Scene::begin_physics_runtime() {
             fixture_def.friction = circle_collider.friction;
             fixture_def.restitution = circle_collider.restitution;
             fixture_def.restitutionThreshold = circle_collider.restitution_threshold;
+            body->CreateFixture(&fixture_def);
+        }
+
+        if (entity.has_component<RectCollider2DComponent>()) {
+            auto& rect_collider = entity.get_component<RectCollider2DComponent>();
+
+            auto hx = rect_collider.size.x * transform.scale.x;
+            auto hy = rect_collider.size.y * transform.scale.y;
+
+            b2Vec2 vertices[4];
+            vertices[0].Set(-hx, -hy);
+            vertices[1].Set(hx, -hy);
+            vertices[2].Set(hx, hy);
+            vertices[3].Set(-hx, hy);
+
+            if (rect_collider.winding_order == RectCollider2DComponent::WindingOrder::Inwards) {
+                auto* start = &vertices[0];
+                auto* end = start + 3;
+                std::reverse(start, end);
+            }
+
+            b2ChainShape shape;
+            shape.CreateLoop(vertices, 4);
+
+            b2FixtureDef fixture_def;
+            fixture_def.shape = &shape;
+            fixture_def.density = rect_collider.density;
+            fixture_def.friction = rect_collider.friction;
+            fixture_def.restitution = rect_collider.restitution;
+            fixture_def.restitutionThreshold = rect_collider.restitution_threshold;
             body->CreateFixture(&fixture_def);
         }
     }

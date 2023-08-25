@@ -3,8 +3,9 @@
 #include "Core/Input.h"
 #include "Core/KeyCodes.h"
 
-OrthographicCameraController::OrthographicCameraController(float aspectRatio) :
+OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoom) :
         m_aspect_ratio(aspectRatio),
+        m_zoom(zoom),
         m_camera(-aspectRatio * m_zoom, aspectRatio * m_zoom, -m_zoom, m_zoom),
         m_rotation(0.0f) {
 }

@@ -11,7 +11,7 @@ class OrthographicCamera {
 public:
     OrthographicCamera() = default;
 
-    OrthographicCamera(float left, float right, float bottom, float top);
+    OrthographicCamera(float left, float right, float bottom, float top, float aspect_ratio = 1.0f);
 
     ~OrthographicCamera() = default;
 

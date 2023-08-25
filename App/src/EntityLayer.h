@@ -29,6 +29,9 @@ private:
     std::shared_ptr<Shader> m_shader;
     std::shared_ptr<Texture2D> m_sand_texture;
     Entity m_entity;
+
+    Entity m_left_entity;
+    Entity m_right_entity;
 };
 
 #endif //AUTM_ENTITYLAYER_H

@@ -3,10 +3,11 @@
 #include <gtc/matrix_transform.hpp>
 #include <Core/Log.h>
 
-OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top) : m_projection_matrix(
-        glm::ortho(left, right, bottom, top, -1.0f, 1.0f)) {
-    AUTM_CORE_DEBUG("Orthographic Projection Matrix:: Left: {} Right: {} Bottom: {} Top: {}", left, right, top, bottom);
-//    m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
+OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float aspect_ratio)
+        : m_projection_matrix(
+        glm::ortho(left * aspect_ratio, right * aspect_ratio, bottom, top, -1.0f, 1.0f)) {
+    AUTM_CORE_DEBUG("Orthographic Projection Matrix:: Left: {} Right: {} Bottom: {} Top: {}", left * aspect_ratio,
+                    right * aspect_ratio, bottom, top);
     update_view_matrix();
 }
 
