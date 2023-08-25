@@ -25,9 +25,9 @@ public:
         return m_scene->m_registry.get<T>(m_entity_handle);
     }
 
-    template<typename T>
-    bool has_component() {
-        return m_scene->m_registry.all_of<T>(m_entity_handle);
+    template<typename ...T>
+    bool has_components() {
+        return m_scene->m_registry.all_of<T...>(m_entity_handle);
     }
 
     template<typename T>
