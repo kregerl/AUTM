@@ -3,10 +3,15 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Components.h"
+#include "EntityContactListener.h"
 
 #include <box2d/box2d.h>
 
-Scene::Scene() {}
+#include <utility>
+
+Scene::Scene() {
+    m_contact_listener = std::make_unique<EntityContactListener>(this);
+}
 
 Scene::~Scene() {}
 
@@ -21,7 +26,7 @@ void Scene::on_update(float ts) {
     {
         const uint32_t velocity_iter = 6;
         const uint32_t position_iter = 2;
-        m_physics_world->Step(ts, velocity_iter, position_iter);
+        m_simulation_world->Step(ts, velocity_iter, position_iter);
 
         // Update the transform of the entity to the new positions after a physics step.
         auto rigidbody_group = m_registry.view<Rigidbody2DComponent>();
@@ -80,10 +85,11 @@ void Scene::on_update(float ts) {
     }
 }
 
-void Scene::begin_physics_runtime() {
-    m_physics_world = new b2World({0.0f, -9.8f});
+void Scene::begin_simulation() {
+    m_simulation_world = new b2World({0.0f, -9.8f});
+    m_simulation_world->SetContactListener(m_contact_listener.get());
 
-    for (auto rigibdoy_entity: m_registry.view<Rigidbody2DComponent>()) {
+    for (auto& rigibdoy_entity: m_registry.view<Rigidbody2DComponent>()) {
         Entity entity = {rigibdoy_entity, this};
         // All entities have IdentifierComponent and TransformComponent
         auto& identifier = entity.get_component<IdentifierComponent>();
@@ -95,8 +101,11 @@ void Scene::begin_physics_runtime() {
         body_def.position.Set(transform.translation.x, transform.translation.y);
         body_def.angle = transform.rotation.z;
 
-        b2Body* body = m_physics_world->CreateBody(&body_def);
+        b2Body* body = m_simulation_world->CreateBody(&body_def);
         body->SetFixedRotation(rigidbody.can_rotate);
+        auto& user_data = body->GetUserData();
+        auto ptr = &rigibdoy_entity;
+        user_data.pointer = (uintptr_t) ptr;
         m_physics_bodies[identifier.id] = body;
 
         if (entity.has_component<BoxCollider2DComponent>()) {
@@ -163,7 +172,15 @@ void Scene::begin_physics_runtime() {
     }
 }
 
-void Scene::end_physics_runtime() {
-    delete m_physics_world;
-    m_physics_world = nullptr;
+void Scene::end_simulation() {
+    delete m_simulation_world;
+    m_simulation_world = nullptr;
+}
+
+void Scene::set_begin_contact_callback(std::function<void(Entity&, Entity&)> callback) {
+    m_contact_listener->set_begin_contact_callback(std::move(callback));
+}
+
+void Scene::set_end_contact_callback(std::function<void(Entity&, Entity&)> callback) {
+    m_contact_listener->set_end_contact_callback(std::move(callback));
 }

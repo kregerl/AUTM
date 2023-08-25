@@ -8,18 +8,10 @@
 #include "Event/WindowEvents.h"
 
 
-
 /**
  * Controller class for the orthographic camera that allows it to move, rotate and zoom
  */
 class OrthographicCameraController {
-public:
-    struct CameraSize {
-        float left;
-        float right;
-        float top;
-        float bottom;
-    };
 public:
     explicit OrthographicCameraController(float aspectRatio, float zoom = 1.0f);
 
@@ -40,7 +32,7 @@ public:
     float get_zoom() const { return m_zoom; }
 
     // The camera size in coordinate space
-    CameraSize get_camera_size() const { return {-m_aspect_ratio * m_zoom, m_aspect_ratio * m_zoom, m_zoom, -m_zoom}; }
+    glm::vec2 get_camera_size() const { return glm::vec2(m_aspect_ratio * m_zoom, m_zoom) * 2.0f; }
 
     void set_zoom(float zoom) { m_zoom = zoom; }
 
