@@ -15,7 +15,6 @@ public:
 
     void on_event(Event& event) override;
 
-protected:
     void begin(float ts);
 
     void end();

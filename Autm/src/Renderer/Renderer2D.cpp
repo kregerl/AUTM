@@ -315,7 +315,7 @@ void Renderer2D::submit(const std::shared_ptr<Shader>& shader, const std::shared
 
 float Renderer2D::determine_texture_index(const std::shared_ptr<Texture2D>& texture) {
     float texture_index = 0.0f;
-    for (uint32_t i = 0; i < s_data->texture_index; i++) {
+    for (uint32_t i = 1; i < s_data->texture_index; i++) {
         if (s_data->texture_slots[i].get() == texture.get()) {
             texture_index = (float) i;
             break;

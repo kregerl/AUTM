@@ -13,6 +13,9 @@ Application::Application() {
 
     glEnable(GL_DEBUG_OUTPUT);
     Renderer2D::init();
+
+    m_imgui_layer = new ImGuiLayer();
+    push_overlay(m_imgui_layer);
 }
 
 Application::~Application() {
@@ -42,9 +45,16 @@ void Application::run() {
         m_window->poll_events();
         glEnable(GL_MULTISAMPLE);
 
+        auto ts = static_cast<float>(m_window->get_delta_time());
         for (Layer* layer: m_layerstack) {
-            layer->on_update(m_window->get_delta_time());
+            layer->on_update(ts);
         }
+
+        m_imgui_layer->begin(ts);
+        for (Layer* layer: m_layerstack) {
+            layer->on_imgui_render();
+        }
+        m_imgui_layer->end();
     }
 }
 

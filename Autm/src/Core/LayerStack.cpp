@@ -1,24 +1,24 @@
 #include "LayerStack.h"
 
-LayerStack::LayerStack() {
-    m_layer_insert = begin();
-}
+LayerStack::LayerStack() {}
 
 LayerStack::~LayerStack() {
-    for (Layer* layer : m_layers) {
+    for (Layer* layer: m_layers) {
         delete layer;
     }
 }
 
 void LayerStack::push_layer(Layer* layer) {
-    m_layer_insert = m_layers.emplace(m_layer_insert, layer);
+    m_layers.emplace(m_layers.begin() + m_layer_index, layer);
+    m_layer_index++;
 }
 
 void LayerStack::pop_layer(Layer* layer) {
-    auto it = std::find(begin(), end(), layer);
-    if (it != end()) {
+    auto it = std::find(begin(), begin() + m_layer_index, layer);
+    if (it != begin() + m_layer_index) {
+        layer->on_shutdown();
         m_layers.erase(it);
-        m_layer_insert--;
+        m_layer_index--;
     }
 }
 
@@ -27,8 +27,9 @@ void LayerStack::push_overlay(Layer* layer) {
 }
 
 void LayerStack::pop_overlay(Layer* layer) {
-    auto it = std::find(begin(), end(), layer);
+    auto it = std::find(begin() + m_layer_index, end(), layer);
     if (it != end()) {
+        layer->on_shutdown();
         m_layers.erase(it);
     }
 }

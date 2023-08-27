@@ -16,6 +16,8 @@ public:
 
     virtual void on_update(float ts) {}
 
+    virtual void on_imgui_render() {}
+
     virtual void on_event(Event& event) {}
 
     inline const std::string& get_title() const { return m_title; }

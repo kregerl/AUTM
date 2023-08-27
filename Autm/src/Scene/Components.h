@@ -165,5 +165,4 @@ struct RectCollider2DComponent {
     RectCollider2DComponent(const RectCollider2DComponent&) = default;
 };
 
-
 #endif //AUTM_COMPONENTS_H

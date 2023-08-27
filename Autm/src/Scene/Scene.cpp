@@ -8,6 +8,7 @@
 #include <box2d/box2d.h>
 
 #include <utility>
+#include <Core/Log.h>
 
 Scene::Scene() {
     m_contact_listener = std::make_unique<EntityContactListener>(this);
@@ -23,7 +24,7 @@ Entity Scene::create_entity() {
 }
 
 void Scene::on_update(float ts) {
-    {
+    if (!m_paused) {
         const uint32_t velocity_iter = 6;
         const uint32_t position_iter = 2;
         m_simulation_world->Step(ts, velocity_iter, position_iter);
@@ -41,6 +42,15 @@ void Scene::on_update(float ts) {
             transform.translation.x = position.x;
             transform.translation.y = position.y;
             transform.rotation.z = body->GetAngle();
+        }
+
+        if (m_continuous_contact_callback) {
+            for (b2Contact* contact = m_simulation_world->GetContactList(); contact; contact = contact->GetNext()) {
+                Entity entity0 = {*(entt::entity*) contact->GetFixtureA()->GetBody()->GetUserData().pointer, this};
+                Entity entity1 = {*(entt::entity*) contact->GetFixtureB()->GetBody()->GetUserData().pointer, this};
+
+                m_continuous_contact_callback(entity0, entity1, ts);
+            }
         }
     }
 
@@ -86,12 +96,19 @@ void Scene::on_update(float ts) {
 }
 
 void Scene::begin_simulation() {
+    if (m_paused)
+        return;
+
     m_simulation_world = new b2World({0.0f, -9.8f});
+//    m_simulation_world = new b2World({0.0f, -2.8f});
     m_simulation_world->SetContactListener(m_contact_listener.get());
 
     for (auto& rigibdoy_entity: m_registry.view<Rigidbody2DComponent>()) {
         Entity entity = {rigibdoy_entity, this};
         // All entities have IdentifierComponent and TransformComponent
+        ASSERT(entity.has_components<IdentifierComponent>(), "Entity must have an ID component");
+        ASSERT(entity.has_components<TransformComponent>(), "Entity must have an Transform component");
+
         auto& identifier = entity.get_component<IdentifierComponent>();
         auto& transform = entity.get_component<TransformComponent>();
         auto& rigidbody = entity.get_component<Rigidbody2DComponent>();
@@ -108,7 +125,7 @@ void Scene::begin_simulation() {
         user_data.pointer = (uintptr_t) ptr;
         m_physics_bodies[identifier.id] = body;
 
-        if (entity.has_component<BoxCollider2DComponent>()) {
+        if (entity.has_components<BoxCollider2DComponent>()) {
             auto& box_collider = entity.get_component<BoxCollider2DComponent>();
 
             b2PolygonShape shape;
@@ -124,7 +141,7 @@ void Scene::begin_simulation() {
             body->CreateFixture(&fixture_def);
         }
 
-        if (entity.has_component<CircleCollider2DComponent>()) {
+        if (entity.has_components<CircleCollider2DComponent>()) {
             auto& circle_collider = entity.get_component<CircleCollider2DComponent>();
 
             b2CircleShape shape;
@@ -140,7 +157,7 @@ void Scene::begin_simulation() {
             body->CreateFixture(&fixture_def);
         }
 
-        if (entity.has_component<RectCollider2DComponent>()) {
+        if (entity.has_components<RectCollider2DComponent>()) {
             auto& rect_collider = entity.get_component<RectCollider2DComponent>();
 
             auto hx = rect_collider.size.x * transform.scale.x;
@@ -177,10 +194,14 @@ void Scene::end_simulation() {
     m_simulation_world = nullptr;
 }
 
-void Scene::set_begin_contact_callback(std::function<void(Entity&, Entity&)> callback) {
-    m_contact_listener->set_begin_contact_callback(std::move(callback));
+void Scene::set_continuous_contact_callback(std::function<void(Entity&, Entity&, float)> callback) {
+    m_continuous_contact_callback = std::move(callback);
 }
 
-void Scene::set_end_contact_callback(std::function<void(Entity&, Entity&)> callback) {
-    m_contact_listener->set_end_contact_callback(std::move(callback));
+void Scene::apply_force_by_id(const UUID& uuid, const glm::vec2& force) {
+    if (m_physics_bodies.find(uuid) != m_physics_bodies.end()) {
+        auto& body = m_physics_bodies.at(uuid);
+        body->ApplyForce(b2Vec2(force.x, force.y), body->GetWorldCenter(), false);
+    }
 }
+

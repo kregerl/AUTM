@@ -1,6 +1,7 @@
 #ifndef AUTM_APPLICATION_H
 #define AUTM_APPLICATION_H
 
+#include <Imgui/ImGuiLayer.h>
 #include "autmpch.h"
 #include "Core/LayerStack.h"
 #include "Core/Window.h"
@@ -40,6 +41,7 @@ protected:
     static Application* s_instance;
 
     std::unique_ptr<Window> m_window;
+    ImGuiLayer* m_imgui_layer;
     LayerStack m_layerstack;
 };
 

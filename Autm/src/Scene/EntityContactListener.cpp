@@ -21,7 +21,19 @@ void EntityContactListener::EndContact(b2Contact* contact) {
         m_end_contact_callback(entity0, entity1);
 }
 
-void EntityContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) {}
+void EntityContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) {
+    Entity entity0 = {*(entt::entity*) contact->GetFixtureA()->GetBody()->GetUserData().pointer, m_scene};
+    Entity entity1 = {*(entt::entity*) contact->GetFixtureB()->GetBody()->GetUserData().pointer, m_scene};
 
-void EntityContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {}
+    if (m_pre_solve_callback)
+        m_pre_solve_callback(entity0, entity1);
+}
+
+void EntityContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
+    Entity entity0 = {*(entt::entity*) contact->GetFixtureA()->GetBody()->GetUserData().pointer, m_scene};
+    Entity entity1 = {*(entt::entity*) contact->GetFixtureB()->GetBody()->GetUserData().pointer, m_scene};
+
+    if (m_post_solve_callback)
+        m_post_solve_callback(entity0, entity1);
+}
 

@@ -10,7 +10,7 @@ public:
 //        push_layer(new Mandelbrot());
 //        push_layer(new RayMarching());
         push_layer(new EntityLayer());
-        push_overlay(new DemoLayer());
+//        push_overlay(new DemoLayer());
     }
 
     ~App() {

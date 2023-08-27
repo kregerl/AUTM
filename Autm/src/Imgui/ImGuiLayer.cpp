@@ -32,23 +32,22 @@ void ImGuiLayer::on_shutdown() {
 void ImGuiLayer::on_event(Event& event) {
     auto& io = ImGui::GetIO();
     if (event.is_in_category(EventCategoryMouse) & io.WantCaptureMouse ||
-            event.is_in_category(EventCategoryKeyboard) & io.WantCaptureKeyboard) {
+        event.is_in_category(EventCategoryKeyboard) & io.WantCaptureKeyboard) {
         event.set_event_result(EventResult::Consume);
     }
 }
 
 void ImGuiLayer::begin(float ts) {
-    auto& io = ImGui::GetIO();
-    io.DeltaTime = ts;
-    Window& window = Application::get_instance()->get_window();
-    io.DisplaySize = ImVec2((float) window.get_width(), (float) window.get_height());
-
-    ImGui_ImplGlfw_NewFrame();
     ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 }
 
 void ImGuiLayer::end() {
+    auto& io = ImGui::GetIO();
+    Window& window = Application::get_instance()->get_window();
+    io.DisplaySize = ImVec2((float) window.get_width(), (float) window.get_height());
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

@@ -22,6 +22,14 @@ public:
         m_end_contact_callback = std::move(callback);
     }
 
+    void set_pre_solve_callback(std::function<void(Entity&, Entity&)> callback) {
+        m_pre_solve_callback = std::move(callback);
+    }
+
+    void set_post_solve_callback(std::function<void(Entity&, Entity&)> callback) {
+        m_post_solve_callback = std::move(callback);
+    }
+
 private:
     void BeginContact(b2Contact* contact) override;
 
@@ -34,6 +42,8 @@ private:
 private:
     std::function<void(Entity&, Entity&)> m_begin_contact_callback;
     std::function<void(Entity&, Entity&)> m_end_contact_callback;
+    std::function<void(Entity&, Entity&)> m_pre_solve_callback;
+    std::function<void(Entity&, Entity&)> m_post_solve_callback;
     Scene* m_scene;
 };
 
