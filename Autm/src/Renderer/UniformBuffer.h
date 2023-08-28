@@ -12,7 +12,7 @@ public:
     void set_data(const void* data, uint32_t size, uint32_t offset = 0);
 
 private:
-    uint32_t m_renderer_id;
+    uint32_t m_renderer_id = 0;
 };
 
 
