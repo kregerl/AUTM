@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 // Slightly modified implementation of https://gist.github.com/NickBeeuwsaert/6258245
+// Uses glm::vec4's instead of a custom gradient color class
 
 class GradientStop {
 public:

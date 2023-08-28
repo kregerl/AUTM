@@ -84,6 +84,7 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
         auto& temp = entity.add_component<TemperatureComponent>();
         auto& collider = entity.add_component<CircleCollider2DComponent>();
         collider.restitution = 0.5f;
+        collider.restitution_threshold = 0.1f;
         collider.friction = 0.1f;
         auto& entity_transform = entity.get_component<TransformComponent>();
         entity_transform.translation.x = x_pos(random);
@@ -124,12 +125,6 @@ void EntityLayer::on_update(float ts) {
             temp.temperature = std::max(new_temp, 0.0f);
         }
     }
-
-//    Renderer2D::draw_quad(glm::vec3(-1.7777778 + 0.5f, 0.0f, 0.0f), glm::vec2(1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-//    Renderer2D::draw_quad(glm::vec3(0.0f), glm::vec2(1.0f), m_sand_texture, 10.0f);
-//    Renderer2D::draw_rect(glm::vec3(1.0f), glm::vec2(1.0f));
-//    Renderer2D::draw_line(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
-//    Renderer2D::draw_circle(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f), m_sand_texture, glm::vec4(1.0f), 1.5f);
     Renderer2D::end();
 }
 
