@@ -1,4 +1,5 @@
 #include "UniformBuffer.h"
+#include <glad/glad.h>
 
 UniformBuffer::UniformBuffer(uint32_t size, uint32_t binding) {
     glCreateBuffers(1, &m_renderer_id);

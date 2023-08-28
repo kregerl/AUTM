@@ -56,5 +56,4 @@ private:
     std::vector<uint32_t> m_color_attachments;
 };
 
-
 #endif //AUTM_FRAMEBUFFER_H
