@@ -8,7 +8,6 @@
 #include "OrthographicCameraController.h"
 #include "Texture2D.h"
 
-
 class Renderer2D {
 public:
     static void init();
@@ -63,7 +62,7 @@ public:
 
 
     static void submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
-                       const glm::mat4& modelMatrix);
+                       const glm::mat4& modelMatrix = glm::mat4());
 
 private:
     static float determine_texture_index(const std::shared_ptr<Texture2D>& texture);
@@ -76,6 +75,5 @@ private:
 
 //    init_quad();
 };
-
 
 #endif

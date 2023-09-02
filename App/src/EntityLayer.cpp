@@ -40,14 +40,14 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
 
             if (entity0_temp.temperature == 0.0f && entity1_temp.temperature == 0.0f)
                 return;
-            entity0_temp.temperature = 1.0f;
+            entity0_temp.temperature = entity1_temp.temperature;
         } else if (entity0.has_components<HeatSourceComponent>() && entity1.has_components<TemperatureComponent>()) {
             auto& entity0_temp = entity0.get_component<HeatSourceComponent>();
             auto& entity1_temp = entity1.get_component<TemperatureComponent>();
 
             if (entity0_temp.temperature == 0.0f && entity1_temp.temperature == 0.0f)
                 return;
-            entity1_temp.temperature = 1.0f;
+            entity1_temp.temperature = entity0_temp.temperature;
         }
     });
     auto camera_size = m_camera_controller.get_camera_size();
@@ -62,14 +62,33 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
     transform.scale = glm::vec3(size.x, size.y, 1.0f);
     auto half_size = size / 2.0f;
 
-    auto heat_entity = m_active_scene->create_entity();
-    heat_entity.add_component<Rigidbody2DComponent>();
-    heat_entity.add_component<SpriteRendererComponent>();
-    heat_entity.add_component<BoxCollider2DComponent>();
-    heat_entity.add_component<HeatSourceComponent>();
-    auto& heat_transform = heat_entity.get_component<TransformComponent>();
-    heat_transform.translation.y = -half_size.y;
-    heat_transform.scale = glm::vec3(size.x, 0.25f, 1.0f);
+    uint32_t num_sources = 10;
+    float temps[10] = {
+            0.5f,
+            0.25f,
+            0.5f,
+            1.0f,
+            1.0f,
+            0.75f,
+            0.5f,
+            1.0f,
+            0.75f,
+            0.5f,
+    };
+    auto heat_source_size = (2.0f * size.x) / (float) (num_sources + 1);
+
+    for (int i = 0; i < num_sources; i++) {
+        auto heat_entity = m_active_scene->create_entity();
+        heat_entity.add_component<Rigidbody2DComponent>();
+        heat_entity.add_component<BoxCollider2DComponent>();
+        heat_entity.add_component<SpriteRendererComponent>();
+        auto& heat_source = heat_entity.add_component<HeatSourceComponent>();
+        heat_source.temperature = temps[i];
+        auto& heat_transform = heat_entity.get_component<TransformComponent>();
+        heat_transform.translation.y = -(half_size.y/* + 0.24f*/);
+        heat_transform.translation.x = -half_size.x + ((heat_source_size / 2.0f) * ((float) i + 1));
+        heat_transform.scale = glm::vec3(heat_source_size, 0.25f, 1.0f);
+    }
 
     std::random_device rd;
     std::mt19937 random(rd());
@@ -84,8 +103,7 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
         auto& temp = entity.add_component<TemperatureComponent>();
         auto& collider = entity.add_component<CircleCollider2DComponent>();
         collider.restitution = 0.5f;
-        collider.restitution_threshold = 0.1f;
-        collider.friction = 0.1f;
+        collider.friction = 0.0f;
         auto& entity_transform = entity.get_component<TransformComponent>();
         entity_transform.translation.x = x_pos(random);
         entity_transform.translation.y = y_pos(random);
@@ -94,8 +112,10 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
     }
 }
 
+// TODO: Apply a force to objects with higher temperatures to get the "blooms" of the fire
 void EntityLayer::on_update(float ts) {
-    RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+//    RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+    RenderSystem::clear_color(0.2f, 0.2f, 0.2f, 1.0f);
     Renderer2D::begin(m_camera_controller.get_camera());
     m_active_scene->on_update(ts);
 
@@ -144,6 +164,13 @@ void EntityLayer::on_imgui_render() {
 }
 
 void EntityLayer::on_init() {
+//    FramebufferSpecification spec;
+//    spec.width = Application::get_instance()->get_window().get_width();
+//    spec.height = Application::get_instance()->get_window().get_height();
+//    spec.attachments = FramebufferAttachmentSpecification(
+//            {FramebufferTextureSpecification(FramebufferTextureSpecification::TextureFormat::RGBA8)});
+//
+//    m_framebuffer = std::make_shared<Framebuffer>(spec);
     m_active_scene->begin_simulation();
 }
 

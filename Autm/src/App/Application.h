@@ -31,7 +31,7 @@ public:
 
     void run();
 
-    inline Window& get_window() const { return *m_window; }
+    static Window& get_window() { return *get_instance()->m_window; }
 
     static Application* get_instance() { return s_instance; }
 

@@ -3,10 +3,11 @@
 #include <App/Application.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <Core/Log.h>
+#include <Core/KeyCodes.h>
 #include "RayMarching.h"
 
-RayMarching::RayMarching() : Layer("Ray Marching"), m_camera(-1.7777778, 1.7777778, 1, -1) {
-}
+RayMarching::RayMarching() : Layer("Ray Marching"), m_camera(-1.7777778, 1.7777778, 1, -1),
+                             m_fake_camera(0.0f, 0.0f, -10.0f) {}
 
 void RayMarching::on_init() {
     m_shader.reset(new Shader(
@@ -58,5 +59,27 @@ void RayMarching::on_update(float ts) {
 }
 
 void RayMarching::on_event(Event& event) {
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch_event<KeyPressedEvent>(AUTM_BIND_EVENT(RayMarching::on_key_pressed));
+
     Layer::on_event(event);
+}
+
+EventResult RayMarching::on_key_pressed(KeyPressedEvent& event) {
+    switch (event.get_keycodes()) {
+        case KEY_A: {
+            m_fake_camera.x -= 0.5f;
+            return EventResult::Consume;
+        }
+        case KEY_D: {
+            m_fake_camera.x += 0.5f;
+            return EventResult::Consume;
+        }
+        default: {
+            break;
+        }
+    }
+
+
+    return EventResult::Pass;
 }

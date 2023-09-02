@@ -9,6 +9,7 @@
 #include <Renderer/Texture2D.h>
 #include <Scene/Entity.h>
 #include <Util/Gradient.h>
+#include <Renderer/Framebuffer.h>
 
 class EntityLayer : public Layer {
 public:
@@ -33,14 +34,13 @@ private:
     std::vector<Entity> m_entities;
     std::unique_ptr<Scene> m_active_scene;
 
-    std::shared_ptr<Shader> m_shader;
     std::shared_ptr<Texture2D> m_sand_texture;
     std::shared_ptr<Texture2D> m_play_texture;
 
     float m_temperature_coefficient = 1.5f;
-    float m_force_coefficient = 4.2f;
+    float m_force_coefficient = 5.15f;
     float m_density_coefficient = 6.0f;
-    float m_heat_decay = 0.15f;
+    float m_heat_decay = 0.125f;
 
     struct TemperatureComponent {
         float temperature = 0.0f;

@@ -18,6 +18,8 @@ struct Texture2DFormats {
 
 class Texture2D {
 public:
+    Texture2D(uint32_t renderer_id, int width, int height);
+
     Texture2D(int width, int height);
 
     explicit Texture2D(std::string_view path);

@@ -68,7 +68,7 @@ public:
     explicit EventDispatcher(Event& event) : m_event(event) {}
 
     template<typename T, typename F>
-    bool dispatchEvent(const F& callback) {
+    bool dispatch_event(const F& callback) {
         if (m_event.get_event_type() == T::get_static_event_type()) {
             m_event.m_event_result = callback(static_cast<T&>(m_event));
             return true;

@@ -12,19 +12,23 @@ public:
 
     ~RayMarching() = default;
 
-    virtual void on_init() override;
+    void on_init() override;
 
-    virtual void on_shutdown() override;
+    void on_shutdown() override;
 
-    virtual void on_update(float ts) override;
+    void on_update(float ts) override;
 
-    virtual void on_event(Event& event) override;
+    void on_event(Event& event) override;
+private:
+    EventResult on_key_pressed(KeyPressedEvent& event);
 
 private:
     OrthographicCamera m_camera;
 
     std::shared_ptr<Shader> m_shader;
     std::shared_ptr<VertexArray> m_fsQuadVA; // fullscreen quad
+
+    glm::vec3 m_fake_camera;
 };
 
 

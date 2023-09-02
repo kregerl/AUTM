@@ -3,6 +3,7 @@ layout (location = 0) out vec4 fragColor;
 
 uniform vec2 u_resolution;
 uniform float u_time;
+uniform vec3 u_camera;
 
 /*
 * p - Point

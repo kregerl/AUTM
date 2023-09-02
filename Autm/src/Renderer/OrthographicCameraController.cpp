@@ -54,8 +54,8 @@ void OrthographicCameraController::on_update(double delta_time) {
 
 void OrthographicCameraController::on_event(Event& event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatchEvent<MouseScrolledEvent>(AUTM_BIND_EVENT(OrthographicCameraController::on_mouse_scrolled));
-    dispatcher.dispatchEvent<WindowResizedEvent>(AUTM_BIND_EVENT(OrthographicCameraController::on_window_resized));
+    dispatcher.dispatch_event<MouseScrolledEvent>(AUTM_BIND_EVENT(OrthographicCameraController::on_mouse_scrolled));
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(OrthographicCameraController::on_window_resized));
 }
 
 EventResult OrthographicCameraController::on_mouse_scrolled(MouseScrolledEvent& event) {

@@ -78,21 +78,6 @@ struct RectRendererComponent {
     RectRendererComponent(const RectRendererComponent&) = default;
 };
 
-// TODO: Actually make this work
-template<typename VertexStruct>
-struct CustomShaderRendererComponent {
-    std::shared_ptr<Shader> shader = nullptr;
-    VertexBufferLayout vertex_buffer_layout;
-
-    // The vertex_buffer_layout and layout of the struct should match
-    VertexStruct vertex;
-
-    CustomShaderRendererComponent() = default;
-
-    CustomShaderRendererComponent(std::shared_ptr<Shader> shader, VertexBufferLayout vertex_buffer_layout)
-            : shader(std::move(shader)), vertex_buffer_layout(std::move(vertex_buffer_layout)) {}
-};
-
 struct Rigidbody2DComponent {
     enum class Type {
         Static = 0, Kinematic, Dynamic

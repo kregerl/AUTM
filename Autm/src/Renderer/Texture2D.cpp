@@ -1,7 +1,14 @@
-#include <Core/Log.h>
 #include "Texture2D.h"
 
-Texture2D::Texture2D(int width, int height) : m_width(width), m_height(height), m_formats({4, GL_RGBA8, GL_RGBA}) {
+#ifdef DEBUG
+
+#include <Core/Log.h>
+
+#endif
+
+Texture2D::Texture2D(uint32_t renderer_id, int width, int height) : m_renderer_id(renderer_id), m_width(width),
+                                                                    m_height(height),
+                                                                    m_formats({4, GL_RGBA8, GL_RGBA}) {
     glCreateTextures(GL_TEXTURE_2D, 1, &m_renderer_id);
     glTextureStorage2D(m_renderer_id, 1, m_formats.internal_format, m_width, m_height);
 
@@ -11,6 +18,8 @@ Texture2D::Texture2D(int width, int height) : m_width(width), m_height(height), 
     glTextureParameteri(m_renderer_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTextureParameteri(m_renderer_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
+
+Texture2D::Texture2D(int width, int height) : Texture2D(0, width, height) {}
 
 Texture2D::Texture2D(std::string_view path) {
     int imageChannels;
@@ -62,4 +71,5 @@ Texture2DFormats Texture2D::determine_channels(int channels) {
         return {channels, GL_RGB8, GL_RGB};
     }
 }
+
 

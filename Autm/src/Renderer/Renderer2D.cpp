@@ -2,7 +2,6 @@
 #include "RenderSystem.h"
 #include "Texture2D.h"
 #include "UniformBuffer.h"
-
 #include <ext/matrix_transform.hpp>
 #include <Core/Log.h>
 
@@ -305,9 +304,6 @@ void Renderer2D::draw_circle(const glm::mat4& transform, const glm::vec4& color,
 void Renderer2D::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
                         const glm::mat4& modelMatrix) {
     shader->bind();
-    shader->set_mat4("u_viewProjectionMatrix", s_data->view_projection_matrix);
-    shader->set_mat4("u_modelMatrix", modelMatrix);
-
     vertexArray->bind();
     RenderSystem::draw(vertexArray);
     vertexArray->unbind();
