@@ -3,6 +3,12 @@
 #include <gtc/matrix_transform.hpp>
 #include <Core/Log.h>
 
+
+OrthographicCamera::OrthographicCamera(float aspect_ratio, float zoom) : m_projection_matrix(
+        glm::ortho(-aspect_ratio * zoom, aspect_ratio * zoom, -zoom, zoom)) {
+    update_view_matrix();
+}
+
 OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float aspect_ratio)
         : m_projection_matrix(
         glm::ortho(left * aspect_ratio, right * aspect_ratio, bottom, top, -1.0f, 1.0f)) {
@@ -32,5 +38,4 @@ void OrthographicCamera::update_view_matrix() {
     m_view_matrix = glm::inverse(cameraTransform);
     m_view_projection_matrix = m_projection_matrix * m_view_matrix;
 }
-
 

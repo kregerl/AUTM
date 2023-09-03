@@ -35,7 +35,7 @@ private:
     std::shared_ptr<Texture2D> m_sand_texture;
 
     std::shared_ptr<Shader> m_shader;
-    std::shared_ptr<Shader> m_bloom;
+    std::shared_ptr<Shader> m_blur;
     std::shared_ptr<VertexArray> m_quad_va;
 
 };

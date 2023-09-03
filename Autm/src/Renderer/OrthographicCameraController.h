@@ -13,7 +13,7 @@
  */
 class OrthographicCameraController {
 public:
-    explicit OrthographicCameraController(float aspectRatio, float zoom = 1.0f);
+    explicit OrthographicCameraController(float aspect_ratio, float zoom = 1.0f);
 
     ~OrthographicCameraController() = default;
 

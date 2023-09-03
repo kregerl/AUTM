@@ -27,12 +27,20 @@ public:
 
     void on_imgui_render() override;
 
+    EventResult on_window_resized(WindowResizedEvent& event);
+
 private:
     OrthographicCameraController m_camera_controller;
+    OrthographicCamera m_static_camera;
     Gradient m_gradient;
 
     std::vector<Entity> m_entities;
     std::unique_ptr<Scene> m_active_scene;
+
+    std::shared_ptr<Shader> m_blur;
+    std::shared_ptr<VertexArray> m_quad_va;
+    std::shared_ptr<Framebuffer> m_framebuffer;
+    glm::vec2 m_viewport_size = {0.0f, 0.0f};
 
     std::shared_ptr<Texture2D> m_sand_texture;
     std::shared_ptr<Texture2D> m_play_texture;

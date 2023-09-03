@@ -4,15 +4,15 @@
 #include <Core/Log.h>
 #include "CustomShader.h"
 
-CustomShader::CustomShader() : m_camera_controller(Application::get_instance()->get_window().get_aspect_ratio(), 1.0f) {
+CustomShader::CustomShader() : m_camera_controller(Application::get_window().get_aspect_ratio(), 1.0f) {
     m_sand_texture = std::make_shared<Texture2D>("/home/loucas/CLionProjects/Autm/assets/images/sand.png");
 
     m_shader = std::make_shared<Shader>("/home/loucas/CLionProjects/Autm/assets/shaders/CustomVert.glsl",
                                         "/home/loucas/CLionProjects/Autm/assets/shaders/CustomFrag.glsl");
 
-    m_bloom = std::make_shared<Shader>("/home/loucas/CLionProjects/Autm/assets/shaders/core/BloomVert.glsl",
-                                       "/home/loucas/CLionProjects/Autm/assets/shaders/core/BloomFrag.glsl");
-    auto aspect_ratio = Application::get_instance()->get_window().get_aspect_ratio();
+    m_blur = std::make_shared<Shader>("/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurVert.glsl",
+                                      "/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurFrag.glsl");
+    auto aspect_ratio = Application::get_window().get_aspect_ratio();
 
     float vertices[4 * 5] = {
             -aspect_ratio, -1.0f, 0.0f, 0.0f, 0.0f,
@@ -41,7 +41,7 @@ void CustomShader::on_init() {
     spec.width = Application::get_window().get_width();
     spec.height = Application::get_window().get_height();
     spec.attachments = FramebufferAttachmentSpecification(
-            {FramebufferTextureSpecification({FramebufferTextureSpecification::TextureFormat::RGBA8})});
+            {FramebufferTextureSpecification(FramebufferTextureSpecification::TextureFormat::RGBA8)});
     m_framebuffer = std::make_unique<Framebuffer>(spec);
 }
 
@@ -70,7 +70,7 @@ void CustomShader::on_update(float ts) {
     Renderer2D::begin(m_camera_controller.get_camera());
 
     m_framebuffer->bind_color_attachment_id();
-    Renderer2D::submit(m_bloom, m_quad_va);
+    Renderer2D::submit(m_blur, m_quad_va);
 
     Renderer2D::end();
 }

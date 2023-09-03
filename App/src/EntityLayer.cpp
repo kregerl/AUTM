@@ -8,7 +8,9 @@
 #include <random>
 #include <imgui/imgui.h>
 
-EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->get_window().get_aspect_ratio(), 10.0f) {
+EntityLayer::EntityLayer() : m_camera_controller(Application::get_window().get_aspect_ratio(), 10.0f),
+                             m_static_camera(Application::get_window().get_aspect_ratio()) {
+
     m_active_scene = std::make_unique<Scene>();
     m_play_texture = std::make_shared<Texture2D>("/home/loucas/CLionProjects/Autm/assets/images/play32xwhite.png");
 
@@ -16,6 +18,32 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
     m_gradient.add_color_stop(0.35f, glm::vec4(0.7f, 0.1f, 0.1f, 1.0f));
     m_gradient.add_color_stop(0.55f, glm::vec4(0.890f, 0.566f, 0.0801f, 1.0f));
     m_gradient.add_color_stop(0.8f, glm::vec4(0.98823529411f, 0.9294117647f, 0.78039215686f, 1.0f));
+
+    m_blur = std::make_shared<Shader>("/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurVert.glsl",
+                                      "/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurFrag.glsl");
+
+    auto aspect_ratio = Application::get_window().get_aspect_ratio();
+
+    float vertices[4 * 5] = {
+            -aspect_ratio, -1.0f, 0.0f, 0.0f, 0.0f,
+            aspect_ratio, -1.0f, 0.0f, 1.0f, 0.0f,
+            aspect_ratio, 1.0f, 0.0f, 1.0f, 1.0f,
+            -aspect_ratio, 1.0f, 0.0f, 0.0f, 1.0f
+    };
+    uint32_t indices[2 * 3] = {
+            0, 1, 3,
+            1, 2, 3
+    };
+    m_quad_va = std::make_shared<VertexArray>();
+    std::shared_ptr<VertexBuffer> vertexBuffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+    vertexBuffer->set_layout({
+                                     {ShaderDataType::Vec3f, "a_position"},
+                                     {ShaderDataType::Vec2f, "a_texture_coordinate"},
+                             });
+    m_quad_va->add_vertex_buffer(vertexBuffer);
+    std::shared_ptr<IndexBuffer> indexBuffer = std::make_shared<IndexBuffer>(indices,
+                                                                             sizeof(indices) / sizeof(uint32_t));
+    m_quad_va->set_index_buffer(indexBuffer);
 
     m_active_scene->set_continuous_contact_callback([this](Entity& entity0, Entity& entity1, float ts) {
         if (entity0.has_components<TemperatureComponent>() && entity1.has_components<TemperatureComponent>()) {
@@ -55,7 +83,7 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
     auto size = glm::vec2(camera_size.x / 2.0f, camera_size.y);
 
     auto enclosing_entity = m_active_scene->create_entity();
-    enclosing_entity.add_component<RectRendererComponent>();
+//    enclosing_entity.add_component<RectRendererComponent>();
     enclosing_entity.add_component<Rigidbody2DComponent>();
     enclosing_entity.add_component<RectCollider2DComponent>();
     auto& transform = enclosing_entity.get_component<TransformComponent>();
@@ -114,37 +142,54 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_instance()->ge
 
 // TODO: Apply a force to objects with higher temperatures to get the "blooms" of the fire
 void EntityLayer::on_update(float ts) {
-//    RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
-    RenderSystem::clear_color(0.2f, 0.2f, 0.2f, 1.0f);
-    Renderer2D::begin(m_camera_controller.get_camera());
-    m_active_scene->on_update(ts);
-
-    std::random_device rd;
-    std::mt19937 random(rd());
-    std::uniform_real_distribution<float> impulse(-2.0f, 8.0f);
-
-    if (!m_active_scene->get_paused()) {
-        float average_temp = 0.0f;
-        for (auto& entity: m_entities) {
-            auto& temp = entity.get_component<TemperatureComponent>();
-            float new_temp = temp.temperature - ((m_heat_decay * (0.95f - temp.temperature)) * ts);
-            auto& circle = entity.get_component<CircleRendererComponent>();
-            if (temp.temperature != 0.0f) {
-                auto color = m_gradient.get_color_at(temp.temperature);
-                circle.color = glm::vec4(color.r, color.g, color.b, color.a);
-            } else {
-                circle.color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-            }
-            auto& collider = entity.get_component<CircleCollider2DComponent>();
-            collider.density = m_density_coefficient * (1.0f - temp.temperature);
-            if (temp.temperature > 0.45f)
-                m_active_scene->apply_force_by_id(entity.get_component<IdentifierComponent>().id,
-                                                  glm::vec2(0.0f, (m_force_coefficient * temp.temperature) +
-                                                                  impulse(random)));
-            average_temp += temp.temperature;
-            temp.temperature = std::max(new_temp, 0.0f);
-        }
+    if (FramebufferSpecification spec = m_framebuffer->get_specification();
+            m_viewport_size.x > 0.0f && m_viewport_size.y > 0.0f && // zero sized framebuffer is invalid
+            (spec.width != m_viewport_size.x || spec.height != m_viewport_size.y)) {
+        m_framebuffer->resize((uint32_t) m_viewport_size.x, (uint32_t) m_viewport_size.y);
     }
+    m_framebuffer->bind();
+    {
+            RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+//        RenderSystem::clear_color(0.2f, 0.2f, 0.2f, 1.0f);
+        Renderer2D::begin(m_camera_controller.get_camera());
+        m_active_scene->on_update(ts);
+
+        std::random_device rd;
+        std::mt19937 random(rd());
+        std::uniform_real_distribution<float> impulse(-2.0f, 8.0f);
+
+        if (!m_active_scene->get_paused()) {
+            float average_temp = 0.0f;
+            for (auto& entity: m_entities) {
+                auto& temp = entity.get_component<TemperatureComponent>();
+                float new_temp = temp.temperature - ((m_heat_decay * (0.95f - temp.temperature)) * ts);
+                auto& circle = entity.get_component<CircleRendererComponent>();
+                if (temp.temperature != 0.0f) {
+                    auto color = m_gradient.get_color_at(temp.temperature);
+                    circle.color = glm::vec4(color.r, color.g, color.b, color.a);
+                } else {
+                    circle.color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+                }
+                auto& collider = entity.get_component<CircleCollider2DComponent>();
+                collider.density = m_density_coefficient * (1.0f - temp.temperature);
+                if (temp.temperature > 0.45f)
+                    m_active_scene->apply_force_by_id(entity.get_component<IdentifierComponent>().id,
+                                                      glm::vec2(0.0f, (m_force_coefficient * temp.temperature) +
+                                                                      impulse(random)));
+                average_temp += temp.temperature;
+                temp.temperature = std::max(new_temp, 0.0f);
+            }
+        }
+        Renderer2D::end();
+    }
+    m_framebuffer->unbind();
+
+    RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+    Renderer2D::begin(m_static_camera);
+
+    m_framebuffer->bind_color_attachment_id();
+    Renderer2D::submit(m_blur, m_quad_va);
+
     Renderer2D::end();
 }
 
@@ -164,13 +209,12 @@ void EntityLayer::on_imgui_render() {
 }
 
 void EntityLayer::on_init() {
-//    FramebufferSpecification spec;
-//    spec.width = Application::get_instance()->get_window().get_width();
-//    spec.height = Application::get_instance()->get_window().get_height();
-//    spec.attachments = FramebufferAttachmentSpecification(
-//            {FramebufferTextureSpecification(FramebufferTextureSpecification::TextureFormat::RGBA8)});
-//
-//    m_framebuffer = std::make_shared<Framebuffer>(spec);
+    FramebufferSpecification spec;
+    spec.width = Application::get_window().get_width();
+    spec.height = Application::get_window().get_height();
+    spec.attachments = FramebufferAttachmentSpecification(
+            {FramebufferTextureSpecification(FramebufferTextureSpecification::TextureFormat::RGBA8)});
+    m_framebuffer = std::make_unique<Framebuffer>(spec);
     m_active_scene->begin_simulation();
 }
 
@@ -179,4 +223,12 @@ void EntityLayer::on_shutdown() {
     m_active_scene->end_simulation();
 }
 
-void EntityLayer::on_event(Event& event) {}
+void EntityLayer::on_event(Event& event) {
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(EntityLayer::on_window_resized));
+}
+
+EventResult EntityLayer::on_window_resized(WindowResizedEvent& event) {
+    m_viewport_size = event.get_size();
+    return EventResult::Consume;
+}

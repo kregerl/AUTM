@@ -33,7 +33,7 @@ endif()
 
 file(COPY ../assets DESTINATION ${CMAKE_BINARY_DIR})
 
-set(PCHFILES src/autmpch.cpp src/autmpch.cpp)
+set(PCHFILES src/autmpch.cpp src/autmpch.cpp src/Autm.h)
 add_library(pch ${PCHFILES})
 target_precompile_headers(pch PUBLIC src/autmpch.h)
 

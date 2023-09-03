@@ -10,8 +10,8 @@ public:
     App() {
 //        push_layer(new Mandelbrot());
 //        push_layer(new RayMarching());
-//        push_layer(new EntityLayer());
-        push_layer(new CustomShader());
+        push_layer(new EntityLayer());
+//        push_layer(new CustomShader());
 //        push_overlay(new DemoLayer());
     }
 
