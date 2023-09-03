@@ -6,14 +6,16 @@
 
 class OpenGLContext {
 public:
-    OpenGLContext(GLFWwindow* windowHandle);
+    explicit OpenGLContext(GLFWwindow* window_handle);
+
+    ~OpenGLContext() = default;
 
     void init();
 
-    void swapBuffers();
+    void swap_buffers();
 
 private:
-    GLFWwindow* m_windowHandle;
+    GLFWwindow* m_window_handle;
 };
 
 

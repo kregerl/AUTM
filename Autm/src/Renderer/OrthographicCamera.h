@@ -11,33 +11,35 @@ class OrthographicCamera {
 public:
     OrthographicCamera() = default;
 
-    OrthographicCamera(float left, float right, float bottom, float top);
+    explicit OrthographicCamera(float aspect_ratio = 1.0f, float zoom = 1.0f);
+
+    OrthographicCamera(float left, float right, float bottom, float top, float aspect_ratio = 1.0f);
 
     ~OrthographicCamera() = default;
 
-    void setProjectionMatrix(float left, float right, float bottom, float top);
+    void set_projection_matrix(float left, float right, float bottom, float top);
 
-    void setPosition(const glm::vec3 &position);
+    void set_position(const glm::vec3& position);
 
-    void setRotation(const float rotation);
+    void set_rotation(const float rotation);
 
-    const glm::vec3 &getPosition() const { return m_position; }
+    const glm::vec3& get_position() const { return m_position; }
 
-    const float getRotation() const { return m_rotation; }
+    const float get_rotation() const { return m_rotation; }
 
-    const glm::mat4 &getViewMatrix() const { return m_viewMatrix; }
+    const glm::mat4& get_view_matrix() const { return m_view_matrix; }
 
-    const glm::mat4 &getProjectionMatrix() const { return m_projectionMatrix; }
+    const glm::mat4& get_projection_matrix() const { return m_projection_matrix; }
 
-    const glm::mat4 getViewProjectionMatrix() const { return m_viewProjectionMatrix; }
-
-private:
-    void updateViewMatrix();
+    const glm::mat4 get_view_projection_matrix() const { return m_view_projection_matrix; }
 
 private:
-    glm::mat4 m_viewMatrix;
-    glm::mat4 m_projectionMatrix;
-    glm::mat4 m_viewProjectionMatrix;
+    void update_view_matrix();
+
+private:
+    glm::mat4 m_view_matrix;
+    glm::mat4 m_projection_matrix;
+    glm::mat4 m_view_projection_matrix;
 
     glm::vec3 m_position = glm::vec3(0.0f);
     float m_rotation = 0.0f;

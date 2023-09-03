@@ -4,52 +4,53 @@
 #include <glm/glm.hpp>
 
 #include "OrthographicCamera.h"
-#include "Core/Event/MouseEvents.h"
-#include <Core/Event/WindowEvents.h>
+#include "Event/MouseEvents.h"
+#include "Event/WindowEvents.h"
+
 
 /**
  * Controller class for the orthographic camera that allows it to move, rotate and zoom
  */
 class OrthographicCameraController {
 public:
-    explicit OrthographicCameraController(float aspectRatio);
+    explicit OrthographicCameraController(float aspect_ratio, float zoom = 1.0f);
 
     ~OrthographicCameraController() = default;
 
-    void onUpdate(double deltaTime);
+    void on_update(double delta_time);
 
-    void onEvent(Event& event);
+    void on_event(Event& event);
 
-    void onMouseScrolled(MouseScrolledEvent& event);
+    EventResult on_mouse_scrolled(MouseScrolledEvent& event);
 
-    void onWindowResized(WindowResizedEvent &event);
+    EventResult on_window_resized(WindowResizedEvent& event);
 
-    const OrthographicCamera getCamera() const { return m_camera; }
+    const OrthographicCamera& get_camera() const { return m_camera; }
 
-    const glm::vec3& getPosition() const { return m_position; }
+    const glm::vec3& get_position() const { return m_position; }
 
-    float getZoom() const { return m_zoom; }
+    float get_zoom() const { return m_zoom; }
 
     // The camera size in coordinate space
-    glm::vec2 getCameraSize() const { return {-m_aspectRatio * m_zoom, m_aspectRatio * m_zoom}; }
+    glm::vec2 get_camera_size() const { return glm::vec2(m_aspect_ratio * m_zoom, m_zoom) * 2.0f; }
 
-    void setZoom(float zoom) { m_zoom = zoom; }
+    void set_zoom(float zoom) { m_zoom = zoom; }
 
-    inline void disableInputs() { m_enableInputs = false; }
+    inline void disable_inputs() { m_enable_inputs = false; }
 
-    inline void enableInputs() { m_enableInputs = true; }
+    inline void enable_inputs() { m_enable_inputs = true; }
 
 private:
     float m_zoom = 1.0f;
-    float m_cameraTranslationSpeed = 2.5f;
-    const float m_cameraRotationSpeed = 90.0f;
-    const float m_cameraSpeed = 2.5f;
+    float m_camera_translation_speed = 2.5f;
+    const float m_camera_rotation_speed = 90.0f;
+    const float m_camera_speed = 2.5f;
     glm::vec3 m_position = {0, 0, 0};
 
     OrthographicCamera m_camera;
-    float m_rotation;
-    float m_aspectRatio;
-    bool m_enableInputs;
+    float m_rotation = 0.0f;
+    float m_aspect_ratio;
+    bool m_enable_inputs = true;
 };
 
 

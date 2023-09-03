@@ -1,220 +1,396 @@
 #include "Renderer2D.h"
 #include "RenderSystem.h"
 #include "Texture2D.h"
-
+#include "UniformBuffer.h"
 #include <ext/matrix_transform.hpp>
+#include <Core/Log.h>
 
+static const uint32_t MAX_QUADS = 10000;
+static const uint32_t MAX_VERTICES = MAX_QUADS * 4;
+static const uint32_t MAX_INDICES = MAX_VERTICES * 6;
+static const uint32_t MAX_TEXTURE_SLOTS = 32;
+static const float DEFAULT_LINE_WIDTH = 2.0f;
+
+struct QuadVertex {
+    glm::vec3 position;
+    glm::vec4 color;
+    glm::vec2 texture_coordinate;
+    float texture_index;
+    float tiling_factor;
+};
+
+struct LineVertex {
+    glm::vec3 position;
+    glm::vec4 color;
+};
+
+struct CircleVertex {
+    glm::vec3 world_position;
+    glm::vec3 local_position;
+    glm::vec4 color;
+    glm::vec2 texture_coordinate;
+    float texture_index;
+    float tiling_factor;
+    float thickness;
+    float fade;
+};
 
 struct RendererData {
-    glm::mat4 viewProjectionMatrix;
-    std::shared_ptr<VertexArray> quadVertexArray;
-    std::shared_ptr<VertexArray> lineVertexArray;
-    std::shared_ptr<VertexArray> fullscreenQuadVertexArray;
-    std::shared_ptr<Shader> textureShader;
-    std::shared_ptr<Shader> flatColorShader;
-    std::shared_ptr<Shader> fractalShader;
-    std::shared_ptr<Texture2D> arrowTexture;
-    std::shared_ptr<Texture2D> whiteTexture;
+    glm::mat4 view_projection_matrix;
+
+    uint32_t quad_index_count = 0;
+    QuadVertex* quad_vertex_buffer_base = nullptr;
+    QuadVertex* quad_vertex_buffer_ptr = nullptr;
+    std::shared_ptr<VertexArray> quad_vertex_array;
+    std::shared_ptr<VertexBuffer> quad_vertex_buffer;
+    std::shared_ptr<Shader> textured_quad_shader;
+
+    uint32_t line_vertex_count = 0;
+    LineVertex* line_vertex_buffer_base = nullptr;
+    LineVertex* line_vertex_buffer_ptr = nullptr;
+    std::shared_ptr<VertexArray> line_vertex_array;
+    std::shared_ptr<VertexBuffer> line_vertex_buffer;
+    std::shared_ptr<Shader> line_shader;
+
+    uint32_t circle_index_count = 0;
+    CircleVertex* circle_vertex_buffer_base = nullptr;
+    CircleVertex* circle_vertex_buffer_ptr = nullptr;
+    std::shared_ptr<VertexArray> circle_vertex_array;
+    std::shared_ptr<VertexBuffer> circle_vertex_buffer;
+    std::shared_ptr<Shader> circle_shader;
+
+    std::shared_ptr<Texture2D> white_texture;
+    std::array<std::shared_ptr<Texture2D>, MAX_TEXTURE_SLOTS> texture_slots;
+    uint32_t texture_index = 1;
+
+    glm::vec4 quad_vertex_positions[4];
+    std::shared_ptr<UniformBuffer> camera_uniform_buffer;
 };
+
 
 // This has to be heap allocated because static fields last until the end of the program's lifetime,
 // meaning the texture's destructor will be called after the OpenGL context is already destroyed.
 static RendererData* s_data = new RendererData();
 
-// TODO: Switch this to a batched renderer instead
 void Renderer2D::init() {
-    s_data->arrowTexture = std::make_shared<Texture2D>(
-            R"(/home/loucas/CLionProjects/Autm/assets/images/play32xwhite.png)");
+    AUTM_CORE_DEBUG("Thread id: {}", std::this_thread::get_id());
 
-    s_data->whiteTexture = std::make_shared<Texture2D>(1, 1);
-    int white = 0xFFFFFFFF;
-    s_data->whiteTexture->setData(sizeof(int), &white);
+    // Heap allocated to prevent stack overflows
+    // TODO: should be ref counted
+    auto* quad_indices = new uint32_t[MAX_INDICES];
 
-    // TODO: Try to use non Raw strings with std::string_view again.
-    s_data->textureShader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/TextureVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/TextureFragment.glsl");
+    // Assigning quad indices
+    uint32_t offset = 0;
+    for (uint32_t i = 0; i < MAX_INDICES; i += 6) {
+        quad_indices[i + 0] = offset + 0;
+        quad_indices[i + 1] = offset + 1;
+        quad_indices[i + 2] = offset + 2;
 
-    s_data->flatColorShader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/FlatColorVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/FlatColorFragment.glsl");
+        quad_indices[i + 3] = offset + 2;
+        quad_indices[i + 4] = offset + 3;
+        quad_indices[i + 5] = offset + 0;
 
-    s_data->fractalShader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/FractalVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/FractalFragment.glsl");
+        offset += 4;
+    }
 
-//  --------------------------
-//  ---------- Quad ----------
-//  --------------------------
-    initQuad();
-//  --------------------------
-//  ---------- Line ----------
-//  --------------------------
-    initLine();
+    std::shared_ptr<IndexBuffer> quad_index_buffer = std::make_shared<IndexBuffer>(quad_indices, MAX_INDICES);
 
-    initFullscreenQuad();
+    init_quad(quad_index_buffer);
+    init_line();
+    init_circle(quad_index_buffer);
+
+    delete[] quad_indices;
+
+    s_data->white_texture = std::make_shared<Texture2D>(1, 1);
+    uint32_t white = 0xFFFFFFFF;
+    s_data->white_texture->set_data(sizeof(uint32_t), &white);
+    s_data->texture_slots[0] = s_data->white_texture;
+
+    s_data->camera_uniform_buffer = std::make_shared<UniformBuffer>(sizeof(glm::mat4), 0);
 }
 
 void Renderer2D::shutdown() {
+    delete[] s_data->quad_vertex_buffer_base;
+    delete[] s_data->line_vertex_buffer_base;
+    delete[] s_data->circle_vertex_buffer_base;
+    delete s_data;
 }
 
 void Renderer2D::begin(OrthographicCamera camera) {
-    s_data->viewProjectionMatrix = camera.getViewProjectionMatrix();
+    // Set camera view projection matrix uniform buffer so it can be reused
+    s_data->view_projection_matrix = camera.get_view_projection_matrix();
+    s_data->camera_uniform_buffer->set_data(&s_data->view_projection_matrix, sizeof(s_data->view_projection_matrix));
+
+    start_batch();
 }
 
 void Renderer2D::end() {
-
+    flush();
 }
 
-void Renderer2D::drawQuad(glm::vec3 position, glm::vec2 size, float rotation) {
+// Zero out the batch
+void Renderer2D::start_batch() {
+    s_data->quad_index_count = 0;
+    s_data->quad_vertex_buffer_ptr = s_data->quad_vertex_buffer_base;
 
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::translate(modelMatrix, position);
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    modelMatrix = glm::scale(modelMatrix, {size.x, size.y, 1.0f});
+    s_data->line_vertex_count = 0;
+    s_data->line_vertex_buffer_ptr = s_data->line_vertex_buffer_base;
 
-    s_data->quadVertexArray->bind();
-    s_data->textureShader->bind();
-    s_data->textureShader->setMat4("u_viewProjectionMatrix", s_data->viewProjectionMatrix);
-    s_data->textureShader->setMat4("u_modelMatrix", modelMatrix);
+    s_data->circle_index_count = 0;
+    s_data->circle_vertex_buffer_ptr = s_data->circle_vertex_buffer_base;
 
-    s_data->whiteTexture->bind();
-
-    RenderSystem::draw(s_data->quadVertexArray);
-    s_data->quadVertexArray->unbind();
+    s_data->texture_index = 1;
 }
 
-void Renderer2D::drawFractalQuad(glm::vec2 size, glm::vec3 center, glm::vec2 resolution, float iterations) {
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::translate(modelMatrix, {0.0f, 0.0f, 0.0f});
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    modelMatrix = glm::scale(modelMatrix, {size.x, size.y, 1.0f});
+void Renderer2D::flush() {
+    // If the renderer should draw any quads
+    if (s_data->quad_index_count) {
+        auto data_size = (uint32_t) ((uint8_t*) s_data->quad_vertex_buffer_ptr -
+                                     (uint8_t*) s_data->quad_vertex_buffer_base);
+        s_data->quad_vertex_buffer->set_data(s_data->quad_vertex_buffer_base, data_size);
 
-    s_data->fullscreenQuadVertexArray->bind();
-    s_data->fractalShader->bind();
-    s_data->fractalShader->setMat4("u_viewProjectionMatrix", s_data->viewProjectionMatrix);
-    s_data->fractalShader->setMat4("u_modelMatrix", modelMatrix);
-    s_data->fractalShader->setVec3("u_center", center);
-    s_data->fractalShader->setVec2("u_resolution", resolution);
-    s_data->fractalShader->setFloat("u_iterations", iterations);
+        for (uint32_t i = 0; i < s_data->texture_index; i++) {
+            s_data->texture_slots[i]->bind(i);
+        }
 
-    RenderSystem::draw(s_data->fullscreenQuadVertexArray);
-    s_data->fullscreenQuadVertexArray->unbind();
+        s_data->textured_quad_shader->bind();
+        RenderSystem::draw_indexed(s_data->quad_vertex_array, s_data->quad_index_count);
+    }
 
+    if (s_data->line_vertex_count) {
+        auto data_size = (uint32_t) ((uint8_t*) s_data->line_vertex_buffer_ptr -
+                                     (uint8_t*) s_data->line_vertex_buffer_base);
+        s_data->line_vertex_buffer->set_data(s_data->line_vertex_buffer_base, data_size);
+
+        s_data->line_shader->bind();
+        RenderSystem::set_line_width(DEFAULT_LINE_WIDTH);
+        RenderSystem::draw_lines(s_data->line_vertex_array, s_data->line_vertex_count);
+    }
+
+    if (s_data->circle_index_count) {
+        auto data_size = (uint32_t) ((uint8_t*) s_data->circle_vertex_buffer_ptr -
+                                     (uint8_t*) s_data->circle_vertex_buffer_base);
+        s_data->circle_vertex_buffer->set_data(s_data->circle_vertex_buffer_base, data_size);
+
+        for (uint32_t i = 0; i < s_data->texture_index; i++) {
+            s_data->texture_slots[i]->bind(i);
+        }
+
+        s_data->circle_shader->bind();
+        RenderSystem::draw_indexed(s_data->circle_vertex_array, s_data->circle_index_count);
+    }
 }
 
-void Renderer2D::drawLine(glm::vec3 position, glm::vec2 size, float rotation, float lineWidth) {
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::translate(modelMatrix, position);
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    modelMatrix = glm::scale(modelMatrix, {size.x, size.y, 1.0f});
-
-    s_data->lineVertexArray->bind();
-    s_data->flatColorShader->bind();
-    s_data->flatColorShader->setMat4("u_viewProjectionMatrix", s_data->viewProjectionMatrix);
-    s_data->flatColorShader->setMat4("u_modelMatrix", modelMatrix);
-
-    glLineWidth(lineWidth);
-    RenderSystem::draw(s_data->lineVertexArray, GL_LINES);
+void Renderer2D::draw_quad(const glm::mat4& transform, const glm::vec4& color) {
+    draw_quad(transform, s_data->white_texture, 1.0f, color);
 }
 
-void Renderer2D::initQuad() {
-    float quadVertices[4 * 9] = {
-            //             Position(vec3)      TexCoords(vec2)     Color(vec3)    Tiling Factor(Float)
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 10.0f,
-            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 10.0f,
-            0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 10.0f,
-            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 10.0f
-    };
+void Renderer2D::draw_quad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
 
-
-    unsigned int quadIndices[2 * 3] = {
-            0, 1, 3,
-            1, 2, 3
-    };
-
-
-    s_data->quadVertexArray = std::make_shared<VertexArray>();
-    s_data->quadVertexArray->bind();
-    std::shared_ptr<VertexBuffer> quadVertexBuffer = std::make_shared<VertexBuffer>(quadVertices,
-                                                                                    sizeof(quadVertices));
-    quadVertexBuffer->setLayout({
-                                        {ShaderDataType::Vec3f, "a_pos",          false},
-                                        {ShaderDataType::Vec2f, "a_texCoord",     false},
-                                        {ShaderDataType::Vec3f, "a_color",        false},
-                                        {ShaderDataType::Float, "a_tilingFactor", false}
-                                });
-
-    s_data->quadVertexArray->addVertexBuffer(quadVertexBuffer);
-    std::shared_ptr<IndexBuffer> quadIndexBuffer = std::make_shared<IndexBuffer>(quadIndices,
-                                                                                 sizeof(quadIndices) /
-                                                                                 sizeof(unsigned int));
-    s_data->quadVertexArray->setIndexBuffer(quadIndexBuffer);
-
-
+    draw_quad(transform, color);
 }
 
-void Renderer2D::initLine() {
-    float lineVertices[2 * 6] = {
-            //          Position(vec3)      Color(Vec3)
-            -0.5f, -0.5f, 0.0f, 0.3f, 0.8f, 1.0f,
-            0.5f, -0.5f, 0.0f, 0.3f, 0.8f, 1.0f
-    };
+void Renderer2D::draw_quad(const glm::vec3& position, const glm::vec2& size, const std::shared_ptr<Texture2D>& texture,
+                           float tiling_factor, const glm::vec4& color) {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
 
-    unsigned int lineIndices[2] = {
-            0, 1
-    };
-    s_data->lineVertexArray = std::make_shared<VertexArray>();
-
-    s_data->lineVertexArray->bind();
-    std::shared_ptr<VertexBuffer> lineVertexBuffer = std::make_shared<VertexBuffer>(lineVertices,
-                                                                                    sizeof(lineVertices));
-    lineVertexBuffer->setLayout({
-                                        {ShaderDataType::Vec3f, "a_pos",   false},
-                                        {ShaderDataType::Vec3f, "a_color", false},
-                                });
-
-    s_data->lineVertexArray->addVertexBuffer(lineVertexBuffer);
-
-    std::shared_ptr<IndexBuffer> lineIndexBuffer = std::make_shared<IndexBuffer>(lineIndices,
-                                                                                 sizeof(lineIndices) /
-                                                                                 sizeof(unsigned int));
-    s_data->lineVertexArray->setIndexBuffer(lineIndexBuffer);
-
-    s_data->lineVertexArray->unbind();
-
+    draw_quad(transform, texture, tiling_factor, color);
 }
 
-void Renderer2D::initFullscreenQuad() {
-    float quadVertices[4 * 9] = {
-            //             Position(vec3)      TexCoords(vec2)     Color(vec3)    Tiling Factor(Float)
-            -1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            1.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f
-    };
+void Renderer2D::draw_quad(const glm::mat4& transform, const std::shared_ptr<Texture2D>& texture, float tiling_factor,
+                           const glm::vec4& color) {
+    constexpr uint32_t quad_vertex_count = 4;
+    constexpr glm::vec2 texture_coords[] = {{0.0f, 0.0f},
+                                            {1.0f, 0.0f},
+                                            {1.0f, 1.0f},
+                                            {0.0f, 1.0f}};
+    float texture_index = determine_texture_index(texture);
 
-    unsigned int quadIndices[2 * 3] = {
-            0, 1, 3,
-            1, 2, 3
-    };
-
-
-    s_data->fullscreenQuadVertexArray = std::make_shared<VertexArray>();
-    s_data->fullscreenQuadVertexArray->bind();
-    std::shared_ptr<VertexBuffer> vertexBuffer = std::make_shared<VertexBuffer>(quadVertices,
-                                                                                sizeof(quadVertices));
-    vertexBuffer->setLayout({
-                                    {ShaderDataType::Vec3f, "a_pos", false},
-                            });
-
-    s_data->fullscreenQuadVertexArray->addVertexBuffer(vertexBuffer);
-    std::shared_ptr<IndexBuffer> quadIndexBuffer = std::make_shared<IndexBuffer>(quadIndices,
-                                                                                 sizeof(quadIndices) /
-                                                                                 sizeof(unsigned int));
-    s_data->fullscreenQuadVertexArray->setIndexBuffer(quadIndexBuffer);
-
+    for (uint32_t i = 0; i < quad_vertex_count; i++) {
+        s_data->quad_vertex_buffer_ptr->position = transform * s_data->quad_vertex_positions[i];
+        s_data->quad_vertex_buffer_ptr->color = color;
+        s_data->quad_vertex_buffer_ptr->texture_coordinate = texture_coords[i];
+        s_data->quad_vertex_buffer_ptr->texture_index = texture_index;
+        s_data->quad_vertex_buffer_ptr->tiling_factor = tiling_factor;
+        s_data->quad_vertex_buffer_ptr++;
+    }
+    s_data->quad_index_count += 6;
 }
 
+void Renderer2D::draw_rect(const glm::mat4& transform, const glm::vec4& color) {
+    constexpr uint32_t line_vertex_count = 4;
+    glm::vec3 line_vertices[line_vertex_count];
+    for (uint32_t i = 0; i < line_vertex_count; i++) {
+        line_vertices[i] = transform * s_data->quad_vertex_positions[i];
+    }
+
+    draw_line(line_vertices[0], line_vertices[1], color);
+    draw_line(line_vertices[1], line_vertices[2], color);
+    draw_line(line_vertices[2], line_vertices[3], color);
+    draw_line(line_vertices[3], line_vertices[0], color);
+}
+
+void Renderer2D::draw_rect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+
+    draw_rect(transform, color);
+}
+
+void Renderer2D::draw_line(const glm::vec3& position0, const glm::vec3& position1, const glm::vec4& color) {
+    s_data->line_vertex_buffer_ptr->position = position0;
+    s_data->line_vertex_buffer_ptr->color = color;
+    s_data->line_vertex_buffer_ptr++;
+
+    s_data->line_vertex_buffer_ptr->position = position1;
+    s_data->line_vertex_buffer_ptr->color = color;
+    s_data->line_vertex_buffer_ptr++;
+
+    s_data->line_vertex_count += 2;
+}
+
+void Renderer2D::draw_circle(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
+                             float tiling_factor, float thickness, float fade) {
+    draw_circle(position, size, s_data->white_texture, color, tiling_factor, thickness, fade);
+}
+
+void Renderer2D::draw_circle(const glm::vec3& position, const glm::vec2& size,
+                             const std::shared_ptr<Texture2D>& texture, const glm::vec4& color, float tiling_factor,
+                             float thickness, float fade) {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
+
+    draw_circle(transform, texture, color, tiling_factor, thickness, fade);
+}
+
+
+void Renderer2D::draw_circle(
+        const glm::mat4& transform,
+        const std::shared_ptr<Texture2D>& texture,
+        const glm::vec4& color,
+        float tiling_factor,
+        float thickness, float fade) {
+
+    constexpr uint32_t circle_vertex_count = 4;
+    constexpr glm::vec2 texture_coords[] = {{0.0f, 0.0f},
+                                            {1.0f, 0.0f},
+                                            {1.0f, 1.0f},
+                                            {0.0f, 1.0f}};
+
+    float texture_index = determine_texture_index(texture);
+
+    for (uint32_t i = 0; i < circle_vertex_count; i++) {
+        s_data->circle_vertex_buffer_ptr->world_position = transform * s_data->quad_vertex_positions[i];
+        s_data->circle_vertex_buffer_ptr->local_position = s_data->quad_vertex_positions[i] * 2.0f;
+        s_data->circle_vertex_buffer_ptr->color = color;
+        s_data->circle_vertex_buffer_ptr->texture_coordinate = texture_coords[i];
+        s_data->circle_vertex_buffer_ptr->texture_index = texture_index;
+        s_data->circle_vertex_buffer_ptr->tiling_factor = tiling_factor;
+        s_data->circle_vertex_buffer_ptr->thickness = thickness;
+        s_data->circle_vertex_buffer_ptr->fade = fade;
+        s_data->circle_vertex_buffer_ptr++;
+    }
+    s_data->circle_index_count += 6;
+}
+
+void Renderer2D::draw_circle(const glm::mat4& transform, const glm::vec4& color, float tiling_factor, float thickness,
+                             float fade) {
+    draw_circle(transform, s_data->white_texture, color, tiling_factor, thickness, fade);
+}
+
+void Renderer2D::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
+                        const glm::mat4& modelMatrix) {
+    shader->bind();
+    vertexArray->bind();
+    RenderSystem::draw(vertexArray);
+    vertexArray->unbind();
+}
+
+float Renderer2D::determine_texture_index(const std::shared_ptr<Texture2D>& texture) {
+    float texture_index = 0.0f;
+    for (uint32_t i = 1; i < s_data->texture_index; i++) {
+        if (s_data->texture_slots[i].get() == texture.get()) {
+            texture_index = (float) i;
+            break;
+        }
+    }
+
+    if (texture_index == 0.0f) {
+        texture_index = (float) s_data->texture_index;
+        s_data->texture_slots[s_data->texture_index] = texture;
+        s_data->texture_index++;
+    }
+    return texture_index;
+}
+
+void Renderer2D::init_quad(const std::shared_ptr<IndexBuffer>& index_buffer) {
+    s_data->quad_vertex_array = std::make_shared<VertexArray>();
+    s_data->quad_vertex_buffer = std::make_shared<VertexBuffer>(MAX_VERTICES * sizeof(QuadVertex));
+    s_data->quad_vertex_buffer->set_layout(
+            {
+                    {ShaderDataType::Vec3f, "a_position",           false},
+                    {ShaderDataType::Vec4f, "a_color",              false},
+                    {ShaderDataType::Vec2f, "a_texture_coordinate", false},
+                    {ShaderDataType::Float, "a_texture_index",      false},
+                    {ShaderDataType::Float, "a_tiling_factor",      false},
+            }
+    );
+    s_data->quad_vertex_array->add_vertex_buffer(s_data->quad_vertex_buffer);
+    s_data->quad_vertex_buffer_base = new QuadVertex[MAX_VERTICES];
+
+    s_data->quad_vertex_array->set_index_buffer(index_buffer);
+
+    s_data->textured_quad_shader = std::make_shared<Shader>(
+            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedQuadVertex.glsl",
+            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedQuadFragment.glsl");
+
+    s_data->quad_vertex_positions[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
+    s_data->quad_vertex_positions[1] = {0.5f, -0.5f, 0.0f, 1.0f};
+    s_data->quad_vertex_positions[2] = {0.5f, 0.5f, 0.0f, 1.0f};
+    s_data->quad_vertex_positions[3] = {-0.5f, 0.5f, 0.0f, 1.0f};
+}
+
+void Renderer2D::init_line() {
+    s_data->line_vertex_array = std::make_shared<VertexArray>();
+    s_data->line_vertex_buffer = std::make_shared<VertexBuffer>(MAX_VERTICES * sizeof(LineVertex));
+    s_data->line_vertex_buffer->set_layout(
+            {
+                    {ShaderDataType::Vec3f, "a_position", false},
+                    {ShaderDataType::Vec4f, "a_color",    false},
+            });
+    s_data->line_vertex_array->add_vertex_buffer(s_data->line_vertex_buffer);
+    s_data->line_vertex_buffer_base = new LineVertex[MAX_VERTICES];
+
+    s_data->line_shader = std::make_shared<Shader>(
+            "/home/loucas/CLionProjects/Autm/assets/shaders/core/LineVertex.glsl",
+            "/home/loucas/CLionProjects/Autm/assets/shaders/core/LineFragment.glsl");
+}
+
+void Renderer2D::init_circle(const std::shared_ptr<IndexBuffer>& index_buffer) {
+    s_data->circle_vertex_array = std::make_shared<VertexArray>();
+    s_data->circle_vertex_buffer = std::make_shared<VertexBuffer>(MAX_VERTICES * sizeof(CircleVertex));
+    s_data->circle_vertex_buffer->set_layout(
+            {
+                    {ShaderDataType::Vec3f, "a_world_position",     false},
+                    {ShaderDataType::Vec3f, "a_local_position",     false},
+                    {ShaderDataType::Vec4f, "a_color",              false},
+                    {ShaderDataType::Vec2f, "a_texture_coordinate", false},
+                    {ShaderDataType::Float, "a_texture_index",      false},
+                    {ShaderDataType::Float, "a_tiling_factor",      false},
+                    {ShaderDataType::Float, "a_thickness",          false},
+                    {ShaderDataType::Float, "a_fade",               false},
+            });
+    s_data->circle_vertex_array->add_vertex_buffer(s_data->circle_vertex_buffer);
+    s_data->circle_vertex_array->set_index_buffer(index_buffer);
+
+    s_data->circle_vertex_buffer_base = new CircleVertex[MAX_VERTICES];
+
+    s_data->circle_shader = std::make_shared<Shader>(
+            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedCircleVertex.glsl",
+            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedCircleFragment.glsl");
+}
 
 

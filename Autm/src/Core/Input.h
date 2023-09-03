@@ -11,24 +11,11 @@
 
 class Input {
 public:
-    static void onKeyPressedEvent(KeyPressedEvent& event);
+    static bool is_key_pressed(int keycode);
 
-    static void onKeyReleasedEvent(KeyReleasedEvent& event);
+    static bool is_mouse_button_pressed(int mouse_code);
 
-    static void onMouseScrolledEvent(MouseScrolledEvent& event);
-
-    static void onMouseButtonPressedEvent(MouseButtonPressedEvent &event);
-
-    static bool isKeyPressed(int keyCode);
-
-    static float getScroll() { return scroll; }
-
-    static glm::vec2 getMousePos() { return mousePos; }
-
-private:
-    static std::array<bool, KEYS> s_pressed;
-    static float scroll;
-    static glm::vec2 mousePos;
+    static glm::vec2 get_mouse_position();
 };
 
 

@@ -1,14 +1,14 @@
 #ifndef AUTM_VERTEXBUFFER_H
 #define AUTM_VERTEXBUFFER_H
 
-#include <glad/glad.h>
-
 #include "Buffer.h"
 #include "VertexBufferLayout.h"
 
 class VertexBuffer : Buffer {
 public:
-    VertexBuffer(float *vertices, size_t size);
+    VertexBuffer(float *vertices, uint32_t size);
+
+    explicit VertexBuffer(uint32_t size);
 
     ~VertexBuffer() override;
 
@@ -16,9 +16,11 @@ public:
 
     void unbind() const override;
 
-    void setLayout(const VertexBufferLayout &layout) { m_layout = layout; }
+    void set_data(const void* data, uint32_t size = 0);
 
-    inline const VertexBufferLayout &getLayout() { return m_layout; }
+    void set_layout(const VertexBufferLayout &layout) { m_layout = layout; }
+
+    inline const VertexBufferLayout &get_layout() { return m_layout; }
 
 private:
     VertexBufferLayout m_layout;

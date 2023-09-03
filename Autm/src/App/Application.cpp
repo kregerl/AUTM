@@ -2,89 +2,68 @@
 
 #include <Renderer/RenderSystem.h>
 #include <Renderer/Renderer2D.h>
-#include <Core/KeyCodes.h>
 #include <Core/Log.h>
 
 Application* Application::s_instance = nullptr;
 
-// TODO: Make an ImGui github repo with the CMakeLists.txt file so it can be cloned as its own submodule
 Application::Application() {
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());
-    m_cameraController = std::make_unique<OrthographicCameraController>(
-            (float) m_window->getWidth() / (float) m_window->getHeight());
+    m_window->set_event_callback(AUTM_BIND_EVENT(Application::on_event));
 
-    m_window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
-
-//    m_cameraController->disableInputs();
+    glEnable(GL_DEBUG_OUTPUT);
     Renderer2D::init();
+
+    m_imgui_layer = new ImGuiLayer();
+    push_overlay(m_imgui_layer);
 }
 
+Application::~Application() {
+    Renderer2D::shutdown();
+}
 
-void Application::onEvent(Event& event) {
-    // Send events to camera controller
-#if 0
-#ifdef DEBUG
-    AUTM_DEBUG("{}", event);
-#endif
-#endif
-    m_cameraController->onEvent(event);
+void Application::on_event(Event& event) {
 
+    // TODO: Add WindowClosed listener and WindowResized listener
     EventDispatcher dispatcher(event);
-    dispatcher.dispatchEvent<KeyPressedEvent>(Input::onKeyPressedEvent);
-    dispatcher.dispatchEvent<KeyReleasedEvent>(Input::onKeyReleasedEvent);
-    dispatcher.dispatchEvent<MouseScrolledEvent>(Input::onMouseScrolledEvent);
-    dispatcher.dispatchEvent<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(Application::onMouseButtonPressed));
-
-    for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
-        (*--it)->onEvent(event);
-//        if (event.isHandled()) {
-//            break;
-//        }
-    }
-}
-
-void Application::onMouseButtonPressed(MouseButtonPressedEvent& event) {
-    if (event.getMouseButton() == L_MOUSE_BUTTON) {
-        auto pos = event.getMousePos();
-        glm::vec2 resolution = m_window->getResolution();
-        float zoom = Input::getScroll();
-        m_center = {
-                m_center.x + (pos.x - (0.5 * resolution.x)) * (4 / resolution.x) * (16 / (9 * zoom)),
-                m_center.y - (pos.y - (0.5 * resolution.y)) * (4 / resolution.y) * (1 / zoom),
-                zoom
-        };
+//    dispatcher.dispatchEvent<KeyPressedEvent>(Input::onKeyPressedEvent);
+//    dispatcher.dispatchEvent<KeyReleasedEvent>(Input::onKeyReleasedEvent);
+//    dispatcher.dispatchEvent<MouseScrolledEvent>(Input::onMouseScrolledEvent);
+//    dispatcher.dispatchEvent<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(Application::onMouseButtonPressed));
+    for (auto it = m_layerstack.end(); it != m_layerstack.begin();) {
+        if (event.get_event_result() != EventResult::Pass)
+            break;
+        (*--it)->on_event(event);
     }
 }
 
 void Application::run() {
 
-    while (!m_window->shouldClose()) {
-        m_window->onUpdate();
-        m_window->pollEvents();
+    while (!m_window->should_close()) {
 
+        m_window->onUpdate();
+        m_window->poll_events();
         glEnable(GL_MULTISAMPLE);
 
-        m_cameraController->onUpdate(m_window->getDeltaTime());
-
-        RenderSystem::clearColor(0.0f, 1.0f, 0.0f, 1.0f);
-        Renderer2D::begin(m_cameraController->getCamera());
-
-        for (Layer* layer : m_layerStack) {
-            layer->onUpdate();
+        auto ts = static_cast<float>(m_window->get_delta_time());
+        for (Layer* layer: m_layerstack) {
+            layer->on_update(ts);
         }
 
-        float zoom = Input::getScroll();
-        m_center.z = zoom;
-        glm::vec2 size = m_cameraController->getCameraSize();
-        glm::vec2 resolution = m_window->getResolution();
-
-
-        Renderer2D::drawFractalQuad(size, m_center, resolution, 1000);
-
-//        Renderer2D::drawQuad({0.0, 0.0, 0.0}, {20, 20}, 45);
-        Renderer2D::end();
+        m_imgui_layer->begin(ts);
+        for (Layer* layer: m_layerstack) {
+            layer->on_imgui_render();
+        }
+        m_imgui_layer->end();
     }
+}
 
-    m_window->close();
+void Application::push_layer(Layer* layer) {
+    m_layerstack.push_layer(layer);
+    layer->on_init();
+}
+
+void Application::push_overlay(Layer* layer) {
+    m_layerstack.push_overlay(layer);
+    layer->on_init();
 }

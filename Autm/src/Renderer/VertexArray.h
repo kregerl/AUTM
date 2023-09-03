@@ -11,7 +11,7 @@
 
 class VertexArray : Buffer {
 public:
-    static GLenum getOpenglType(ShaderDataType type);
+    static GLenum get_opengl_type(ShaderDataType type);
 
     VertexArray();
 
@@ -19,15 +19,15 @@ public:
 
     void unbind() const override;
 
-    void addVertexBuffer(const std::shared_ptr<VertexBuffer> &vertexBuffer);
+    void add_vertex_buffer(const std::shared_ptr<VertexBuffer> &vertex_buffer);
 
-    void setIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer);
+    void set_index_buffer(const std::shared_ptr<IndexBuffer> &index_buffer);
 
-    std::shared_ptr<IndexBuffer> &getIndexBuffer() { return m_indexBuffer; }
+    const std::shared_ptr<IndexBuffer> &get_index_buffer() { return m_index_buffer; }
 
 private:
-    std::vector<std::shared_ptr<VertexBuffer>> m_vertexBuffers;
-    std::shared_ptr<IndexBuffer> m_indexBuffer;
+    std::vector<std::shared_ptr<VertexBuffer>> m_vertex_buffers;
+    std::shared_ptr<IndexBuffer> m_index_buffer;
 };
 
 

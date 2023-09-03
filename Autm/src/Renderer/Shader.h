@@ -20,35 +20,35 @@ public:
 
     void bind() const;
 
-    virtual void setBool(const std::string& name, bool value) const;
+    virtual void set_bool(const std::string& name, bool value) const;
 
-    virtual void setInt(const std::string& name, int value) const;
+    virtual void set_int(const std::string& name, int value) const;
 
-    virtual void setFloat(const std::string& name, float value) const;
+    virtual void set_float(const std::string& name, float value) const;
 
-    virtual void setVec2(const std::string& name, const glm::vec2& value) const;
+    virtual void set_vec2(const std::string& name, const glm::vec2& value) const;
 
-    virtual void setVec2(const std::string& name, float x, float y) const;
+    virtual void set_vec2(const std::string& name, float x, float y) const;
 
-    virtual void setVec3(const std::string& name, const glm::vec3& value) const;
+    virtual void set_vec3(const std::string& name, const glm::vec3& value) const;
 
-    virtual void setVec3(const std::string& name, float x, float y, float z) const;
+    virtual void set_vec3(const std::string& name, float x, float y, float z) const;
 
-    virtual void setVec4(const std::string& name, const glm::vec4& value) const;
+    virtual void set_vec4(const std::string& name, const glm::vec4& value) const;
 
-    virtual void setVec4(const std::string& name, float x, float y, float z, float w) const;
+    virtual void set_vec4(const std::string& name, float x, float y, float z, float w) const;
 
-    virtual void setMat2(const std::string& name, const glm::mat2& mat) const;
+    virtual void set_mat2(const std::string& name, const glm::mat2& mat) const;
 
-    virtual void setMat3(const std::string& name, const glm::mat3& mat) const;
+    virtual void set_mat3(const std::string& name, const glm::mat3& mat) const;
 
-    virtual void setMat4(const std::string& name, const glm::mat4& mat) const;
-
-protected:
-    static void checkCompileErrors(unsigned int shaderProgram, const std::string& type);
+    virtual void set_mat4(const std::string& name, const glm::mat4& mat) const;
 
 protected:
-    GLuint m_programId;
+    static void check_compile_errors(unsigned int shader_program, const std::string& type);
+
+protected:
+    GLuint m_program_id;
 };
 
 

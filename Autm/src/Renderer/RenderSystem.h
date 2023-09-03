@@ -8,13 +8,19 @@
 
 class RenderSystem {
 public:
-    static void clearColor(glm::vec4 color);
+    static void clear_color(glm::vec4 color);
 
-    static void clearColor(float r, float g, float b, float a = 1.0f);
+    static void clear_color(float r, float g, float b, float a = 1.0f);
 
     static void clear(int mask);
 
-    static void draw(std::shared_ptr<VertexArray> &vertexArray, GLenum mode = GL_TRIANGLES, int count = 0);
+    static void set_line_width(float line_width);
+
+    static void draw(const std::shared_ptr<VertexArray> &vertex_array, GLenum mode = GL_TRIANGLES, uint32_t index_count = 0);
+
+    static void draw_indexed(const std::shared_ptr<VertexArray> &vertex_array, uint32_t index_count = 0);
+
+    static void draw_lines(const std::shared_ptr<VertexArray>& vertex_array,  uint32_t vertex_count = 0);
 };
 
 

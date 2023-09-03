@@ -9,6 +9,7 @@ in vec2 v_fCoord;
 
 // x, y are center z is zoom
 uniform vec3 u_center;
+//uniform float u_zoom;
 uniform vec2 u_resolution;
 uniform float u_iterations;
 

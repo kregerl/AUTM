@@ -10,14 +10,14 @@ public:
 
     ~LayerStack();
 
-    void pushLayer(Layer* layer);
+    void push_layer(Layer* layer);
 
-    void popLayer(Layer* layer);
+    void pop_layer(Layer* layer);
 
     // Overlays are put at the back since they'll be updated first.
-    void pushOverlay(Layer* layer);
+    void push_overlay(Layer* layer);
 
-    void popOverlay(Layer* layer);
+    void pop_overlay(Layer* layer);
 
     std::vector<Layer*>::iterator begin();
 
@@ -25,7 +25,7 @@ public:
 
 private:
     std::vector<Layer*> m_layers;
-    std::vector<Layer*>::iterator m_layerInsert;
+    uint32_t m_layer_index = 0;
 };
 
 

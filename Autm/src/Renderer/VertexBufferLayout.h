@@ -12,7 +12,7 @@ enum class ShaderDataType {
     None = 0, Bool, Int, Vec2i, Vec3i, Vec4i, Float, Vec2f, Vec3f, Vec4f, Mat3, Mat4
 };
 
-static unsigned int ShaderDataTypeSize(ShaderDataType type) {
+static unsigned int shader_data_type_size(ShaderDataType type) {
     switch (type) {
         case ShaderDataType::None:
             return 0;
@@ -44,6 +44,7 @@ static unsigned int ShaderDataTypeSize(ShaderDataType type) {
 }
 
 
+// TODO: Replace std::strings with std::string_view
 struct VertexBufferElement {
     std::string name;
     ShaderDataType type;
@@ -52,11 +53,11 @@ struct VertexBufferElement {
     bool normalized;
 
     VertexBufferElement(ShaderDataType type, std::string name, bool normalized = false)
-            : name(std::move(name)), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized) {}
+            : name(std::move(name)), type(type), size(shader_data_type_size(type)), offset(0), normalized(normalized) {}
 
-    inline GLenum getNormalized() const { return normalized ? GL_TRUE : GL_FALSE; }
+    inline GLenum get_normalized() const { return normalized ? GL_TRUE : GL_FALSE; }
 
-    unsigned int getElementCount() const {
+    unsigned int get_element_count() const {
         switch (type) {
             case ShaderDataType::None:
                 return 0;
@@ -90,18 +91,18 @@ struct VertexBufferElement {
 
 class VertexBufferLayout {
 public:
-    VertexBufferLayout() {}
+    VertexBufferLayout() = default;
     VertexBufferLayout(const std::initializer_list<VertexBufferElement> &elements);
 
-    const std::vector<VertexBufferElement> &getElements() const;
+    const std::vector<VertexBufferElement> &get_elements() const;
 
-    size_t getStride() const;
+    size_t get_stride() const;
 
 private:
-    void computeStrideAndOffsets();
+    void compute_stride_and_offset();
 private:
     std::vector<VertexBufferElement> m_elements;
-    size_t m_stride;
+    size_t m_stride = 0;
 };
 
 

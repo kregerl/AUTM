@@ -1,63 +1,21 @@
 #include "Input.h"
-#include "KeyCodes.h"
 #include "Log.h"
+#include "App/Application.h"
 
-#ifdef DEBUG
-// Change this number to 0 to prevent keys from being printed
-#if 0
-#include "Log.h"
-#define DEBUG_KEYS
-#endif
-#endif
 
-std::array<bool, KEYS> Input::s_pressed = {false};
-// TODO: Remove this, only 0.5f for the mandelbrot set
-float Input::scroll = 1.0f;
-glm::vec2 Input::mousePos = {};
-
-void Input::onKeyPressedEvent(KeyPressedEvent& event) {
-    int keyCode = event.getKeyCode();
-    s_pressed[keyCode] = true;
-#ifdef DEBUG_KEYS
-    AUTM_CORE_DEBUG("Pressed: {}", keyCode);
-#endif
+bool Input::is_key_pressed(int keycode) {
+    auto* window = Application::get_instance()->get_window().get_opengl_window();
+    return glfwGetKey(window, static_cast<uint32_t>(keycode)) == GLFW_PRESS;
 }
 
-void Input::onKeyReleasedEvent(KeyReleasedEvent& event) {
-    int keyCode = event.getKeyCode();
-    s_pressed[keyCode] = false;
-#ifdef DEBUG_KEYS
-    AUTM_CORE_DEBUG("Released: {}", keyCode);
-#endif
+bool Input::is_mouse_button_pressed(int mouse_code) {
+    auto* window = Application::get_instance()->get_window().get_opengl_window();
+    return glfwGetMouseButton(window, static_cast<uint32_t>(mouse_code)) == GLFW_PRESS;
 }
 
-/**
- * Returns whether or not the specified key is currently being pressed OR being held down.
- * Works when two keys are held down at the same time.
- * @param keyCode - The keycode of the key
- * @return True if the key is being pressed or held
- */
-bool Input::isKeyPressed(int keyCode) {
-    if (keyCode >= KEYS) return false;
-    return s_pressed[keyCode];
+glm::vec2 Input::get_mouse_position() {
+    auto* window = Application::get_instance()->get_window().get_opengl_window();
+    double x, y;
+    glfwGetCursorPos(window, &x, &y);
+    return {x, y};
 }
-
-void Input::onMouseScrolledEvent(MouseScrolledEvent& event) {
-    float scrollAmount = 0.01f;
-    if (Input::isKeyPressed(KEY_LEFT_CONTROL)) {
-        scrollAmount = 0.001f;
-    }
-    float amount = static_cast<float>((event.getMouseOffsetY() * scrollAmount));
-    float min = std::min(scroll + amount, 2.0f);
-
-    scroll += scroll * 0.5 * event.getMouseOffsetY();
-    AUTM_CORE_DEBUG("Scroll: {}", 1 / scroll);
-}
-
-void Input::onMouseButtonPressedEvent(MouseButtonPressedEvent& event) {
-    if (event.getMouseButton() == L_MOUSE_BUTTON) {
-        mousePos = event.getMousePos();
-    }
-}
-
-

@@ -1,35 +1,35 @@
 #include <Core/Log.h>
 #include "ComputeShader.h"
 
-ComputeShader::ComputeShader(std::string_view computePath) {
-    std::string computeShader;
-    std::ifstream computeShaderFile;
+ComputeShader::ComputeShader(std::string_view compute_path) {
+    std::string compute_shader;
+    std::ifstream computer_shader_file;
 
-    computeShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    computer_shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
-        computeShaderFile.open(computePath.data());
-        std::stringstream cshStream;
-        cshStream << computeShaderFile.rdbuf();
-        computeShaderFile.close();
-        computeShader = cshStream.str();
+        computer_shader_file.open(compute_path.data());
+        std::stringstream compute_shader_stream;
+        compute_shader_stream << computer_shader_file.rdbuf();
+        computer_shader_file.close();
+        compute_shader = compute_shader_stream.str();
     }
     catch (std::ifstream::failure &e) {
-        AUTM_CORE_ERROR("Couldn't read compute shader at {}", computePath);
+        AUTM_CORE_ERROR("Couldn't read compute shader at {}", compute_path);
     }
-    const char *cshCode = computeShader.c_str();
+    const char *compute_shader_code = compute_shader.c_str();
 
     unsigned int compute = glCreateShader(GL_COMPUTE_SHADER);
-    glShaderSource(compute, 1, &cshCode, nullptr);
+    glShaderSource(compute, 1, &compute_shader_code, nullptr);
     glCompileShader(compute);
-    checkCompileErrors(compute, "COMPUTE");
-    m_programId = glCreateProgram();
-    glAttachShader(m_programId, compute);
+    check_compile_errors(compute, "COMPUTE");
+    m_program_id = glCreateProgram();
+    glAttachShader(m_program_id, compute);
     glDeleteShader(compute);
 
-    glLinkProgram(m_programId);
-    checkCompileErrors(m_programId, "PROGRAM");
+    glLinkProgram(m_program_id);
+    check_compile_errors(m_program_id, "PROGRAM");
 }
 
-void ComputeShader::dispatch(unsigned int groupsX, unsigned int groupsY, unsigned int groupsZ) {
-    glDispatchCompute(groupsX, groupsY, groupsZ);
+void ComputeShader::dispatch(unsigned int groups_x, unsigned int groups_y, unsigned int groups_z) {
+    glDispatchCompute(groups_x, groups_y, groups_z);
 }

@@ -12,39 +12,39 @@
  */
 struct Texture2DFormats {
     int channels;
-    GLenum internalFormat;
-    GLenum dataFormat;
+    GLenum internal_format;
+    GLenum data_formats;
 };
 
 class Texture2D {
 public:
+    Texture2D(uint32_t renderer_id, int width, int height);
+
     Texture2D(int width, int height);
 
-    // TODO: Replace const std::string& with std::string_view
-    Texture2D(const std::string &path);
+    explicit Texture2D(std::string_view path);
 
     ~Texture2D();
 
-    void bind(int slot = 0);
+    void bind(uint32_t slot = 0);
 
     void unbind();
 
-    void setData(uint32_t size, void* data);
+    void set_data(uint32_t size, void* data);
 
-    int getWidth() const { return m_width; }
+    int get_width() const { return m_width; }
 
-    int getHeight() const { return m_height; }
+    int get_height() const { return m_height; }
 
-    GLuint getOpenGLId() const { return m_rendererId; }
-
-private:
-    Texture2DFormats determineChannels(int channels);
+    GLuint get_opengl_id() const { return m_renderer_id; }
 
 private:
-    std::string m_path;
+    Texture2DFormats determine_channels(int channels);
+
+private:
     int m_width, m_height;
     Texture2DFormats m_formats;
-    GLuint m_rendererId;
+    GLuint m_renderer_id;
 
 };
 
