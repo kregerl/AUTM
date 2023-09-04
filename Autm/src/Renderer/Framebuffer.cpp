@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <Core/Log.h>
 
+
 Framebuffer::Framebuffer(FramebufferSpecification spec) : m_specification(std::move(spec)) {
     for (auto attachment_spec: m_specification.attachments.attachments) {
         if (attachment_spec.texture_format != FramebufferTextureSpecification::TextureFormat::DEPTH24STENCIL8) {
@@ -79,7 +80,6 @@ void Framebuffer::invalidate() {
     bool multisample = m_specification.samples > 1;
     GLsizei texture_type = multisample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    // Attachments
     if (!m_color_attachment_specifications.empty()) {
         m_color_attachments.resize(m_color_attachment_specifications.size());
         glCreateTextures(texture_type, (GLsizei) m_color_attachments.size(),
@@ -178,7 +178,16 @@ uint32_t Framebuffer::get_color_attachment_id(uint32_t index) const {
 
 void Framebuffer::bind_color_attachment_id(uint32_t index) const {
     ASSERT(index < m_color_attachments.size(), "Index out of bounds for framebuffer color attachments");
+    glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, m_color_attachments[index]);
+}
+
+void Framebuffer::set_color_attachment_id(uint32_t index, uint32_t value) {
+    ASSERT(index < m_color_attachments.size(), "Index out of bounds for framebuffer color attachments");
+    m_color_attachments[index] = value;
+    glBindTexture(GL_TEXTURE_2D, m_color_attachments[index]);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_color_attachments[index], 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 

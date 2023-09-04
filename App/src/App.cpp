@@ -4,14 +4,16 @@
 #include "RayMarching.h"
 #include "EntityLayer.h"
 #include "CustomShader.h"
+#include "CellularAutomata.h"
 
 class App : public Application {
 public:
     App() {
 //        push_layer(new Mandelbrot());
 //        push_layer(new RayMarching());
-        push_layer(new EntityLayer());
+//        push_layer(new EntityLayer());
 //        push_layer(new CustomShader());
+        push_layer(new CellularAutomata());
 //        push_overlay(new DemoLayer());
     }
 
