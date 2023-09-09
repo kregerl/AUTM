@@ -1,14 +1,14 @@
-#ifndef AUTM_RULE30_H
-#define AUTM_RULE30_H
+#ifndef AUTM_RULEN_H
+#define AUTM_RULEN_H
 
 
 #include "../Simulation.h"
 
-class Rule30 : public Simulation {
+class RuleN : public Simulation {
 public:
-    Rule30();
+    RuleN();
 
-    ~Rule30() = default;
+    ~RuleN() = default;
 
     const std::shared_ptr<Shader>& simulate() override;
 
@@ -16,7 +16,8 @@ public:
 
 private:
     std::shared_ptr<Shader> m_shader;
+    int m_rule = 90;
 };
 
 
-#endif //AUTM_RULE30_H
+#endif //AUTM_RULEN_H

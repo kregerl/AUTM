@@ -20,6 +20,8 @@ public:
 
     void bind() const;
 
+    void unbind() const;
+
     virtual void set_bool(const std::string& name, bool value) const;
 
     virtual void set_int(const std::string& name, int value) const;

@@ -3,7 +3,7 @@
 
 #include <Autm.h>
 #include "Simulations/GameOfLife.h"
-#include "Simulations/Rule30.h"
+#include "Simulations/RuleN.h"
 
 class CellularAutomata : public Layer {
 public:
@@ -24,12 +24,14 @@ public:
     EventResult on_window_resized(WindowResizedEvent& event);
 
 private:
-    Rule30 m_simulation;
+    RuleN m_simulation;
 //    GameOfLife m_simulation;
 
     bool m_regenerate = true;
 
     uint32_t m_current_frame = 0;
+    // The amount of frames actually displayed on the screen
+    uint32_t m_total_displayed_frames = 0;
 
     OrthographicCamera m_camera;
 

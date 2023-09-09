@@ -33,25 +33,28 @@ void CellularAutomata::on_update(float ts) {
     }
     m_current_frame += 1;
 
-    if (m_simulation.should_reset())
+    if (m_simulation.should_reset()) {
         m_regenerate = true;
+        m_total_displayed_frames = 0;
+    }
 
     if (m_current_frame % m_simulation.get_update_rate() == 0 && !m_simulation.is_paused()) {
+        m_total_displayed_frames += 1;
         m_current_frame = 0;
         m_current_framebuffer->bind();
         {
             RenderSystem::clear_color(0.0f, 0.0f, 0.0f);
             Renderer2D::begin(m_camera);
 
-
             m_previous_framebuffer->bind_color_attachment_id();
             auto shader = m_simulation.simulate();
+            shader->bind();
+            shader->set_uint("u_frame", m_total_displayed_frames);
             shader->set_bool("u_regenerate", m_regenerate);
             if (m_regenerate)
                 m_regenerate = false;
-            DBGVAR(m_viewport_size.x);
-            DBGVAR(m_viewport_size.y);
-            shader->set_vec2("u_resolution", m_viewport_size);
+            shader->set_vec2("u_resolution", Application::get_window().get_resolution());
+            shader->unbind();
             Renderer2D::submit(shader, m_vertex_array);
 
             Renderer2D::end();

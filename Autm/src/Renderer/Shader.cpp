@@ -22,7 +22,7 @@ Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath, std::
         fragmentShader = fragmentStream.str();
     }
     catch (std::ifstream::failure& e) {
-        AUTM_CORE_ERROR("Couldn't read shaders at V:{}F:{}", vertexPath, fragmentPath);
+        AUTM_CORE_ERROR("Couldn't read shaders at V:{}\nF:{}", vertexPath, fragmentPath);
     }
     const char* vshCode = vertexShader.c_str();
     const char* fshCode = fragmentShader.c_str();
@@ -82,6 +82,10 @@ Shader::~Shader() {
 
 void Shader::bind() const {
     glUseProgram(m_program_id);
+}
+
+void Shader::unbind() const {
+    glUseProgram(0);
 }
 
 void Shader::set_bool(const std::string& name, bool value) const {
@@ -161,5 +165,7 @@ void Shader::check_compile_errors(unsigned int shader_program, const std::string
         }
     }
 }
+
+
 
 
