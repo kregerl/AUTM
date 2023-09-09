@@ -56,7 +56,7 @@ public:
 
     void unbind();
 
-    void resize(uint32_t width, uint32_t height);
+    void resize(uint32_t width, uint32_t height, bool preserve_attachments = false);
 
 //    int ReadPixel(uint32_t attachmentIndex, int x, int y);
 

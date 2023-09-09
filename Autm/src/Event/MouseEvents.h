@@ -61,13 +61,13 @@ public:
 
     MouseScrolledEvent(float x_offset, float y_offset) : m_x_offset(x_offset), m_y_offset(y_offset) {}
 
-    glm::vec2 getMouseOffset() const { return {m_x_offset, m_y_offset}; }
+    glm::vec2 get_mouse_offset() const { return {m_x_offset, m_y_offset}; }
 
-    float getMouseOffsetX() const { return m_x_offset; }
+    float get_mouse_offset_x() const { return m_x_offset; }
 
-    float getMouseOffsetY() const { return m_y_offset; }
+    float get_mouse_offset_y() const { return m_y_offset; }
 
-    glm::vec2 getMousePos() const { return {m_x_pos, m_y_pos}; }
+    glm::vec2 get_mouse_pos() const { return {m_x_pos, m_y_pos}; }
 
     virtual EventType get_event_type() const override { return get_static_event_type(); }
 
@@ -88,9 +88,9 @@ class MouseMovedEvent : public Event {
 public:
     MouseMovedEvent(float x, float y) : m_x_pos(x), m_y_pos(y) {}
 
-    float getX() const { return m_x_pos; }
+    float get_x() const { return m_x_pos; }
 
-    float getY() const { return m_y_pos; }
+    float get_y() const { return m_y_pos; }
 
     EventType get_event_type() const override { return get_static_event_type(); }
 

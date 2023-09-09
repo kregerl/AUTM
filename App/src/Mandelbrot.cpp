@@ -84,6 +84,6 @@ EventResult Mandelbrot::onMouseButtonPressed(MouseButtonPressedEvent& event) {
 }
 
 EventResult Mandelbrot::onMouseScroll(MouseScrolledEvent& event) {
-    m_zoom += m_zoom * 0.5f * event.getMouseOffsetY();
+    m_zoom += m_zoom * 0.5f * event.get_mouse_offset_y();
     return EventResult::Consume;
 }

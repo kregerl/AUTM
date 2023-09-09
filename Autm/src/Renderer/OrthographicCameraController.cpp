@@ -60,7 +60,7 @@ void OrthographicCameraController::on_event(Event& event) {
 
 EventResult OrthographicCameraController::on_mouse_scrolled(MouseScrolledEvent& event) {
     if (m_enable_inputs) {
-        m_zoom -= event.getMouseOffsetY() * 0.25f;
+        m_zoom -= event.get_mouse_offset_y() * 0.25f;
         m_zoom = std::max(m_zoom, 0.1f);
         m_camera.set_projection_matrix(-m_aspect_ratio * m_zoom, m_aspect_ratio * m_zoom, -m_zoom, m_zoom);
     }

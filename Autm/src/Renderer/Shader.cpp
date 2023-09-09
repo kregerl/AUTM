@@ -89,11 +89,23 @@ void Shader::set_bool(const std::string& name, bool value) const {
 }
 
 void Shader::set_int(const std::string& name, int value) const {
-    glUniform1i(glGetUniformLocation(m_program_id, name.c_str()), value);
+    set_intv(name, &value, 1);
+}
+
+void Shader::set_intv(const std::string& name, const int* value, uint32_t count) const {
+    glUniform1iv(glGetUniformLocation(m_program_id, name.c_str()), (GLsizei) count, value);
+}
+
+void Shader::set_uint(const std::string& name, uint32_t value) const {
+    glUniform1ui(glGetUniformLocation(m_program_id, name.c_str()), value);
 }
 
 void Shader::set_float(const std::string& name, float value) const {
-    glUniform1f(glGetUniformLocation(m_program_id, name.c_str()), value);
+    set_floatv(name, &value, 1);
+}
+
+void Shader::set_floatv(const std::string& name, const float* value, uint32_t count) const {
+    glUniform1fv(glGetUniformLocation(m_program_id, name.c_str()), (GLsizei) count, value);
 }
 
 void Shader::set_vec2(const std::string& name, const glm::vec2& value) const {

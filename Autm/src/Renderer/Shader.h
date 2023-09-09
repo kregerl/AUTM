@@ -24,7 +24,13 @@ public:
 
     virtual void set_int(const std::string& name, int value) const;
 
+    virtual void set_intv(const std::string& name, const int* value, uint32_t count) const;
+
+    virtual void set_uint(const std::string& name, uint32_t value) const;
+
     virtual void set_float(const std::string& name, float value) const;
+
+    virtual void set_floatv(const std::string& name, const float* value, uint32_t count) const;
 
     virtual void set_vec2(const std::string& name, const glm::vec2& value) const;
 

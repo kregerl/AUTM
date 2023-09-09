@@ -4,7 +4,7 @@
 #include "RayMarching.h"
 #include "EntityLayer.h"
 #include "CustomShader.h"
-#include "CellularAutomata.h"
+#include "CellularAutomata/CellularAutomata.h"
 
 class App : public Application {
 public:

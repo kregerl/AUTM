@@ -138,7 +138,7 @@ void Framebuffer::unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Framebuffer::resize(uint32_t width, uint32_t height) {
+void Framebuffer::resize(uint32_t width, uint32_t height, bool preserve_attachments) {
     constexpr uint32_t max_framebuffer_size = 8192;
     if (width == 0 || height == 0 || width > max_framebuffer_size || height > max_framebuffer_size) {
         AUTM_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
@@ -147,7 +147,14 @@ void Framebuffer::resize(uint32_t width, uint32_t height) {
     m_specification.width = width;
     m_specification.height = height;
 
-    invalidate();
+    std::vector<uint32_t> color_attachments;
+    if (preserve_attachments) {
+        color_attachments = m_color_attachments;
+        invalidate();
+        m_color_attachments = color_attachments;
+    } else {
+        invalidate();
+    }
 }
 
 void Framebuffer::clear_attachment(uint32_t attachmentIndex, int value) {

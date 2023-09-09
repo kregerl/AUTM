@@ -2,6 +2,8 @@
 #define AUTM_CELLULARAUTOMATA_H
 
 #include <Autm.h>
+#include "Simulations/GameOfLife.h"
+#include "Simulations/Rule30.h"
 
 class CellularAutomata : public Layer {
 public:
@@ -22,17 +24,19 @@ public:
     EventResult on_window_resized(WindowResizedEvent& event);
 
 private:
-    bool first = true;
+    Rule30 m_simulation;
+//    GameOfLife m_simulation;
 
-    // Delay per frame in seconds.
-    float m_simulation_delay = 1.0f / 60.0f;
-    float m_current_delay = 0.0f;
+    bool m_regenerate = true;
+
+    uint32_t m_current_frame = 0;
 
     OrthographicCamera m_camera;
 
     std::unique_ptr<Framebuffer> m_previous_framebuffer;
     std::unique_ptr<Framebuffer> m_current_framebuffer;
     glm::vec2 m_viewport_size = {0.0f, 0.0f};
+    float m_cell_size = 50.0f;
 
     std::unique_ptr<Texture2D> m_noise_texture;
     std::shared_ptr<Shader> m_life_shader;

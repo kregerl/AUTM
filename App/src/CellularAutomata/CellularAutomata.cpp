@@ -3,15 +3,10 @@
 
 CellularAutomata::CellularAutomata() : m_camera(Application::get_window().get_aspect_ratio()) {
     m_vertex_array = Primitives::generate_fullscreen_quad(Application::get_window().get_aspect_ratio());
-    m_life_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GameOfLifeVert.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GameOfLifeFrag.glsl");
 
     m_passthrough_shader = std::make_shared<Shader>(
             "/home/loucas/CLionProjects/Autm/assets/shaders/core/PassthroughVert.glsl",
             "/home/loucas/CLionProjects/Autm/assets/shaders/core/PassthroughFrag.glsl");
-
-    m_noise_texture = std::make_unique<Texture2D>("/home/loucas/CLionProjects/Autm/assets/images/noise.png");
 }
 
 void CellularAutomata::on_init() {
@@ -36,25 +31,28 @@ void CellularAutomata::on_update(float ts) {
         m_previous_framebuffer->resize((uint32_t) m_viewport_size.x, (uint32_t) m_viewport_size.y);
         AUTM_DEBUG("Resizing framebuffers");
     }
+    m_current_frame += 1;
 
-    m_current_delay += ts;
+    if (m_simulation.should_reset())
+        m_regenerate = true;
 
-    if (m_current_delay >= m_simulation_delay) {
-        m_current_delay = 0;
+    if (m_current_frame % m_simulation.get_update_rate() == 0 && !m_simulation.is_paused()) {
+        m_current_frame = 0;
         m_current_framebuffer->bind();
         {
             RenderSystem::clear_color(0.0f, 0.0f, 0.0f);
             Renderer2D::begin(m_camera);
 
-            if (first) {
-                m_noise_texture->bind();
-                first = false;
-            } else {
-                m_previous_framebuffer->bind_color_attachment_id();
-            }
-            m_life_shader->bind();
-            m_life_shader->set_vec2("u_resolution", m_viewport_size);
-            Renderer2D::submit(m_life_shader, m_vertex_array);
+
+            m_previous_framebuffer->bind_color_attachment_id();
+            auto shader = m_simulation.simulate();
+            shader->set_bool("u_regenerate", m_regenerate);
+            if (m_regenerate)
+                m_regenerate = false;
+            DBGVAR(m_viewport_size.x);
+            DBGVAR(m_viewport_size.y);
+            shader->set_vec2("u_resolution", m_viewport_size);
+            Renderer2D::submit(shader, m_vertex_array);
 
             Renderer2D::end();
         }
@@ -72,7 +70,6 @@ void CellularAutomata::on_update(float ts) {
         m_current_framebuffer = std::move(m_previous_framebuffer);
         m_previous_framebuffer = std::move(tmp);
     }
-//    std::this_thread::sleep_for(std::chrono::milliseconds(256));
 }
 
 void CellularAutomata::on_event(Event& event) {
@@ -81,7 +78,7 @@ void CellularAutomata::on_event(Event& event) {
 }
 
 void CellularAutomata::on_imgui_render() {
-    Layer::on_imgui_render();
+    m_simulation.on_imgui_render();
 }
 
 EventResult CellularAutomata::on_window_resized(WindowResizedEvent& event) {
