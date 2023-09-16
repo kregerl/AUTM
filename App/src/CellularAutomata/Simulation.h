@@ -18,7 +18,7 @@ public:
 protected:
     bool m_paused = true;
     bool m_should_reset = false;
-    uint32_t m_update_rate = 10;
+    uint32_t m_update_rate = 0;
 };
 
 #endif //AUTM_SIMULATION_H

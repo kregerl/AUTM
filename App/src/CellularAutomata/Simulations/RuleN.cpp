@@ -6,7 +6,6 @@ RuleN::RuleN() {
     m_shader = std::make_shared<Shader>(
             "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
             "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/RuleNFrag.glsl");
-    m_update_rate = 0;
 }
 
 const std::shared_ptr<Shader>& RuleN::simulate() {
@@ -17,8 +16,6 @@ const std::shared_ptr<Shader>& RuleN::simulate() {
 }
 
 void RuleN::on_imgui_render() {
-    ImGui::Begin("Settings");
-
     if (ImGui::Button("Play / Pause", ImVec2(120, 24))) {
         m_paused = !m_paused;
         if (!m_paused)
@@ -36,6 +33,4 @@ void RuleN::on_imgui_render() {
 
     ImGui::InputInt("Update Rate", (int*) &m_update_rate, 0, 0, flags);
     ImGui::InputInt("Rule", &m_rule, 0, 0, flags);
-
-    ImGui::End();
 }

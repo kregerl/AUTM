@@ -4,6 +4,10 @@ void RenderSystem::clear_color(glm::vec4 color) {
     clear_color(color.r, color.g, color.b, color.a);
 }
 
+void RenderSystem::clear_color(glm::vec3 color) {
+    clear_color(color.r, color.g, color.b, 1.0f);
+}
+
 void RenderSystem::clear_color(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
     clear(GL_COLOR_BUFFER_BIT);

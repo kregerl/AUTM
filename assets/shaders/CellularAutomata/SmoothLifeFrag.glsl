@@ -7,23 +7,30 @@ layout (location = 0) out vec4 o_color;
 
 layout (location = 0) in vec2 v_texture_coordinate;
 
-
-
-uniform bool u_regenerate;
 uniform vec2 u_radius;
 uniform float u_delta_time;
 
+// SmoothLife rules
+uniform float u_b1 = 0.257;
+uniform float u_b2 = 0.336;
+uniform float u_d1 = 0.365;
+uniform float u_d2 = 0.549;
+
+uniform float u_alpha_n = 0.028;
+uniform float u_alpha_m = 0.147;
+
+uniform bool u_regenerate;
 uniform vec2 u_resolution;
 uniform sampler2D u_texture;
 
-// SmoothLife rules
-const float b1 = 0.257;
-const float b2 = 0.336;
-const float d1 = 0.365;
-const float d2 = 0.549;
-
-const float alpha_n = 0.028;
-const float alpha_m = 0.147;
+//// SmoothLife rules
+//const float u_b1 = 0.257;
+//const float u_b2 = 0.336;
+//const float u_d1 = 0.365;
+//const float u_d2 = 0.549;
+//
+//const float u_alpha_n = 0.028;
+//const float u_alpha_m = 0.147;
 
 float sigmoid_a(float x, float a, float b) {
     return 1.0f / (1.0f + exp(-(x - a) * 4.0f / b));
@@ -42,8 +49,8 @@ float sigmoid_mix(float x, float y, float m, float em) {
 }
 
 float s(vec2 disk_ring) {
-    return sigmoid_mix(sigmoid_ab(disk_ring.x, b1, b2, alpha_n, alpha_n),
-    sigmoid_ab(disk_ring.x, d1, d2, alpha_n, alpha_n), disk_ring.y, alpha_m
+    return sigmoid_mix(sigmoid_ab(disk_ring.x, u_b1, u_b2, u_alpha_n, u_alpha_n),
+    sigmoid_ab(disk_ring.x, u_d1, u_d2, u_alpha_n, u_alpha_n), disk_ring.y, u_alpha_m
     );
 }
 

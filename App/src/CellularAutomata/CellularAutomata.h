@@ -25,9 +25,10 @@ public:
     EventResult on_window_resized(WindowResizedEvent& event);
 
 private:
-//    RuleN m_simulation;
-//    GameOfLife m_simulation;
-    SmoothLife m_simulation;
+    uint32_t m_current_simulation = 0;
+    std::vector<Simulation*> m_simulations;
+    glm::vec3 m_simulation_color = glm::vec3(1.0f);
+    glm::vec3 m_clear_color = glm::vec3(0.0f);
 
     bool m_regenerate = true;
 

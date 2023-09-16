@@ -5,6 +5,7 @@ GameOfLife::GameOfLife() {
     m_shader = std::make_shared<Shader>(
             "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
             "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GameOfLifeFrag.glsl");
+    m_update_rate = 10;
 }
 
 const std::shared_ptr<Shader>& GameOfLife::simulate() {
@@ -14,8 +15,6 @@ const std::shared_ptr<Shader>& GameOfLife::simulate() {
 }
 
 void GameOfLife::on_imgui_render() {
-    ImGui::Begin("Settings");
-
     if (ImGui::Button("Play / Pause", ImVec2(120, 24))) {
         m_paused = !m_paused;
         if (!m_paused)
@@ -34,6 +33,4 @@ void GameOfLife::on_imgui_render() {
     ImGui::InputFloat("Board Size", &m_board_size, 0, 0, nullptr, flags);
     ImGui::InputInt("Update Rate", (int*) &m_update_rate, 0, 0, flags);
 //    ImGui::ColorEdit3("Color Tint", m_color_tint, ImGuiColorEditFlags_Float);
-
-    ImGui::End();
 }
