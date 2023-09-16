@@ -38,42 +38,42 @@ void CellularAutomata::on_update(float ts) {
         m_total_displayed_frames = 0;
     }
 
-//    if ((m_simulation.get_update_rate() == 0 || m_current_frame % m_simulation.get_update_rate() == 0) &&
-//        !m_simulation.is_paused()) {
-    m_total_displayed_frames += 1;
-    m_current_frame = 0;
-    m_current_framebuffer->bind();
-    {
-        RenderSystem::clear_color(0.0f, 0.0f, 0.0f);
+    if ((m_simulation.get_update_rate() == 0 || m_current_frame % m_simulation.get_update_rate() == 0) &&
+        !m_simulation.is_paused()) {
+        m_total_displayed_frames += 1;
+        m_current_frame = 0;
+        m_current_framebuffer->bind();
+        {
+            RenderSystem::clear_color(0.0f, 0.0f, 0.0f);
+            Renderer2D::begin(m_camera);
+
+            m_previous_framebuffer->bind_color_attachment_id();
+            auto shader = m_simulation.simulate();
+            shader->bind();
+            shader->set_uint("u_frame", m_total_displayed_frames);
+            shader->set_bool("u_regenerate", m_regenerate);
+            if (m_regenerate)
+                m_regenerate = false;
+            shader->set_vec2("u_resolution", Application::get_window().get_resolution());
+            shader->unbind();
+            Renderer2D::submit(shader, m_vertex_array);
+
+            Renderer2D::end();
+        }
+        m_current_framebuffer->unbind();
+
+        RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
         Renderer2D::begin(m_camera);
 
-        m_previous_framebuffer->bind_color_attachment_id();
-        auto shader = m_simulation.simulate();
-        shader->bind();
-        shader->set_uint("u_frame", m_total_displayed_frames);
-        shader->set_bool("u_regenerate", m_regenerate);
-        if (m_regenerate)
-            m_regenerate = false;
-        shader->set_vec2("u_resolution", Application::get_window().get_resolution());
-        shader->unbind();
-        Renderer2D::submit(shader, m_vertex_array);
+        m_current_framebuffer->bind_color_attachment_id();
+        Renderer2D::submit(m_passthrough_shader, m_vertex_array);
 
         Renderer2D::end();
+
+        std::unique_ptr<Framebuffer> tmp = std::move(m_current_framebuffer);
+        m_current_framebuffer = std::move(m_previous_framebuffer);
+        m_previous_framebuffer = std::move(tmp);
     }
-    m_current_framebuffer->unbind();
-
-    RenderSystem::clear_color(0.0f, 0.0f, 0.0f, 1.0f);
-    Renderer2D::begin(m_camera);
-
-    m_current_framebuffer->bind_color_attachment_id();
-    Renderer2D::submit(m_passthrough_shader, m_vertex_array);
-
-    Renderer2D::end();
-
-    std::unique_ptr<Framebuffer> tmp = std::move(m_current_framebuffer);
-    m_current_framebuffer = std::move(m_previous_framebuffer);
-    m_previous_framebuffer = std::move(tmp);
-//    }
 }
 
 void CellularAutomata::on_event(Event& event) {

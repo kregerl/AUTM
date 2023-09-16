@@ -7,13 +7,14 @@ layout (location = 0) out vec4 o_color;
 
 layout (location = 0) in vec2 v_texture_coordinate;
 
+
+
 uniform bool u_regenerate;
+uniform vec2 u_radius;
+uniform float u_delta_time;
+
 uniform vec2 u_resolution;
 uniform sampler2D u_texture;
-
-const float dt = 0.3;
-
-const vec2 r = vec2(9.0, 3.0);
 
 // SmoothLife rules
 const float b1 = 0.257;
@@ -63,27 +64,27 @@ void main() {
 
     vec2 uv = gl_FragCoord.xy / u_resolution;
 
-    vec2 area = PI * r * r;
+    vec2 area = PI * u_radius * u_radius;
     area.x -= area.y;
 
     vec3 color = texture(u_texture, uv).xyz;
 
     vec2 result = vec2(0.0f);
-    for (float dx = -r.x; dx <= r.x; dx++) {
-        for (float dy = -r.x; dy <= r.x; dy++) {
+    for (float dx = -u_radius.x; dx <= u_radius.x; dx++) {
+        for (float dy = -u_radius.x; dy <= u_radius.x; dy++) {
             vec2 d = vec2(dx, dy);
             float dist = length(d);
             vec2 offset = d / u_resolution.xy;
             vec2 samplepos = fract(uv + offset);
             float weight = texture(u_texture, samplepos).x;
-            result.x += weight * ramp_step(r.y, dist) * (1.0f - ramp_step(r.x, dist));
+            result.x += weight * ramp_step(u_radius.y, dist) * (1.0f - ramp_step(u_radius.x, dist));
 
-            result.y += weight * (1.0f - ramp_step(r.y, dist));
+            result.y += weight * (1.0f - ramp_step(u_radius.y, dist));
         }
     }
 
     vec2 normalized_result = result / area;
-    color = vec3(color.x + dt * (2.0f * s(normalized_result) - 1.0f));
+    color = vec3(color.x + u_delta_time * (2.0f * s(normalized_result) - 1.0f));
     color = clamp(color, 0.0f, 1.0f);
 
     o_color = vec4(color, 1.0f);

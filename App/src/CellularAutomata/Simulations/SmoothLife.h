@@ -15,6 +15,11 @@ public:
 
 private:
     std::shared_ptr<Shader> m_shader;
+
+    float m_outer_radius = 9.0f;
+    float m_inner_radius = 3.0f;
+
+    float m_delta_time = 0.3f;
 };
 
 

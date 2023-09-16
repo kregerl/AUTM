@@ -25,9 +25,9 @@ public:
     EventResult on_window_resized(WindowResizedEvent& event);
 
 private:
-    SmoothLife m_simulation;
 //    RuleN m_simulation;
 //    GameOfLife m_simulation;
+    SmoothLife m_simulation;
 
     bool m_regenerate = true;
 
