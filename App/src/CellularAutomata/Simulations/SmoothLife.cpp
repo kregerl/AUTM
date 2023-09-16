@@ -1,22 +1,18 @@
 #include <imgui/imgui.h>
-#include <Renderer/UniformBuffer.h>
-#include "RuleN.h"
+#include "SmoothLife.h"
 
-RuleN::RuleN() {
+SmoothLife::SmoothLife() {
     m_shader = std::make_shared<Shader>(
             "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/RuleNFrag.glsl");
+            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/SmoothLifeFrag.glsl");
     m_update_rate = 0;
 }
 
-const std::shared_ptr<Shader>& RuleN::simulate() {
-    m_shader->bind();
-    m_shader->set_int("u_rule", m_rule);
-    m_shader->unbind();
+const std::shared_ptr<Shader>& SmoothLife::simulate() {
     return m_shader;
 }
 
-void RuleN::on_imgui_render() {
+void SmoothLife::on_imgui_render() {
     ImGui::Begin("Settings");
 
     if (ImGui::Button("Play / Pause", ImVec2(120, 24))) {
@@ -35,7 +31,8 @@ void RuleN::on_imgui_render() {
         flags = ImGuiInputTextFlags_ReadOnly;
 
     ImGui::InputInt("Update Rate", (int*) &m_update_rate, 0, 0, flags);
-    ImGui::InputInt("Rule", &m_rule, 0, 0, flags);
+//    ImGui::ColorEdit3("Color Tint", m_color_tint, ImGuiColorEditFlags_Float);
 
     ImGui::End();
 }
+

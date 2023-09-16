@@ -4,6 +4,7 @@
 #include <Autm.h>
 #include "Simulations/GameOfLife.h"
 #include "Simulations/RuleN.h"
+#include "Simulations/SmoothLife.h"
 
 class CellularAutomata : public Layer {
 public:
@@ -24,7 +25,8 @@ public:
     EventResult on_window_resized(WindowResizedEvent& event);
 
 private:
-    RuleN m_simulation;
+    SmoothLife m_simulation;
+//    RuleN m_simulation;
 //    GameOfLife m_simulation;
 
     bool m_regenerate = true;
