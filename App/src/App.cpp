@@ -5,6 +5,8 @@
 #include "EntityLayer.h"
 #include "CustomShader.h"
 #include "CellularAutomata/CellularAutomata.h"
+#include "SlimeMoldSimulation.h"
+#include "PhysicsLayer.h"
 
 class App : public Application {
 public:
@@ -13,7 +15,9 @@ public:
 //        push_layer(new RayMarching());
 //        push_layer(new EntityLayer());
 //        push_layer(new CustomShader());
-        push_layer(new CellularAutomata());
+//        push_layer(new CellularAutomata());
+//        push_layer(new SlimeMoldSimulation());
+        push_layer(new PhysicsLayer());
 //        push_overlay(new DemoLayer());
     }
 

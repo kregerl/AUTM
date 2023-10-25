@@ -3,7 +3,7 @@
 
 #include "Shader.h"
 
-class ComputeShader : Shader {
+class ComputeShader : public Shader {
 public:
     explicit ComputeShader(std::string_view compute_path);
 

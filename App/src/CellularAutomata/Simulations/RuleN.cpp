@@ -4,8 +4,8 @@
 
 RuleN::RuleN() {
     m_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/RuleNFrag.glsl");
+            "/home/loucas/CLionProjects/autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/CellularAutomata/RuleNFrag.glsl");
 }
 
 const std::shared_ptr<Shader>& RuleN::simulate() {

@@ -9,8 +9,8 @@ RayMarching::RayMarching() : Layer("Ray Marching"), m_camera(Application::get_wi
 
 void RayMarching::on_init() {
     m_shader.reset(new Shader(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/RayMarchVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/RayMarchFragment.glsl"));
+            "/home/loucas/CLionProjects/autm/assets/shaders/RayMarchVertex.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/RayMarchFragment.glsl"));
 
     m_vertex_array = Primitives::generate_fullscreen_quad(Application::get_window().get_aspect_ratio());
 }

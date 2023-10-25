@@ -14,8 +14,8 @@ Mandelbrot::Mandelbrot() : Layer("Mandelbrot"),
 
 void Mandelbrot::on_init() {
     m_fractalShader.reset(new Shader(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/FractalVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/FractalFragment.glsl"));
+            "/home/loucas/CLionProjects/autm/assets/shaders/FractalVertex.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/FractalFragment.glsl"));
 
     float vertices[4 * 3] = {
             -1.0f, -1.0f, 0.0f,

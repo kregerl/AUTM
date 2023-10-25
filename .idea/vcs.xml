@@ -2,5 +2,10 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Autm/vendor/box2d" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Autm/vendor/glfw" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Autm/vendor/glm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Autm/vendor/imgui" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Autm/vendor/spdlog" vcs="Git" />
   </component>
 </project>

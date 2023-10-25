@@ -157,16 +157,6 @@ void Renderer2D::flush() {
         RenderSystem::draw_indexed(s_data->quad_vertex_array, s_data->quad_index_count);
     }
 
-    if (s_data->line_vertex_count) {
-        auto data_size = (uint32_t) ((uint8_t*) s_data->line_vertex_buffer_ptr -
-                                     (uint8_t*) s_data->line_vertex_buffer_base);
-        s_data->line_vertex_buffer->set_data(s_data->line_vertex_buffer_base, data_size);
-
-        s_data->line_shader->bind();
-        RenderSystem::set_line_width(DEFAULT_LINE_WIDTH);
-        RenderSystem::draw_lines(s_data->line_vertex_array, s_data->line_vertex_count);
-    }
-
     if (s_data->circle_index_count) {
         auto data_size = (uint32_t) ((uint8_t*) s_data->circle_vertex_buffer_ptr -
                                      (uint8_t*) s_data->circle_vertex_buffer_base);
@@ -178,6 +168,16 @@ void Renderer2D::flush() {
 
         s_data->circle_shader->bind();
         RenderSystem::draw_indexed(s_data->circle_vertex_array, s_data->circle_index_count);
+    }
+
+    if (s_data->line_vertex_count) {
+        auto data_size = (uint32_t) ((uint8_t*) s_data->line_vertex_buffer_ptr -
+                                     (uint8_t*) s_data->line_vertex_buffer_base);
+        s_data->line_vertex_buffer->set_data(s_data->line_vertex_buffer_base, data_size);
+
+        s_data->line_shader->bind();
+        RenderSystem::set_line_width(DEFAULT_LINE_WIDTH);
+        RenderSystem::draw_lines(s_data->line_vertex_array, s_data->line_vertex_count);
     }
 }
 
@@ -348,8 +348,8 @@ void Renderer2D::init_quad(const std::shared_ptr<IndexBuffer>& index_buffer) {
     s_data->quad_vertex_array->set_index_buffer(index_buffer);
 
     s_data->textured_quad_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedQuadVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedQuadFragment.glsl");
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/TexturedQuadVertex.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/TexturedQuadFragment.glsl");
 
     s_data->quad_vertex_positions[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
     s_data->quad_vertex_positions[1] = {0.5f, -0.5f, 0.0f, 1.0f};
@@ -369,8 +369,8 @@ void Renderer2D::init_line() {
     s_data->line_vertex_buffer_base = new LineVertex[MAX_VERTICES];
 
     s_data->line_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/LineVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/LineFragment.glsl");
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/LineVertex.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/LineFragment.glsl");
 }
 
 void Renderer2D::init_circle(const std::shared_ptr<IndexBuffer>& index_buffer) {
@@ -393,8 +393,8 @@ void Renderer2D::init_circle(const std::shared_ptr<IndexBuffer>& index_buffer) {
     s_data->circle_vertex_buffer_base = new CircleVertex[MAX_VERTICES];
 
     s_data->circle_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedCircleVertex.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/TexturedCircleFragment.glsl");
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/TexturedCircleVertex.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/TexturedCircleFragment.glsl");
 }
 
 

@@ -21,7 +21,7 @@ public:
 
     void set_position(const glm::vec3& position);
 
-    void set_rotation(const float rotation);
+    void set_rotation(float rotation);
 
     const glm::vec3& get_position() const { return m_position; }
 

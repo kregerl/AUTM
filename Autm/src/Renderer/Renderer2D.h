@@ -46,6 +46,8 @@ public:
  * @param thickness Distance to skip when rendering the inside of the circle. Values < 1 will create a donut
  * @param fade
  */
+    static void draw_circle_with_radius(const glm::vec3& position, float radius, const glm::vec4& color  = glm::vec4(1.0f));
+
     static void draw_circle(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1.0f),
                             float tiling_factor = 1.0f, float thickness = 1.0f, float fade = 0.05f);
 

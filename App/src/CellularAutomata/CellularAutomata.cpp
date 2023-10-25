@@ -7,8 +7,8 @@ CellularAutomata::CellularAutomata() : m_camera(Application::get_window().get_as
     m_vertex_array = Primitives::generate_fullscreen_quad(Application::get_window().get_aspect_ratio());
 
     m_passthrough_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/PassthroughVert.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/core/PassthroughFrag.glsl");
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/PassthroughVert.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/core/PassthroughFrag.glsl");
 
     m_simulations = {
             new RuleN(),

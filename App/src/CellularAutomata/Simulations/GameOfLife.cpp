@@ -3,8 +3,8 @@
 
 GameOfLife::GameOfLife() {
     m_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GameOfLifeFrag.glsl");
+            "/home/loucas/CLionProjects/autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/CellularAutomata/GameOfLifeFrag.glsl");
     m_update_rate = 10;
 }
 

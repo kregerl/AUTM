@@ -3,8 +3,8 @@
 
 SmoothLife::SmoothLife() {
     m_shader = std::make_shared<Shader>(
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
-            "/home/loucas/CLionProjects/Autm/assets/shaders/CellularAutomata/SmoothLifeFrag.glsl");
+            "/home/loucas/CLionProjects/autm/assets/shaders/CellularAutomata/GenericVertexShader.glsl",
+            "/home/loucas/CLionProjects/autm/assets/shaders/CellularAutomata/SmoothLifeFrag.glsl");
 }
 
 const std::shared_ptr<Shader>& SmoothLife::simulate() {

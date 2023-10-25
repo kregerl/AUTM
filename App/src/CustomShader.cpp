@@ -6,13 +6,13 @@
 #include "CustomShader.h"
 
 CustomShader::CustomShader() : m_camera_controller(Application::get_window().get_aspect_ratio(), 1.0f) {
-    m_sand_texture = std::make_shared<Texture2D>("/home/loucas/CLionProjects/Autm/assets/images/sand.png");
+    m_sand_texture = std::make_shared<Texture2D>("/home/loucas/CLionProjects/autm/assets/images/sand.png");
 
-    m_shader = std::make_shared<Shader>("/home/loucas/CLionProjects/Autm/assets/shaders/CustomVert.glsl",
-                                        "/home/loucas/CLionProjects/Autm/assets/shaders/CustomFrag.glsl");
+    m_shader = std::make_shared<Shader>("/home/loucas/CLionProjects/autm/assets/shaders/CustomVert.glsl",
+                                        "/home/loucas/CLionProjects/autm/assets/shaders/CustomFrag.glsl");
 
-    m_blur = std::make_shared<Shader>("/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurVert.glsl",
-                                      "/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurFrag.glsl");
+    m_blur = std::make_shared<Shader>("/home/loucas/CLionProjects/autm/assets/shaders/core/BlurVert.glsl",
+                                      "/home/loucas/CLionProjects/autm/assets/shaders/core/BlurFrag.glsl");
     auto aspect_ratio = Application::get_window().get_aspect_ratio();
 
     m_quad_va = Primitives::generate_fullscreen_quad(aspect_ratio);
