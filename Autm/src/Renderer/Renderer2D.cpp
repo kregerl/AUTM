@@ -252,6 +252,10 @@ void Renderer2D::draw_line(const glm::vec3& position0, const glm::vec3& position
     s_data->line_vertex_count += 2;
 }
 
+void Renderer2D::draw_circle_with_radius(const glm::vec3& position, float radius, const glm::vec4& color) {
+    draw_circle(position, glm::vec2(radius * 2), color);
+}
+
 void Renderer2D::draw_circle(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
                              float tiling_factor, float thickness, float fade) {
     draw_circle(position, size, s_data->white_texture, color, tiling_factor, thickness, fade);
