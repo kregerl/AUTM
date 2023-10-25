@@ -305,12 +305,12 @@ void Renderer2D::draw_circle(const glm::mat4& transform, const glm::vec4& color,
     draw_circle(transform, s_data->white_texture, color, tiling_factor, thickness, fade);
 }
 
-void Renderer2D::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray,
+void Renderer2D::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertex_array,
                         const glm::mat4& modelMatrix) {
     shader->bind();
-    vertexArray->bind();
-    RenderSystem::draw(vertexArray);
-    vertexArray->unbind();
+    vertex_array->bind();
+    RenderSystem::draw(vertex_array);
+    vertex_array->unbind();
 }
 
 float Renderer2D::determine_texture_index(const std::shared_ptr<Texture2D>& texture) {
@@ -396,5 +396,7 @@ void Renderer2D::init_circle(const std::shared_ptr<IndexBuffer>& index_buffer) {
             "/home/loucas/CLionProjects/autm/assets/shaders/core/TexturedCircleVertex.glsl",
             "/home/loucas/CLionProjects/autm/assets/shaders/core/TexturedCircleFragment.glsl");
 }
+
+
 
 

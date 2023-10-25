@@ -60,13 +60,13 @@ void CellularAutomata::on_update(float ts) {
 
             m_previous_framebuffer->bind_color_attachment_id();
             auto shader = current_simulation->simulate();
-            shader->bind();
-            shader->set_uint("u_frame", m_total_displayed_frames);
-            shader->set_bool("u_regenerate", m_regenerate);
-            if (m_regenerate)
-                m_regenerate = false;
-            shader->set_vec2("u_resolution", Application::get_window().get_resolution());
-            Renderer2D::submit(shader, m_vertex_array);
+            Renderer2D::submit_with_uniforms(shader, m_vertex_array, [&] {
+                shader->set_uint("u_frame", m_total_displayed_frames);
+                shader->set_bool("u_regenerate", m_regenerate);
+                if (m_regenerate)
+                    m_regenerate = false;
+                shader->set_vec2("u_resolution", Application::get_window().get_resolution());
+            });
 
             Renderer2D::end();
         }
