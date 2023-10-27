@@ -8,6 +8,8 @@
 
 class RenderSystem {
 public:
+    static void set_viewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+
     static void clear_color(glm::vec4 color);
 
     static void clear_color(glm::vec3 color);
