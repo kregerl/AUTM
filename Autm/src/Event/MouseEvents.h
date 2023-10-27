@@ -10,13 +10,13 @@ public:
                                                                                       m_mods(mods), m_x_pos(x_pos),
                                                                                       m_y_pos(y_pos) {}
 
-    inline int getMouseButton() const { return m_mouse_button; }
+    int get_mouse_button() const { return m_mouse_button; }
 
-    inline glm::vec2 getMousePos() const { return {m_x_pos, m_y_pos}; }
+    glm::vec2 get_mouse_pos() const { return {m_x_pos, m_y_pos}; }
 
-    inline float getMouseX() const { return m_x_pos; }
+    float get_mouse_x() const { return m_x_pos; }
 
-    inline float getMouseY() const { return m_y_pos; }
+    float get_mouse_y() const { return m_y_pos; }
 
     int get_category() const override {
         return EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton;
