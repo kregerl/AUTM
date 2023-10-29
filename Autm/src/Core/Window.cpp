@@ -2,6 +2,7 @@
 
 #include <utility>
 #include "Log.h"
+#include "Renderer/RenderSystem.h"
 
 Window::Window(const WindowProperties& properties) : m_window_data(properties) {
 
@@ -24,10 +25,6 @@ Window::Window(const WindowProperties& properties) : m_window_data(properties) {
 
     glfwSetWindowUserPointer(m_window, &m_window_data);
 
-    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
-        glViewport(0, 0, width, height);
-    });
-
     // WindowResizedEvent
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
         WindowData& windowData = *(WindowData*) glfwGetWindowUserPointer(window);
@@ -44,7 +41,6 @@ Window::Window(const WindowProperties& properties) : m_window_data(properties) {
         WindowClosedEvent event;
         windowData.callback(event);
     });
-
 
     // KeyPressedEvent / KeyReleasedEvent
     glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -108,7 +104,7 @@ Window::Window(const WindowProperties& properties) : m_window_data(properties) {
 
 #ifdef DEBUG
     AUTM_CORE_DEBUG("Width: {}, Height:{}", m_window_data.width, m_window_data.height);
-    AUTM_CORE_DEBUG("OpenGL Version: {}", glGetString(GL_VERSION));
+    AUTM_CORE_DEBUG("OpenGL Version: {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 #endif
 }
 

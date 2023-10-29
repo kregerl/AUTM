@@ -52,10 +52,12 @@ Texture2D::~Texture2D() {
 }
 
 void Texture2D::bind(uint32_t slot) {
+    glActiveTexture(GL_TEXTURE0);
     glBindTextureUnit(slot, m_renderer_id);
 }
 
-void Texture2D::unbind() {
+void Texture2D::unbind(uint32_t slot) {
+    glBindTextureUnit(slot, 0);
 }
 
 void Texture2D::set_data(uint32_t size, void* data) {

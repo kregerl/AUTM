@@ -26,9 +26,7 @@ private:
     OrthographicCamera m_camera;
 
     std::shared_ptr<Shader> m_shader;
-    std::shared_ptr<VertexArray> m_fsQuadVA; // fullscreen quad
-
-    glm::vec3 m_fake_camera;
+    std::shared_ptr<VertexArray> m_vertex_array;
 };
 
 

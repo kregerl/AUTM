@@ -12,15 +12,15 @@ EntityLayer::EntityLayer() : m_camera_controller(Application::get_window().get_a
                              m_static_camera(Application::get_window().get_aspect_ratio()) {
 
     m_active_scene = std::make_unique<Scene>();
-    m_play_texture = std::make_shared<Texture2D>("/home/loucas/CLionProjects/Autm/assets/images/play32xwhite.png");
+    m_play_texture = std::make_shared<Texture2D>("/home/loucas/CLionProjects/autm/assets/images/play32xwhite.png");
 
     m_gradient.add_color_stop(0.15f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     m_gradient.add_color_stop(0.35f, glm::vec4(0.7f, 0.1f, 0.1f, 1.0f));
     m_gradient.add_color_stop(0.55f, glm::vec4(0.890f, 0.566f, 0.0801f, 1.0f));
     m_gradient.add_color_stop(0.8f, glm::vec4(0.98823529411f, 0.9294117647f, 0.78039215686f, 1.0f));
 
-    m_blur = std::make_shared<Shader>("/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurVert.glsl",
-                                      "/home/loucas/CLionProjects/Autm/assets/shaders/core/BlurFrag.glsl");
+    m_blur = std::make_shared<Shader>("/home/loucas/CLionProjects/autm/assets/shaders/core/BlurVert.glsl",
+                                      "/home/loucas/CLionProjects/autm/assets/shaders/core/BlurFrag.glsl");
 
     auto aspect_ratio = Application::get_window().get_aspect_ratio();
 
@@ -225,7 +225,7 @@ void EntityLayer::on_shutdown() {
 
 void EntityLayer::on_event(Event& event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(EntityLayer::on_window_resized));
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND(EntityLayer::on_window_resized));
 }
 
 EventResult EntityLayer::on_window_resized(WindowResizedEvent& event) {

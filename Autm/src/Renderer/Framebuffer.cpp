@@ -1,7 +1,9 @@
 #include "Framebuffer.h"
+#include "RenderSystem.h"
 
 #include <glad/glad.h>
 #include <Core/Log.h>
+
 
 Framebuffer::Framebuffer(FramebufferSpecification spec) : m_specification(std::move(spec)) {
     for (auto attachment_spec: m_specification.attachments.attachments) {
@@ -79,7 +81,6 @@ void Framebuffer::invalidate() {
     bool multisample = m_specification.samples > 1;
     GLsizei texture_type = multisample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
-    // Attachments
     if (!m_color_attachment_specifications.empty()) {
         m_color_attachments.resize(m_color_attachment_specifications.size());
         glCreateTextures(texture_type, (GLsizei) m_color_attachments.size(),
@@ -131,14 +132,14 @@ void Framebuffer::invalidate() {
 
 void Framebuffer::bind() {
     glBindFramebuffer(GL_FRAMEBUFFER, m_renderer_id);
-    glViewport(0, 0, (GLsizei) m_specification.width, (GLsizei) m_specification.height);
+    RenderSystem::set_viewport(0, 0, (GLsizei) m_specification.width, (GLsizei) m_specification.height);
 }
 
 void Framebuffer::unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Framebuffer::resize(uint32_t width, uint32_t height) {
+void Framebuffer::resize(uint32_t width, uint32_t height, bool preserve_attachments) {
     constexpr uint32_t max_framebuffer_size = 8192;
     if (width == 0 || height == 0 || width > max_framebuffer_size || height > max_framebuffer_size) {
         AUTM_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
@@ -147,7 +148,14 @@ void Framebuffer::resize(uint32_t width, uint32_t height) {
     m_specification.width = width;
     m_specification.height = height;
 
-    invalidate();
+    std::vector<uint32_t> color_attachments;
+    if (preserve_attachments) {
+        color_attachments = m_color_attachments;
+        invalidate();
+        m_color_attachments = color_attachments;
+    } else {
+        invalidate();
+    }
 }
 
 void Framebuffer::clear_attachment(uint32_t attachmentIndex, int value) {
@@ -178,7 +186,16 @@ uint32_t Framebuffer::get_color_attachment_id(uint32_t index) const {
 
 void Framebuffer::bind_color_attachment_id(uint32_t index) const {
     ASSERT(index < m_color_attachments.size(), "Index out of bounds for framebuffer color attachments");
+    glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, m_color_attachments[index]);
+}
+
+void Framebuffer::set_color_attachment_id(uint32_t index, uint32_t value) {
+    ASSERT(index < m_color_attachments.size(), "Index out of bounds for framebuffer color attachments");
+    m_color_attachments[index] = value;
+    glBindTexture(GL_TEXTURE_2D, m_color_attachments[index]);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_color_attachments[index], 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 

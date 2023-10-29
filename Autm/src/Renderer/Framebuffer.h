@@ -46,7 +46,7 @@ struct FramebufferSpecification {
 
 class Framebuffer {
 public:
-    Framebuffer(FramebufferSpecification spec);
+    explicit Framebuffer(FramebufferSpecification spec);
 
     ~Framebuffer();
 
@@ -56,7 +56,7 @@ public:
 
     void unbind();
 
-    void resize(uint32_t width, uint32_t height);
+    void resize(uint32_t width, uint32_t height, bool preserve_attachments = false);
 
 //    int ReadPixel(uint32_t attachmentIndex, int x, int y);
 
@@ -65,6 +65,8 @@ public:
     uint32_t get_color_attachment_id(uint32_t index = 0) const;
 
     void bind_color_attachment_id(uint32_t index = 0) const;
+
+    void set_color_attachment_id(uint32_t index, uint32_t value);
 
     const FramebufferSpecification& get_specification() const { return m_specification; }
 

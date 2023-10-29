@@ -37,12 +37,19 @@ public:
 
     static Application* create_instance() { return new Application(); }
 
-protected:
+private:
+    EventResult on_window_resized(WindowResizedEvent& event);
+    EventResult on_window_closed(WindowClosedEvent& event);
+
+private:
     static Application* s_instance;
 
     std::unique_ptr<Window> m_window;
     ImGuiLayer* m_imgui_layer;
     LayerStack m_layerstack;
+
+    bool m_running = true;
+    float m_prev_frame_time = 0.0f;
 };
 
 Application* create_application();

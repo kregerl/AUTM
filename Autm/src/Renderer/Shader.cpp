@@ -22,7 +22,7 @@ Shader::Shader(std::string_view vertexPath, std::string_view fragmentPath, std::
         fragmentShader = fragmentStream.str();
     }
     catch (std::ifstream::failure& e) {
-        AUTM_CORE_ERROR("Couldn't read shaders at V:{}F:{}", vertexPath, fragmentPath);
+        AUTM_CORE_ERROR("Couldn't read shaders at V:{}\nF:{}", vertexPath, fragmentPath);
     }
     const char* vshCode = vertexShader.c_str();
     const char* fshCode = fragmentShader.c_str();
@@ -84,16 +84,32 @@ void Shader::bind() const {
     glUseProgram(m_program_id);
 }
 
+void Shader::unbind() const {
+    glUseProgram(0);
+}
+
 void Shader::set_bool(const std::string& name, bool value) const {
     glUniform1i(glGetUniformLocation(m_program_id, name.c_str()), (int) value);
 }
 
 void Shader::set_int(const std::string& name, int value) const {
-    glUniform1i(glGetUniformLocation(m_program_id, name.c_str()), value);
+    set_intv(name, &value, 1);
+}
+
+void Shader::set_intv(const std::string& name, const int* value, uint32_t count) const {
+    glUniform1iv(glGetUniformLocation(m_program_id, name.c_str()), (GLsizei) count, value);
+}
+
+void Shader::set_uint(const std::string& name, uint32_t value) const {
+    glUniform1ui(glGetUniformLocation(m_program_id, name.c_str()), value);
 }
 
 void Shader::set_float(const std::string& name, float value) const {
-    glUniform1f(glGetUniformLocation(m_program_id, name.c_str()), value);
+    set_floatv(name, &value, 1);
+}
+
+void Shader::set_floatv(const std::string& name, const float* value, uint32_t count) const {
+    glUniform1fv(glGetUniformLocation(m_program_id, name.c_str()), (GLsizei) count, value);
 }
 
 void Shader::set_vec2(const std::string& name, const glm::vec2& value) const {
@@ -149,5 +165,7 @@ void Shader::check_compile_errors(unsigned int shader_program, const std::string
         }
     }
 }
+
+
 
 

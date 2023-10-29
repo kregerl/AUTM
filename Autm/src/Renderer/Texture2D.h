@@ -28,7 +28,7 @@ public:
 
     void bind(uint32_t slot = 0);
 
-    void unbind();
+    void unbind(uint32_t slot = 0);
 
     void set_data(uint32_t size, void* data);
 
@@ -47,6 +47,5 @@ private:
     GLuint m_renderer_id;
 
 };
-
 
 #endif
