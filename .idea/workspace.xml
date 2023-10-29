@@ -35,13 +35,39 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="daf5b8a8-1363-4bc9-82cd-b6aa7abec7ca" name="Changes" comment="Added a helper for submitting shaders with uniforms">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="daf5b8a8-1363-4bc9-82cd-b6aa7abec7ca" name="Changes" comment="Added a helper for converting screen coordinates to world coordinates.">
+      <change afterPath="$PROJECT_DIR$/Autm/src/Core/Thread/TaskQueue.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Autm/src/Core/Thread/Worker.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/src/App.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/App/src/App.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/src/CellularAutomata/CellularAutomata.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/App/src/CellularAutomata/CellularAutomata.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/src/CustomShader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/App/src/CustomShader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/src/EntityLayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/App/src/EntityLayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/src/Mandelbrot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/App/src/Mandelbrot.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/src/PhysicsLayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/App/src/PhysicsLayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App/src/PhysicsLayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/App/src/PhysicsLayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/App/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/App/Application.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Core/Log.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Core/Log.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Core/ThreadPool.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Core/ThreadPool.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Core/Thread/ThreadPool.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Event/Event.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Event/Event.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Event/MouseEvents.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Event/MouseEvents.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Physics/PhysicsBody.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Physics/PhysicsBody.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Physics/PhysicsBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Physics/PhysicsBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Physics/PhysicsWorld.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Physics/PhysicsWorld.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Physics/PhysicsWorld.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Physics/PhysicsWorld.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Physics/Vertex.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Physics/Vertex.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Physics/Vertex.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Physics/Vertex.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Renderer/Framebuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Renderer/Framebuffer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Renderer/OrthographicCamera.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Renderer/OrthographicCamera.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Renderer/OrthographicCameraController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Renderer/OrthographicCameraController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Renderer/OrthographicCameraController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Renderer/OrthographicCameraController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/Renderer/VertexBufferLayout.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/Renderer/VertexBufferLayout.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Autm/src/autmpch.h" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/src/autmpch.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Autm/vendor/box2d" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/vendor/box2d" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Autm/vendor/box2d/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/vendor/box2d/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Autm/vendor/glfw" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/vendor/glfw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Autm/vendor/glm" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/vendor/glm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Autm/vendor/spdlog" beforeDir="false" afterPath="$PROJECT_DIR$/Autm/vendor/spdlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +86,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Autm/vendor/box2d" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="MacroExpansionManager">
@@ -89,11 +115,12 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
+    "cf.advertisement.text.has.clang-format": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "dev",
-    "last_opened_file_path": "/home/loucas/Programs/chinstrap",
+    "git-widget-placeholder": "411acc32",
+    "last_opened_file_path": "/home/loucas/Programs/SLimeMoldSimulation",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -108,8 +135,16 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Autm/vendor" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Autm/src/Core/Thread" />
+    </key>
   </component>
   <component name="RunManager" selected="CMake Application.App">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="unit_test" type="CMakeDoctestTestRunConfigurationType" factoryName="doctest Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="AUTM" TARGET_NAME="unit_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="AUTM" RUN_TARGET_NAME="unit_test" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -122,11 +157,6 @@
       </method>
     </configuration>
     <configuration name="Autm" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="AUTM" TARGET_NAME="Autm" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -236,7 +266,15 @@
       <workItem from="1698097878970" duration="1325000" />
       <workItem from="1698192273267" duration="2088000" />
       <workItem from="1698255741957" duration="8393000" />
-      <workItem from="1698264430505" duration="3444000" />
+      <workItem from="1698264430505" duration="8325000" />
+      <workItem from="1698362811718" duration="644000" />
+      <workItem from="1698364894765" duration="3887000" />
+      <workItem from="1698422814899" duration="6144000" />
+      <workItem from="1698430067586" duration="6657000" />
+      <workItem from="1698499630751" duration="4133000" />
+      <workItem from="1698504633619" duration="614000" />
+      <workItem from="1698509857800" duration="2608000" />
+      <workItem from="1698588845558" duration="248000" />
     </task>
     <task id="LOCAL-00001" summary="Added a function to draw a circle given a point and radius">
       <option name="closed" value="true" />
@@ -270,7 +308,55 @@
       <option name="project" value="LOCAL" />
       <updated>1698267572200</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added a verlet physics">
+      <option name="closed" value="true" />
+      <created>1698267994263</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1698267994263</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Implemented a simple thread pool for use in multithreaded physics">
+      <option name="closed" value="true" />
+      <created>1698368544689</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1698368544689</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Moved some of the window logic into the application class.">
+      <option name="closed" value="true" />
+      <created>1698428941673</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1698428941673</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Removed unnecessary inlines">
+      <option name="closed" value="true" />
+      <created>1698434073661</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1698434073661</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Removed GLFW framebuffer size callback from Window and fixed issue with logging the OpenGL version">
+      <option name="closed" value="true" />
+      <created>1698434167957</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1698434167957</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added a helper for converting screen coordinates to world coordinates.">
+      <option name="closed" value="true" />
+      <created>1698434192734</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1698434192734</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -286,7 +372,13 @@
     <MESSAGE value="Added a function to draw a circle given a point and radius" />
     <MESSAGE value="Fixed the engine for wayland. Added a basic verlet physics system" />
     <MESSAGE value="Added a helper for submitting shaders with uniforms" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added a helper for submitting shaders with uniforms" />
+    <MESSAGE value="Added a verlet physics" />
+    <MESSAGE value="Implemented a simple thread pool for use in multithreaded physics" />
+    <MESSAGE value="Moved some of the window logic into the application class." />
+    <MESSAGE value="Removed unnecessary inlines" />
+    <MESSAGE value="Removed GLFW framebuffer size callback from Window and fixed issue with logging the OpenGL version" />
+    <MESSAGE value="Added a helper for converting screen coordinates to world coordinates." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a helper for converting screen coordinates to world coordinates." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

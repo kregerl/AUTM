@@ -79,7 +79,7 @@ void CustomShader::on_update(float ts) {
 
 void CustomShader::on_event(Event& event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(CustomShader::on_window_resized));
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND(CustomShader::on_window_resized));
 
     m_camera_controller.on_event(event);
 }

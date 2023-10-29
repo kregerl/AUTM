@@ -225,7 +225,7 @@ void EntityLayer::on_shutdown() {
 
 void EntityLayer::on_event(Event& event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(EntityLayer::on_window_resized));
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND(EntityLayer::on_window_resized));
 }
 
 EventResult EntityLayer::on_window_resized(WindowResizedEvent& event) {

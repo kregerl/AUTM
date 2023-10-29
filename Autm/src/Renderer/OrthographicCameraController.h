@@ -14,20 +14,22 @@
 class OrthographicCameraController {
 public:
     explicit OrthographicCameraController(float aspect_ratio, float zoom = 1.0f);
-
     ~OrthographicCameraController() = default;
 
     void on_update(double delta_time);
+    void on_event(Event &event);
 
-    void on_event(Event& event);
+    EventResult on_mouse_scrolled(MouseScrolledEvent &event);
+    EventResult on_window_resized(WindowResizedEvent &event);
 
-    EventResult on_mouse_scrolled(MouseScrolledEvent& event);
+    float left();
+    float right();
+    float top();
+    float bottom();
 
-    EventResult on_window_resized(WindowResizedEvent& event);
+    const OrthographicCamera &get_camera() const { return m_camera; }
 
-    const OrthographicCamera& get_camera() const { return m_camera; }
-
-    const glm::vec3& get_position() const { return m_position; }
+    const glm::vec3 &get_position() const { return m_position; }
 
     float get_zoom() const { return m_zoom; }
 

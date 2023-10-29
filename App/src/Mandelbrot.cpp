@@ -65,13 +65,13 @@ void Mandelbrot::on_update(float ts) {
 
 void Mandelbrot::on_event(Event& event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch_event<MouseButtonPressedEvent>(AUTM_BIND_EVENT(Mandelbrot::onMouseButtonPressed));
-    dispatcher.dispatch_event<MouseScrolledEvent>(AUTM_BIND_EVENT(Mandelbrot::onMouseScroll));
+    dispatcher.dispatch_event<MouseButtonPressedEvent>(AUTM_BIND(Mandelbrot::onMouseButtonPressed));
+    dispatcher.dispatch_event<MouseScrolledEvent>(AUTM_BIND(Mandelbrot::onMouseScroll));
 }
 
 EventResult Mandelbrot::onMouseButtonPressed(MouseButtonPressedEvent& event) {
-    if (event.getMouseButton() == L_MOUSE_BUTTON) {
-        auto pos = event.getMousePos();
+    if (event.get_mouse_button() == L_MOUSE_BUTTON) {
+        auto pos = event.get_mouse_pos();
         glm::vec2 resolution = Application::get_instance()->get_window().get_resolution();
 //        float zoom = Input::getScroll();
         m_center = {

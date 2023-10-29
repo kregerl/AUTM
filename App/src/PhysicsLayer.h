@@ -2,6 +2,7 @@
 #define AUTM_PHYSICSLAYER_H
 
 #include "Autm.h"
+#include "autmpch.h"
 #include <Physics/PhysicsWorld.h>
 
 class PhysicsLayer : public Layer {
@@ -17,9 +18,14 @@ public:
 
     void on_imgui_render() override;
 
-    void on_event(Event& event) override;
+    void on_event(Event &event) override;
 
-    EventResult on_mouse_clicked(MouseButtonPressedEvent&);
+    EventResult on_mouse_clicked(MouseButtonPressedEvent &);
+    EventResult on_mouse_released(MouseButtonReleasedEvent &);
+    EventResult on_mouse_moved(MouseMovedEvent &);
+
+private:
+    void constrain(Vertex &vertex);
 
 private:
     OrthographicCameraController m_camera_controller;
@@ -27,6 +33,7 @@ private:
 
     PhysicsWorld m_physics_world;
     bool m_paused = true;
+    bool m_mouse_down = false;
 };
 
 

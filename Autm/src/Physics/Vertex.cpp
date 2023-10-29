@@ -15,18 +15,13 @@ void Vertex::on_update(float ts) {
     clear_forces();
 }
 
-void Vertex::constrain(glm::vec3 position, float radius) {
-    const glm::vec3 distance_to_object = position - m_position;
-    const float dist = std::sqrt(
-            distance_to_object.x * distance_to_object.x + distance_to_object.y * distance_to_object.y);
-    if (dist > (radius - (m_radius / 2.0f))) {
-        const glm::vec3 n = distance_to_object / dist;
-        m_position = position - n * (radius - (m_radius / 2.0f));
-    }
+void Vertex::constrain(Vertex::ConstrainFunction constrain_function) {
+    constrain_function(*this);
 }
 
 void Vertex::clear_forces() {
     m_acceleration = glm::vec3(0.0f);
     m_force = glm::vec3(0.0f);
 }
+
 

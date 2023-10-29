@@ -44,7 +44,6 @@ static unsigned int shader_data_type_size(ShaderDataType type) {
 }
 
 
-// TODO: Replace std::strings with std::string_view
 struct VertexBufferElement {
     std::string name;
     ShaderDataType type;

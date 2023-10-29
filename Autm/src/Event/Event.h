@@ -3,7 +3,7 @@
 
 #include "autmpch.h"
 
-#define AUTM_BIND_EVENT(x) std::bind(&x, this, std::placeholders::_1)
+#define AUTM_BIND(x) std::bind(&x, this, std::placeholders::_1)
 
 enum class EventType {
     None = 0,
@@ -28,9 +28,9 @@ enum EventCategory {
 };
 
 enum class EventResult {
-    Consume, // Means the event handler succeeded and the next layer should not receive it.
-    Pass, // Means the event handler does nothing and passes it along to the next layer.
-    Fail // Means something went wrong in the event handler and the next layer should not receive it.
+    Consume, // Means the event handler succeeded and the event was consumed.
+    Pass, // Means the event handler will pass the event to the next layer.
+    Deny // Means the event should not be passed to the next layer.
 };
 
 class Event {

@@ -88,9 +88,9 @@ class MouseMovedEvent : public Event {
 public:
     MouseMovedEvent(float x, float y) : m_x_pos(x), m_y_pos(y) {}
 
-    float get_x() const { return m_x_pos; }
+    float get_mouse_x() const { return m_x_pos; }
 
-    float get_y() const { return m_y_pos; }
+    float get_mouse_y() const { return m_y_pos; }
 
     EventType get_event_type() const override { return get_static_event_type(); }
 

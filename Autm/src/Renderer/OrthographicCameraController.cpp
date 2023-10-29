@@ -52,13 +52,13 @@ void OrthographicCameraController::on_update(double delta_time) {
 
 }
 
-void OrthographicCameraController::on_event(Event& event) {
+void OrthographicCameraController::on_event(Event &event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch_event<MouseScrolledEvent>(AUTM_BIND_EVENT(OrthographicCameraController::on_mouse_scrolled));
-    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(OrthographicCameraController::on_window_resized));
+    dispatcher.dispatch_event<MouseScrolledEvent>(AUTM_BIND(OrthographicCameraController::on_mouse_scrolled));
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND(OrthographicCameraController::on_window_resized));
 }
 
-EventResult OrthographicCameraController::on_mouse_scrolled(MouseScrolledEvent& event) {
+EventResult OrthographicCameraController::on_mouse_scrolled(MouseScrolledEvent &event) {
     if (m_enable_inputs) {
         m_zoom -= event.get_mouse_offset_y() * 0.25f;
         m_zoom = std::max(m_zoom, 0.1f);
@@ -67,10 +67,24 @@ EventResult OrthographicCameraController::on_mouse_scrolled(MouseScrolledEvent& 
     return EventResult::Consume;
 }
 
-EventResult OrthographicCameraController::on_window_resized(WindowResizedEvent& event) {
+EventResult OrthographicCameraController::on_window_resized(WindowResizedEvent &event) {
     m_aspect_ratio = (float) event.get_width() / (float) event.get_height();
     m_camera.set_projection_matrix(-m_aspect_ratio * m_zoom, m_aspect_ratio * m_zoom, -m_zoom, m_zoom);
     return EventResult::Consume;
 }
 
+float OrthographicCameraController::left() {
+    return -m_aspect_ratio * m_zoom;
+}
 
+float OrthographicCameraController::right() {
+    return m_aspect_ratio * m_zoom;
+}
+
+float OrthographicCameraController::top() {
+   return m_zoom;
+}
+
+float OrthographicCameraController::bottom() {
+    return -m_zoom;
+}

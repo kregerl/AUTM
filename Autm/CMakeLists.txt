@@ -45,7 +45,12 @@ set(SOURCE_FILES src/Core/Window.cpp src/Core/Window.h src/App/Application.cpp s
         src/Physics/PhysicsWorld.cpp
         src/Physics/PhysicsWorld.h
         src/Physics/PhysicsBody.cpp
-        src/Physics/PhysicsBody.h)
+        src/Physics/PhysicsBody.h
+        src/Core/Thread/ThreadPool.h
+        src/Util/Coordinate.h
+        src/Core/Thread/TaskQueue.h
+        src/Core/Thread/Worker.h
+)
 
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} glad glfw glm spdlog imgui stb_image entt box2d ${OPENGL_LIBRARY} -ggdb)

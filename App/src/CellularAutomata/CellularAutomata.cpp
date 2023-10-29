@@ -95,7 +95,7 @@ void CellularAutomata::on_update(float ts) {
 
 void CellularAutomata::on_event(Event& event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(CellularAutomata::on_window_resized));
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND(CellularAutomata::on_window_resized));
 }
 
 void CellularAutomata::on_imgui_render() {

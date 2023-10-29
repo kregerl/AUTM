@@ -13,22 +13,24 @@ struct Constraint {
 
 class PhysicsWorld {
 public:
-    PhysicsWorld(Constraint constraint, uint32_t substeps = 1);
+    PhysicsWorld(std::function<void(Vertex&)> constraint_function, uint32_t substeps = 1);
     ~PhysicsWorld() = default;
 
-    std::vector<PhysicsBody> physics_bodies() const { return m_physics_bodies; }
+    std::vector<PhysicsBody>& physics_bodies()  { return m_physics_bodies; }
 
     void add_physics_body(const PhysicsBody& body);
 
     void on_update(float ts);
 
+
 private:
     std::vector<PhysicsBody> m_physics_bodies;
+//    std::vector<PhysicsBody> m_physics_bodies;
     float m_gravity = -9.8f;
     uint32_t m_substeps;
 
 public:
-    Constraint m_constraint;
+    std::function<void(Vertex&)> m_constraint;
 };
 
 

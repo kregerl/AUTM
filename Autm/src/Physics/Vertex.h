@@ -6,6 +6,8 @@
 
 class Vertex {
 public:
+    using ConstrainFunction = std::function<void(Vertex&)>;
+
     template<typename... Args>
     static std::shared_ptr<Vertex> create(Args &&... args) {
         return std::make_shared<Vertex>(std::forward<Args>(args)...);
@@ -15,7 +17,7 @@ public:
     ~Vertex() = default;
 
     void on_update(float ts);
-    void constrain(glm::vec3 position, float radius);
+    void constrain(ConstrainFunction constrain_function);
 
     [[nodiscard]] const glm::vec3 &get_position() const { return m_position; }
 

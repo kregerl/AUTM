@@ -1,4 +1,5 @@
 #include "Framebuffer.h"
+#include "RenderSystem.h"
 
 #include <glad/glad.h>
 #include <Core/Log.h>
@@ -131,7 +132,7 @@ void Framebuffer::invalidate() {
 
 void Framebuffer::bind() {
     glBindFramebuffer(GL_FRAMEBUFFER, m_renderer_id);
-    glViewport(0, 0, (GLsizei) m_specification.width, (GLsizei) m_specification.height);
+    RenderSystem::set_viewport(0, 0, (GLsizei) m_specification.width, (GLsizei) m_specification.height);
 }
 
 void Framebuffer::unbind() {

@@ -9,7 +9,7 @@ Application *Application::s_instance = nullptr;
 Application::Application() {
     s_instance = this;
     m_window = std::make_unique<Window>(WindowProperties());
-    m_window->set_event_callback(AUTM_BIND_EVENT(Application::on_event));
+    m_window->set_event_callback(AUTM_BIND(Application::on_event));
 
     glEnable(GL_DEBUG_OUTPUT);
     Renderer2D::init();
@@ -24,8 +24,8 @@ Application::~Application() {
 
 void Application::on_event(Event &event) {
     EventDispatcher dispatcher(event);
-    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND_EVENT(Application::on_window_resized));
-    dispatcher.dispatch_event<WindowClosedEvent>(AUTM_BIND_EVENT(Application::on_window_closed));
+    dispatcher.dispatch_event<WindowResizedEvent>(AUTM_BIND(Application::on_window_resized));
+    dispatcher.dispatch_event<WindowClosedEvent>(AUTM_BIND(Application::on_window_closed));
     for (auto it = m_layerstack.end(); it != m_layerstack.begin();) {
         if (event.get_event_result() != EventResult::Pass)
             break;

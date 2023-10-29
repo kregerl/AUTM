@@ -1,14 +1,18 @@
 #include "PhysicsLayer.h"
-#include "autmpch.h"
+
+#include <random>
 #include "imgui/imgui.h"
+#include "Util/Coordinate.h"
+#include <Core/KeyCodes.h>
 
 PhysicsLayer::PhysicsLayer() : m_camera_controller(Application::get_window().get_aspect_ratio(), 10.0f),
-                               m_physics_world(Constraint{.position = glm::vec3(0.0f), .radius = 5.0f}, 6) {
-    std::vector<std::shared_ptr<Vertex>> vertices = {
-            Vertex::create(glm::vec3(-1.5f, 1.5f, 0.0f), 0.5f),
-            Vertex::create(glm::vec3(-1.5f, -1.5f, 0.0f), 0.5f),
-            Vertex::create(glm::vec3(1.5f, -1.5f, 0.0f), 0.5f),
-            Vertex::create(glm::vec3(1.5f, 1.5f, 0.0f), 0.5f),
+                               m_physics_world(AUTM_BIND(PhysicsLayer::constrain), 10) {
+
+    std::vector<Vertex> vertices = {
+            Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), 0.1f),
+            Vertex(glm::vec3(-1.0f, -1.0f, 0.0f), 0.1f),
+            Vertex(glm::vec3(1.0f, -1.0f, 0.0f), 0.1f),
+            Vertex(glm::vec3(1.0f, 1.0f, 0.0f), 0.1f),
     };
 
     std::vector<Edge> edges = {
@@ -18,7 +22,8 @@ PhysicsLayer::PhysicsLayer() : m_camera_controller(Application::get_window().get
 //            Edge(vertices[3], vertices[0]),
 //            Edge(vertices[3], vertices[1])
     };
-    m_physics_world.add_physics_body(PhysicsBody(vertices, edges));
+
+    m_physics_world.add_physics_body(PhysicsBody(vertices, {}));
 }
 
 void PhysicsLayer::on_init() {
@@ -35,16 +40,14 @@ void PhysicsLayer::on_update(float ts) {
     if (!m_paused)
         m_physics_world.on_update(ts);
 
-    Renderer2D::draw_circle_with_radius(m_physics_world.m_constraint.position, m_physics_world.m_constraint.radius,
-                                        glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     for (auto &body: m_physics_world.physics_bodies()) {
         for (auto &vertex: body.vertices()) {
-            Renderer2D::draw_circle(vertex->get_position(), glm::vec2(vertex->get_radius()));
+            Renderer2D::draw_circle_with_radius(vertex.get_position(), vertex.get_radius());
         }
-
-        for (auto &edge: body.edges()) {
-            Renderer2D::draw_line(edge.get_v1()->get_position(), edge.get_v2()->get_position(), glm::vec4(1.0f));
-        }
+//
+//        for (auto &edge: body.edges()) {
+//            Renderer2D::draw_line(edge.get_v1()->get_position(), edge.get_v2()->get_position(), glm::vec4(1.0f));
+//        }
     }
 
     Renderer2D::end();
@@ -63,18 +66,67 @@ void PhysicsLayer::on_imgui_render() {
 void PhysicsLayer::on_event(Event &event) {
     m_camera_controller.on_event(event);
     auto dispatcher = EventDispatcher(event);
-    dispatcher.dispatch_event<MouseButtonPressedEvent>(AUTM_BIND_EVENT(PhysicsLayer::on_mouse_clicked));
+    dispatcher.dispatch_event<MouseButtonPressedEvent>(AUTM_BIND(PhysicsLayer::on_mouse_clicked));
+    dispatcher.dispatch_event<MouseButtonReleasedEvent>(AUTM_BIND(PhysicsLayer::on_mouse_released));
+    dispatcher.dispatch_event<MouseMovedEvent>(AUTM_BIND(PhysicsLayer::on_mouse_moved));
 }
 
 EventResult PhysicsLayer::on_mouse_clicked(MouseButtonPressedEvent &event) {
-    auto matrix = m_camera_controller.get_camera().get_view_projection_matrix();
-    auto inverse = glm::inverse(matrix);
+    if (event.get_mouse_button() == L_MOUSE_BUTTON)
+        m_mouse_down = true;
+    auto point = event.get_mouse_pos();
 
-    AUTM_DEBUG("Transformed pos: {},{}", event.getMouseX() / (m_camera_controller.get_camera_size().x / 2.0f) - 1.0f,
-               -1.0f * event.getMouseY() / (m_camera_controller.get_camera_size().y / 2.0f) - 1.0f);
+    auto position = Coordinate::map_screen_coords_to_world_coords(
+            glm::vec3(point.x, point.y, 0.0f),
+            m_camera_controller.get_camera().get_projection_matrix());
 
+//    TODO: This is temporary
+    for (auto &body: m_physics_world.physics_bodies()) {
+        (&body)->add_vertex(Vertex(glm::vec3(position.x, position.y, 0.0f), 0.1f));
+    }
 
-    AUTM_DEBUG("Event pos: {},{}", event.getMouseX(), event.getMouseY());
     return EventResult::Consume;
+}
+
+EventResult PhysicsLayer::on_mouse_released(MouseButtonReleasedEvent &event) {
+    if (event.get_mouse_button() == L_MOUSE_BUTTON)
+        m_mouse_down = false;
+    return EventResult::Consume;
+}
+
+EventResult PhysicsLayer::on_mouse_moved(MouseMovedEvent &event) {
+    if (m_mouse_down) {
+        auto position = Coordinate::map_screen_coords_to_world_coords(
+                glm::vec3(event.get_mouse_x(), event.get_mouse_y(), 0.0f),
+                m_camera_controller.get_camera().get_projection_matrix());
+
+        for (auto &body: m_physics_world.physics_bodies()) {
+            (&body)->add_vertex(Vertex(glm::vec3(position.x, position.y, 0.0f), 0.1f));
+        }
+    }
+
+    return EventResult::Consume;
+}
+
+
+void PhysicsLayer::constrain(Vertex &vertex) {
+    auto position = vertex.get_position();
+    auto radius = vertex.get_radius();
+
+    if (position.y <= m_camera_controller.bottom() + radius) {
+        vertex.set_position({position.x, m_camera_controller.bottom() + radius, 0.0f});
+    }
+
+    if (position.y >= m_camera_controller.top() - radius) {
+        vertex.set_position({position.x, m_camera_controller.bottom() - radius, 0.0f});
+    }
+
+    if (position.x <= m_camera_controller.left() + radius) {
+        vertex.set_position({position.x, m_camera_controller.bottom() + radius, 0.0f});
+    }
+
+    if (position.x >= m_camera_controller.right() - radius) {
+        vertex.set_position({position.x, m_camera_controller.bottom() - radius, 0.0f});
+    }
 }
 
