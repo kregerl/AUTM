@@ -6,14 +6,14 @@
 
 class Vertex {
 public:
-    using ConstrainFunction = std::function<void(Vertex&)>;
+    using ConstrainFunction = std::function<void(Vertex &)>;
 
     template<typename... Args>
     static std::shared_ptr<Vertex> create(Args &&... args) {
         return std::make_shared<Vertex>(std::forward<Args>(args)...);
     }
 
-    Vertex(glm::vec3 point, float radius, float mass = 1.0f);
+    Vertex(glm::vec3 point, float radius, float mass = 1.0f, bool pinned = false);
     ~Vertex() = default;
 
     void on_update(float ts);
@@ -28,7 +28,9 @@ public:
     [[nodiscard]] float get_radius() const { return m_radius; }
 
     void accelerate(glm::vec3 acceleration) { m_acceleration += acceleration; }
-    void apply_force(glm::vec3 force) {m_force += force;}
+
+    void apply_force(glm::vec3 force) { m_force += force; }
+
 private:
     void clear_forces();
 

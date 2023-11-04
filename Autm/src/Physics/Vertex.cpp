@@ -1,6 +1,6 @@
 #include "Vertex.h"
 
-Vertex::Vertex(glm::vec3 point, float radius, float mass)
+Vertex::Vertex(glm::vec3 point, float radius, float mass, bool pinned)
         : m_position(point), m_previous_position(point), m_radius(radius), m_mass(mass), m_acceleration(0), m_force(0) {}
 
 void Vertex::on_update(float ts) {
